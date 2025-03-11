@@ -20,6 +20,7 @@ import {
 interface Message {
   role: "assistant" | "user";
   content: string;
+  isLoading?: boolean;
 }
 
 // Example user profile interface
@@ -197,7 +198,7 @@ Some ways I can help you:
 What would you like to know about?`;
   };
 
-  // Send user message to /api/agent/chat, handle the assistant reply
+  // Send user message to /api/agent/chat and handle polling for response
   const sendMessage = async (messageContent: string) => {
     if (!messageContent.trim() || isSending || !threadId) return;
     setIsSending(true);
@@ -208,19 +209,20 @@ What would you like to know about?`;
       content: messageContent,
     };
 
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+    // Update messages with the user's message
+    setMessages((prev) => [...prev, userMessage]);
 
-    // "Thinking..." placeholder
+    // Add "Thinking..." placeholder message
     const thinkingMessage: Message = {
       role: "assistant",
       content: "Thinking...",
+      isLoading: true,
     };
 
     setMessages((prev) => [...prev, thinkingMessage]);
 
     try {
-      // Send message to API
+      // Send message to API to start processing
       const response = await fetch("/api/agent/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -239,21 +241,58 @@ What would you like to know about?`;
         throw new Error(data.error);
       }
 
-      // Get the assistant's content from the response
-      const assistantContent = data.response;
+      const runId = data.runId;
 
-      // Replace "Thinking..." with final text
-      const assistantMessage: Message = {
-        role: "assistant",
-        content: assistantContent,
-      };
+      // Poll for completion
+      let completed = false;
+      let attempts = 0;
+      const maxAttempts = 60; // Limit polling attempts
 
-      setMessages((prev) => [...prev.slice(0, -1), assistantMessage]);
+      while (!completed && attempts < maxAttempts) {
+        // Wait 1 second between polls
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        attempts++;
+
+        // Check the status of the run
+        const statusResponse = await fetch(
+          `/api/agent/check-run?threadId=${threadId}&runId=${runId}`,
+        );
+
+        if (!statusResponse.ok) {
+          throw new Error(
+            `Error checking run status: ${statusResponse.status}`,
+          );
+        }
+
+        const statusData = await statusResponse.json();
+
+        // If completed, update the message
+        if (statusData.status === "completed") {
+          // Replace "Thinking..." with final text
+          const assistantMessage: Message = {
+            role: "assistant",
+            content: statusData.response,
+            isLoading: false,
+          };
+
+          setMessages((prev) => [...prev.slice(0, -1), assistantMessage]);
+          completed = true;
+        } else if (statusData.status === "failed") {
+          throw new Error("Assistant run failed");
+        }
+        // Continue polling for other statuses (queued, in_progress, etc.)
+      }
+
+      // Handle timeout case
+      if (!completed) {
+        throw new Error("Assistant run timed out");
+      }
     } catch (err) {
       console.error("Chat error:", err);
       const errorMessage: Message = {
         role: "assistant",
         content: "I encountered an error. Please try again later.",
+        isLoading: false,
       };
 
       setMessages((prev) => [...prev.slice(0, -1), errorMessage]);
@@ -373,11 +412,9 @@ What would you like to know about?`;
                         message.role === "assistant"
                           ? "bg-white border shadow-sm"
                           : "bg-blue-600 text-white"
-                      } ${
-                        message.content === "Thinking..." ? "animate-pulse" : ""
-                      }`}
+                      } ${message.isLoading ? "animate-pulse" : ""}`}
                     >
-                      {message.content === "Thinking..." ? (
+                      {message.isLoading ? (
                         <p className="text-sm animate-pulse">
                           {message.content}
                         </p>
