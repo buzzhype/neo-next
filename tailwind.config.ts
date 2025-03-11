@@ -41,9 +41,9 @@ export default {
         border: "#e2e8f0",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
-        mono: ["var(--font-geist-mono)", ...fontFamily.mono],
-        display: ["var(--font-geist-sans)", ...fontFamily.sans],
+        sans: [...defaultTheme.fontFamily.sans],
+        // mono: ["var(--font-geist-mono)", ...fontFamily.mono],
+        // display: ["var(--font-geist-sans)", ...fontFamily.sans],
       },
       borderRadius: {
         "4xl": "2rem",
