@@ -1,26 +1,122 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+    /* Brand colors */
+    --neutral-black: #232226;
+    --charcoal: #3c4659;
+    --manatee: #8a8ba6;
+    --horizon: #5988a6;
+    --blush: #d9848b;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+    /* Light mode */
+    --background: #ffffff;
+    --foreground: var(--neutral-black);
+    --primary: var(--horizon);
+    --secondary: var(--manatee);
+    --accent: var(--blush);
+    --muted: #f8fafc;
+    --border: #e2e8f0;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+    :root {
+        /* Dark mode */
+        --background: var(--neutral-black);
+        --foreground: #ededed;
+        --muted: var(--charcoal);
+        --border: var(--charcoal);
+    }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans, Arial, Helvetica, sans-serif);
+}
+
+/* Gradient text utility */
+.text-gradient {
+    background-image: linear-gradient(
+        to right,
+        #3c4659 0%,
+        #5988a6 30%,
+        #8a8ba6 60%,
+        #d9848b 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+}
+
+/* Gradient background utility */
+.bg-gradient-brand {
+    background-image: linear-gradient(
+        45deg,
+        #232226 0%,
+        #3c4659 25%,
+        #5988a6 50%,
+        #8a8ba6 75%,
+        #d9848b 100%
+    );
+}
+
+/* Custom button styles */
+.btn-primary {
+    background-color: var(--horizon);
+    color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: var(--charcoal);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(35, 34, 38, 0.1);
+}
+
+.btn-secondary {
+    background-color: var(--manatee);
+    color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-secondary:hover {
+    background-color: var(--charcoal);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(35, 34, 38, 0.1);
+}
+
+.btn-accent {
+    background-color: var(--blush);
+    color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-accent:hover {
+    background-color: var(--charcoal);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(35, 34, 38, 0.1);
+}
+
+/* Card styles */
+.card {
+    background-color: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(35, 34, 38, 0.05);
+    transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 10px 15px rgba(35, 34, 38, 0.1);
+    transform: translateY(-3px);
+}
+
+/* Form element focus styles */
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--horizon);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(89, 136, 166, 0.2);
 }
