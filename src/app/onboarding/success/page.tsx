@@ -20,7 +20,7 @@ import {
 import { cn } from "@/lib/utils";
 
 // IMPORTANT: import the same Neighborhood interface from NeighborhoodSuggestions:
-import type { Neighborhood } from "@/app/onboarding/suggestions";
+import type { Neighborhood } from "@/components/NeighborhoodSuggestions";
 // or wherever the "index.tsx" of NeighborhoodSuggestions is located
 
 /**
