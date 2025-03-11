@@ -151,7 +151,7 @@ export default function MapOfNeighborhoods({
                       {n.description}
                     </p>
                     <div className="mt-2 text-sm font-medium text-blue-600">
-                      {n.average_price}
+                      {n.averagePrice}
                     </div>
                   </div>
                 </Popup>
