@@ -16,12 +16,20 @@ type RunResponse = {
   // ... include other properties if needed
 };
 
-type Message = {
-  role: string;
-  content: any; // can be a string or an array (depending on the response shape)
+type MessageContent = {
+  type: string;
+  text?: { value: string };
 };
 
-type MessagesListResponse = { data: Message[] } | { data: { data: Message[] } };
+type Message = {
+  role: string;
+  content: string | MessageContent[];
+};
+
+// Define a proper type for the messages list response
+interface MessageListResponse {
+  data: Message[];
+}
 
 export async function POST(request: Request) {
   try {
@@ -94,15 +102,16 @@ export async function POST(request: Request) {
     }
 
     // 4. Retrieve the latest message (assumed to be the assistant's reply)
-    const messagesResponse = await openai.beta.threads.messages.list(threadId, {
-      limit: 1,
-      order: "desc",
-    });
+    const messagesResponse = (await openai.beta.threads.messages.list(
+      threadId,
+      {
+        limit: 1,
+        order: "desc",
+      },
+    )) as MessageListResponse;
 
-    // Normalize the messages array
-    const messagesArray = Array.isArray(messagesResponse.data)
-      ? messagesResponse.data
-      : messagesResponse.data?.data || [];
+    // Get the first message
+    const messagesArray = messagesResponse.data || [];
     const lastMessage = messagesArray[0];
 
     if (!lastMessage || lastMessage.role !== "assistant") {
@@ -113,8 +122,8 @@ export async function POST(request: Request) {
     let messageContent = "";
     if (Array.isArray(lastMessage.content)) {
       messageContent = lastMessage.content
-        .filter((content: any) => content.type === "text")
-        .map((content: any) => content.text?.value)
+        .filter((content) => content.type === "text")
+        .map((content) => content.text?.value || "")
         .join("\n");
     } else {
       messageContent = String(lastMessage.content);
