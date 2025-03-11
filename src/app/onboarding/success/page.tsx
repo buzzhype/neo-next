@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 
 // Dynamically import your map component
 const MapOfNeighborhoods = dynamic(
-  () => import("@/components/MapOfNeighborhoods"), // Adjust to your path
+  () => import("@/components/MapOfNeighborhoods"),
   {
     ssr: false,
     loading: () => (
@@ -35,24 +35,38 @@ const MapOfNeighborhoods = dynamic(
   },
 );
 
-interface Feature {
-  icon: any;
-  title: string;
-  value: string | number;
-  className?: string;
-}
-
+/**
+ * IMPORTANT: This interface must match what MapOfNeighborhoods (or NeighborhoodSuggestions) expects.
+ * For example, from src/components/NeighborhoodSuggestions/index.tsx we have:
+ *
+ * export interface Neighborhood {
+ *   name: string;
+ *   description: string;
+ *   matchScore: number;
+ *   averagePrice: number;
+ *   transitScore: number;
+ *   walkScore: number;
+ *   lat?: number;
+ *   lng?: number;
+ *   keyFeatures?: string[];
+ *   funFacts?: string[];
+ *   ...
+ * }
+ *
+ * We're adding urlCode? for your external link usage.
+ */
 interface Neighborhood {
   name: string;
   description: string;
-  average_price: number;
-  transit_score: number;
-  walk_score: number;
+  matchScore?: number; // Marked optional if you’re not currently using it
+  averagePrice: number;
+  transitScore: number;
+  walkScore: number;
   lat?: number;
   lng?: number;
-  url_code?: string;
-  key_features?: string[];
-  fun_facts?: string[];
+  urlCode?: string;
+  keyFeatures?: string[];
+  funFacts?: string[];
 }
 
 interface UserProfile {
@@ -76,7 +90,14 @@ interface UserProfile {
   selectedNeighborhoods: Neighborhood[];
 }
 
-// Feature Card
+// Feature interface & component
+interface Feature {
+  icon: any;
+  title: string;
+  value: string | number;
+  className?: string;
+}
+
 const FeatureCard = ({ icon: Icon, title, value, className = "" }: Feature) => (
   <div className={cn("p-4 rounded-xl transition-all duration-200", className)}>
     <div className="flex items-center gap-2 mb-1">
@@ -87,7 +108,7 @@ const FeatureCard = ({ icon: Icon, title, value, className = "" }: Feature) => (
   </div>
 );
 
-// Stat Card
+// Stat card
 const StatCard = ({
   label,
   value,
@@ -120,7 +141,6 @@ export default function OnboardingSuccess() {
     }
   }, []);
 
-  // If no profile yet, show a loader
   if (!userProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -133,12 +153,9 @@ export default function OnboardingSuccess() {
     );
   }
 
-  // Show selected neighborhood info or fallback
+  // External link to listings
   const handleViewListings = (nb: Neighborhood) => {
-    // Construct a URL to an external site, for example.
-    let url = `https://flyhomes.com/search?marketUrlCode=${nb.url_code}`;
-    // Add your logic for property type, beds, baths, etc.
-    // ...
+    const url = `https://flyhomes.com/search?marketUrlCode=${nb.urlCode || ""}`;
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
@@ -328,26 +345,26 @@ export default function OnboardingSuccess() {
                       <div className="grid grid-cols-3 gap-4 mb-6">
                         <StatCard
                           label="Average Price"
-                          value={`${activeNeighborhood.average_price}`}
+                          value={`$${activeNeighborhood.averagePrice.toLocaleString()}`}
                         />
                         <StatCard
                           label="Walk Score"
-                          value={`${activeNeighborhood.walk_score}/100`}
+                          value={`${activeNeighborhood.walkScore}/100`}
                         />
                         <StatCard
                           label="Transit Score"
-                          value={`${activeNeighborhood.transit_score}/100`}
+                          value={`${activeNeighborhood.transitScore}/100`}
                         />
                       </div>
 
                       {/* Key Features */}
-                      {activeNeighborhood.key_features && (
+                      {activeNeighborhood.keyFeatures && (
                         <div className="space-y-3">
                           <h4 className="font-medium text-gray-900">
                             Key Features
                           </h4>
                           <div className="flex flex-wrap gap-2">
-                            {activeNeighborhood.key_features.map((feature) => (
+                            {activeNeighborhood.keyFeatures.map((feature) => (
                               <span
                                 key={feature}
                                 className="px-3 py-1 bg-white text-blue-600 rounded-full text-sm border border-blue-100"
@@ -356,6 +373,20 @@ export default function OnboardingSuccess() {
                               </span>
                             ))}
                           </div>
+                        </div>
+                      )}
+
+                      {/* Fun Facts */}
+                      {activeNeighborhood.funFacts && (
+                        <div className="mt-4 space-y-2">
+                          <h4 className="font-medium text-gray-900">
+                            Fun Facts
+                          </h4>
+                          <ul className="list-disc list-inside text-gray-700">
+                            {activeNeighborhood.funFacts.map((fact, idx) => (
+                              <li key={idx}>{fact}</li>
+                            ))}
+                          </ul>
                         </div>
                       )}
                     </div>
