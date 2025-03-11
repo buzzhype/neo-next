@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import { fontFamily } from "tailwindcss/defaultTheme";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 export default {
   content: [
@@ -41,9 +41,11 @@ export default {
         border: "#e2e8f0",
       },
       fontFamily: {
+        // Use the default sans from Tailwind plus anything custom
         sans: [...defaultTheme.fontFamily.sans],
-        // mono: ["var(--font-geist-mono)", ...fontFamily.mono],
-        // display: ["var(--font-geist-sans)", ...fontFamily.sans],
+        // Uncomment and adjust if needed:
+        // mono: ["var(--font-geist-mono)", ...defaultTheme.fontFamily.mono],
+        // display: ["var(--font-geist-sans)", ...defaultTheme.fontFamily.sans],
       },
       borderRadius: {
         "4xl": "2rem",
