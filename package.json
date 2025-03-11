@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "crypto-js": "^4.2.0",
     "date-fns": "^4.1.0",
+    "eventsource-parser": "^3.0.0",
     "framer-motion": "^12.4.11",
     "iron-session": "^8.0.4",
     "leaflet": "^1.9.4",
