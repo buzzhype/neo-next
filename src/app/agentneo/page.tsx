@@ -255,7 +255,7 @@ What would you like to know about?`;
 
         // Check the status of the run
         const statusResponse = await fetch(
-          `/api/agent/check-run?threadId=${threadId}&runId=${runId}`,
+          `/api/agent/check-status?threadId=${threadId}&runId=${runId}`,
         );
 
         if (!statusResponse.ok) {
