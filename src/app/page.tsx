@@ -8,31 +8,58 @@ import LocationPreferences from "@/components/LocationPreferences";
 import HomePreferences from "@/components/HomePreferences";
 import NeighborhoodSuggestions from "@/components/NeighborhoodSuggestions";
 
+// 1) Define the shape of agentType, locationPreferences, homePreferences, etc.
+interface AgentType {
+  city: string;
+  expertise: string[];
+}
+
+interface LocationPreferencesType {
+  // fill in real fields
+  priceRange?: { min: number; max: number };
+  selectedFeatures?: string[];
+}
+
+interface HomePreferencesType {
+  // fill in real fields
+  propertyType?: string;
+  beds?: string;
+  baths?: string;
+  squareFeet?: string;
+}
+
+// If you have a typed Neighborhood interface, you can import it or define it here:
+interface Neighborhood {
+  name: string;
+  // etc.
+}
+
+// 2) Define the shape of the entire userProfile:
+interface UserProfile {
+  agentType: AgentType | null;
+  locationPreferences: LocationPreferencesType | null;
+  homePreferences: HomePreferencesType | null;
+  selectedNeighborhoods: Neighborhood[];
+  threadId: string | null; // or number | null if that’s how your backend sends it
+  recommendations: any; // or a typed shape
+}
+
 export default function Home() {
-  const [step, setStep] = useState(1);
-  const [userProfile, setUserProfile] = useState({
+  // 3) Use the interface in your state:
+  const [userProfile, setUserProfile] = useState<UserProfile>({
     agentType: null,
     locationPreferences: null,
     homePreferences: null,
-    selectedNeighborhoods: [], // changed to an array
+    selectedNeighborhoods: [],
     threadId: null,
     recommendations: null,
   });
 
+  const [step, setStep] = useState(1);
   const router = useRouter();
 
-  useEffect(() => {
-    const saved = localStorage.getItem("agentNeoUserProfile");
-    if (saved) {
-      try {
-        setUserProfile(JSON.parse(saved));
-      } catch {
-        // ignore parse error
-      }
-    }
-  }, []);
-
-  const updateProfile = (data: Partial<typeof userProfile>) => {
+  // 4) Provide partial updates safely
+  const updateProfile = (data: Partial<UserProfile>) => {
     setUserProfile((prev) => {
       const merged = { ...prev, ...data };
       localStorage.setItem("agentNeoUserProfile", JSON.stringify(merged));
@@ -40,12 +67,24 @@ export default function Home() {
     });
   };
 
+  useEffect(() => {
+    const saved = localStorage.getItem("agentNeoUserProfile");
+    if (saved) {
+      try {
+        const loaded = JSON.parse(saved);
+        // Optionally you can validate or cast if needed
+        setUserProfile(loaded);
+      } catch {
+        // ignore parse error
+      }
+    }
+  }, []);
+
   // Step 1: Agent Persona
-  const handleAgentPersonaComplete = async (data: {
-    city: string;
-    expertise: string[];
-  }) => {
+  const handleAgentPersonaComplete = async (data: AgentType) => {
+    // data matches AgentType: { city, expertise }
     updateProfile({ agentType: data });
+
     try {
       const res = await fetch("/api/agent/create-thread", {
         method: "POST",
@@ -64,22 +103,20 @@ export default function Home() {
   };
 
   // Step 2: Location Preferences
-  const handleLocationPreferencesComplete = (data: any) => {
+  const handleLocationPreferencesComplete = (data: LocationPreferencesType) => {
     updateProfile({ locationPreferences: data });
     setStep(3);
   };
 
   // Step 3: Home Preferences
-  const handleHomePreferencesComplete = (data: any) => {
+  const handleHomePreferencesComplete = (data: HomePreferencesType) => {
     updateProfile({ homePreferences: data });
     setStep(4);
   };
 
-  // Step 4: Multiple neighborhoods
-  // user picks multiple neighborhoods, then "Continue" calls onComplete
-  const handleNeighborhoodsComplete = (selected: any[]) => {
+  // Step 4: Neighborhood selections
+  const handleNeighborhoodsComplete = (selected: Neighborhood[]) => {
     updateProfile({ selectedNeighborhoods: selected });
-    // Then redirect to success page
     router.push("/onboarding/success");
   };
 
@@ -109,7 +146,7 @@ export default function Home() {
           />
         )}
 
-        {/* Simple progress indicator */}
+        {/* A simple step indicator */}
         <div className="mt-8 flex justify-center">
           <div className="flex space-x-2">
             {[1, 2, 3, 4].map((pageNum) => (

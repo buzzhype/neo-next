@@ -19,7 +19,28 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Dynamically import your map component
+// IMPORTANT: import the same Neighborhood interface from NeighborhoodSuggestions:
+import type { Neighborhood } from "@/app/onboarding/suggestions";
+// or wherever the "index.tsx" of NeighborhoodSuggestions is located
+
+/**
+ * We are reusing the "Neighborhood" interface from the suggestions step:
+ *   interface Neighborhood {
+ *     name: string;
+ *     description: string;
+ *     matchScore: number;
+ *     averagePrice: number;
+ *     transitScore: number;
+ *     walkScore: number;
+ *     keyFeatures?: string[];
+ *     trivia?: string;
+ *     lat?: number;
+ *     lng?: number;
+ *     funFacts?: string[];
+ *   }
+ */
+
+// Dynamically import your map component (same as before):
 const MapOfNeighborhoods = dynamic(
   () => import("@/components/MapOfNeighborhoods"),
   {
@@ -34,40 +55,6 @@ const MapOfNeighborhoods = dynamic(
     ),
   },
 );
-
-/**
- * IMPORTANT: This interface must match what MapOfNeighborhoods (or NeighborhoodSuggestions) expects.
- * For example, from src/components/NeighborhoodSuggestions/index.tsx we have:
- *
- * export interface Neighborhood {
- *   name: string;
- *   description: string;
- *   matchScore: number;
- *   averagePrice: number;
- *   transitScore: number;
- *   walkScore: number;
- *   lat?: number;
- *   lng?: number;
- *   keyFeatures?: string[];
- *   funFacts?: string[];
- *   ...
- * }
- *
- * We're adding urlCode? for your external link usage.
- */
-interface Neighborhood {
-  name: string;
-  description: string;
-  matchScore?: number; // Marked optional if you’re not currently using it
-  averagePrice: number;
-  transitScore: number;
-  walkScore: number;
-  lat?: number;
-  lng?: number;
-  urlCode?: string;
-  keyFeatures?: string[];
-  funFacts?: string[];
-}
 
 interface UserProfile {
   agentType: {
@@ -90,7 +77,6 @@ interface UserProfile {
   selectedNeighborhoods: Neighborhood[];
 }
 
-// Feature interface & component
 interface Feature {
   icon: any;
   title: string;
@@ -98,7 +84,7 @@ interface Feature {
   className?: string;
 }
 
-const FeatureCard = ({ icon: Icon, title, value, className = "" }: Feature) => (
+const FeatureCard = ({ icon: Icon, title, value, className }: Feature) => (
   <div className={cn("p-4 rounded-xl transition-all duration-200", className)}>
     <div className="flex items-center gap-2 mb-1">
       <Icon className="w-4 h-4 text-blue-600" />
@@ -108,7 +94,6 @@ const FeatureCard = ({ icon: Icon, title, value, className = "" }: Feature) => (
   </div>
 );
 
-// Stat card
 const StatCard = ({
   label,
   value,
@@ -133,6 +118,18 @@ export default function OnboardingSuccess() {
     const stored = localStorage.getItem("agentNeoUserProfile");
     if (stored) {
       const parsed = JSON.parse(stored);
+
+      // Because matchScore is REQUIRED, ensure it is present:
+      if (Array.isArray(parsed.selectedNeighborhoods)) {
+        parsed.selectedNeighborhoods = parsed.selectedNeighborhoods.map(
+          (n: Neighborhood) => ({
+            ...n,
+            // fallback if matchScore is missing or undefined
+            matchScore: typeof n.matchScore === "number" ? n.matchScore : 0,
+          }),
+        );
+      }
+
       setUserProfile(parsed);
 
       if (parsed.selectedNeighborhoods?.[0]) {
@@ -141,6 +138,7 @@ export default function OnboardingSuccess() {
     }
   }, []);
 
+  // Show a loader if no profile
   if (!userProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -153,9 +151,13 @@ export default function OnboardingSuccess() {
     );
   }
 
-  // External link to listings
+  // External listings link
   const handleViewListings = (nb: Neighborhood) => {
-    const url = `https://flyhomes.com/search?marketUrlCode=${nb.urlCode || ""}`;
+    // If you have a code to pass in the URL:
+    // Or you can build your logic here:
+    const url = `https://flyhomes.com/search?marketUrlCode=${encodeURIComponent(
+      nb.name,
+    )}`;
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
@@ -177,7 +179,7 @@ export default function OnboardingSuccess() {
             </div>
             <p className="text-xl text-blue-100">
               We've analyzed your preferences and found your perfect matches.
-              Let's find your dream home in {userProfile.agentType.city}!
+              Let’s find your dream home in {userProfile.agentType.city}!
             </p>
           </motion.div>
         </div>
@@ -274,7 +276,7 @@ export default function OnboardingSuccess() {
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {userProfile.locationPreferences.selectedFeatures.map(
-                        (feature) => (
+                        (feature: string) => (
                           <span
                             key={feature}
                             className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700"
@@ -328,6 +330,10 @@ export default function OnboardingSuccess() {
                           <h3 className="text-xl font-semibold text-gray-900">
                             {activeNeighborhood.name}
                           </h3>
+                          {/* Show match score (since it’s required) */}
+                          <p className="text-blue-600">
+                            Match Score: {activeNeighborhood.matchScore}%
+                          </p>
                         </div>
                         <button
                           onClick={() => handleViewListings(activeNeighborhood)}
@@ -357,7 +363,6 @@ export default function OnboardingSuccess() {
                         />
                       </div>
 
-                      {/* Key Features */}
                       {activeNeighborhood.keyFeatures && (
                         <div className="space-y-3">
                           <h4 className="font-medium text-gray-900">
@@ -376,7 +381,6 @@ export default function OnboardingSuccess() {
                         </div>
                       )}
 
-                      {/* Fun Facts */}
                       {activeNeighborhood.funFacts && (
                         <div className="mt-4 space-y-2">
                           <h4 className="font-medium text-gray-900">

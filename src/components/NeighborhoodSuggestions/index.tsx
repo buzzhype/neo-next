@@ -1,422 +1,306 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
 import {
-  Brain,
-  MapPin,
-  Home,
-  Building2,
+  ChevronLeft,
   Star,
-  Settings,
-  Sparkles,
-  ChevronRight,
-  DollarSign,
-  ArrowRight,
+  MapPin,
+  Building2,
+  CheckCircle2,
   Info,
 } from "lucide-react";
+import OnboardingContainer from "@/components/OnboardingContainer";
 import { cn } from "@/lib/utils";
 
-const MapOfNeighborhoods = dynamic(
-  () => import("@/components/MapOfNeighborhoods"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-full h-[400px] bg-gray-50 rounded-xl flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-          <p className="text-sm text-gray-600">Loading map...</p>
-        </div>
-      </div>
-    ),
-  },
-);
+// Dynamically import MapView with no SSR
+const MapViewNoSSR = dynamic(() => import("@/components/MapView"), {
+  ssr: false,
+});
 
-// MATCHING the Neighborhood interface in NeighborhoodSuggestions/index.tsx:
-interface Neighborhood {
+export interface Neighborhood {
   name: string;
   description: string;
-  matchScore: number; // now REQUIRED
+  matchScore: number;
   averagePrice: number;
   transitScore: number;
   walkScore: number;
+  keyFeatures?: string[];
+  trivia?: string;
   lat?: number;
   lng?: number;
-  urlCode?: string;
-  keyFeatures?: string[];
   funFacts?: string[];
 }
 
-interface UserProfile {
-  agentType: {
-    city: string;
-    expertise: string[];
-  };
-  locationPreferences: {
-    priceRange: {
-      min: number;
-      max: number;
-    };
-    selectedFeatures: string[];
-  };
-  homePreferences: {
-    propertyType: string;
-    beds: string;
-    baths: string;
-    squareFeet: string;
-  };
-  selectedNeighborhoods: Neighborhood[];
+export interface NeighborhoodSuggestionsProps {
+  userProfile: Record<string, any>;
+  onComplete: (selectedNeighborhoods: Neighborhood[]) => void;
+  onBack: () => void;
 }
 
-interface Feature {
-  icon: any;
-  title: string;
-  value: string | number;
-  className?: string;
-}
-
-const FeatureCard = ({ icon: Icon, title, value, className }: Feature) => (
-  <div className={cn("p-4 rounded-xl transition-all duration-200", className)}>
-    <div className="flex items-center gap-2 mb-1">
-      <Icon className="w-4 h-4 text-blue-600" />
-      <p className="text-sm font-medium text-gray-600">{title}</p>
-    </div>
-    <p className="text-lg font-semibold text-gray-900">{value || "N/A"}</p>
-  </div>
-);
-
-const StatCard = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number;
-}) => (
-  <div className="bg-gray-50 p-3 rounded-lg">
-    <p className="text-sm text-gray-600 mb-1">{label}</p>
-    <p className="font-semibold text-gray-900">{value}</p>
-  </div>
-);
-
-export default function OnboardingSuccess() {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+export default function NeighborhoodSuggestions({
+  userProfile,
+  onComplete,
+  onBack,
+}: NeighborhoodSuggestionsProps) {
+  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState<string>("loading");
+  const [error, setError] = useState<string | null>(null);
+  const [recommendations, setRecommendations] = useState<Neighborhood[]>([]);
+  const [selectedNeighborhoods, setSelectedNeighborhoods] = useState<
+    Neighborhood[]
+  >([]);
   const [activeNeighborhood, setActiveNeighborhood] =
     useState<Neighborhood | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
-    const stored = localStorage.getItem("agentNeoUserProfile");
-    if (stored) {
-      const parsed = JSON.parse(stored);
+    const threadId = userProfile.threadId;
+    if (!threadId) {
+      setError("Missing threadId from backend processing.");
+      setLoading(false);
+      return;
+    }
 
-      // If matchScore is not present, supply a default
-      if (Array.isArray(parsed.selectedNeighborhoods)) {
-        parsed.selectedNeighborhoods = parsed.selectedNeighborhoods.map(
-          (n: Neighborhood) => ({
-            // copy existing fields
-            ...n,
-            // fill in matchScore if missing
-            matchScore: n.matchScore ?? 0,
-          }),
+    async function pollRecommendations() {
+      try {
+        let pollAttempts = 0;
+        const maxPollAttempts = 20;
+        let pollData: any = null;
+
+        while (pollAttempts < maxPollAttempts) {
+          const res = await fetch(
+            `/api/agent/get-response?threadId=${threadId}`,
+          );
+          if (!res.ok) {
+            throw new Error(`Polling failed: ${res.status}`);
+          }
+          pollData = await res.json();
+
+          if (
+            pollData.status === "completed" &&
+            pollData.recommendations?.length > 0
+          ) {
+            setRecommendations(pollData.recommendations);
+            setActiveNeighborhood(pollData.recommendations[0]);
+            setStatus("completed");
+            break;
+          }
+
+          setStatus(pollData.status);
+          pollAttempts++;
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+        }
+      } catch (err) {
+        console.error("Error fetching recommendations:", err);
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to fetch recommendations",
         );
-      }
-
-      setUserProfile(parsed);
-
-      if (parsed.selectedNeighborhoods?.[0]) {
-        setActiveNeighborhood(parsed.selectedNeighborhoods[0]);
+      } finally {
+        setLoading(false);
       }
     }
-  }, []);
 
-  if (!userProfile) {
+    pollRecommendations();
+  }, [userProfile.threadId]);
+
+  const handleToggleNeighborhood = (neighborhood: Neighborhood) => {
+    setSelectedNeighborhoods((prev) => {
+      const isSelected = prev.some((n) => n.name === neighborhood.name);
+      return isSelected
+        ? prev.filter((n) => n.name !== neighborhood.name)
+        : [...prev, neighborhood];
+    });
+    setActiveNeighborhood(neighborhood);
+  };
+
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <OnboardingContainer
+        title="Finding Your Perfect Neighborhoods"
+        subtitle="Analyzing preferences..."
+      >
         <motion.div
-          className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full"
           animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity }}
+          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full mx-auto"
         />
-      </div>
+        <p className="mt-4 text-center text-gray-600">
+          {status !== "completed"
+            ? "Analyzing neighborhoods..."
+            : "Loading results..."}
+        </p>
+      </OnboardingContainer>
     );
   }
 
-  const handleViewListings = (nb: Neighborhood) => {
-    const url = `https://flyhomes.com/search?marketUrlCode=${nb.urlCode || ""}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
+  if (error || recommendations.length === 0) {
+    return (
+      <OnboardingContainer title="Neighborhood Suggestions">
+        <div className="bg-red-50 p-4 rounded-lg text-red-600">
+          <p>
+            {error ||
+              "No recommendations available. Please adjust your preferences."}
+          </p>
+        </div>
+      </OnboardingContainer>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-3xl"
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-white/10 rounded-xl backdrop-blur-sm">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              <h1 className="text-3xl font-bold">Your Profile is Complete!</h1>
-            </div>
-            <p className="text-xl text-blue-100">
-              We've analyzed your preferences and found your perfect matches.
-              Let's find your dream home in {userProfile.agentType.city}!
-            </p>
-          </motion.div>
-        </div>
-      </div>
+    <OnboardingContainer
+      title="Your Recommended Neighborhoods"
+      subtitle={
+        <span className="flex items-center gap-2">
+          <Info className="w-4 h-4" />
+          <span>Click on neighborhoods to select multiple options</span>
+        </span>
+      }
+    >
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Left Column - Neighborhood List */}
+        <div className="lg:w-1/2 space-y-4">
+          <div className="grid grid-cols-1 gap-3">
+            {recommendations.map((neighborhood, i) => {
+              const isSelected = selectedNeighborhoods.some(
+                (n) => n.name === neighborhood.name,
+              );
+              const isActive = activeNeighborhood?.name === neighborhood.name;
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-8">
-        <div className="grid gap-6 grid-cols-12">
-          {/* Left Sidebar */}
-          <div className="col-span-12 lg:col-span-4 space-y-6">
-            {/* AI Assistant Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-white rounded-2xl p-6 shadow-sm"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <Brain className="w-6 h-6 text-blue-600" />
-                <h2 className="text-xl font-semibold">AI Assistant</h2>
-              </div>
-
-              <div className="space-y-4">
-                <FeatureCard
-                  icon={MapPin}
-                  title="Location"
-                  value={userProfile.agentType.city}
-                  className="bg-blue-50"
-                />
-
-                {userProfile.agentType.expertise.length > 0 && (
-                  <div>
-                    <p className="text-sm font-medium text-gray-600 mb-3">
-                      Expertise
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {userProfile.agentType.expertise.map((exp) => (
-                        <span
-                          key={exp}
-                          className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700"
-                        >
-                          {exp}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-
-            {/* Home Preferences */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white rounded-2xl p-6 shadow-sm"
-            >
-              <div className="flex items-center gap-3 mb-6">
-                <Home className="w-6 h-6 text-blue-600" />
-                <h2 className="text-xl font-semibold">Home Preferences</h2>
-              </div>
-
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <StatCard
-                    label="Bedrooms"
-                    value={userProfile.homePreferences.beds}
-                  />
-                  <StatCard
-                    label="Bathrooms"
-                    value={userProfile.homePreferences.baths}
-                  />
-                </div>
-
-                <FeatureCard
-                  icon={Building2}
-                  title="Property Type"
-                  value={userProfile.homePreferences.propertyType}
-                  className="bg-gray-50"
-                />
-
-                <FeatureCard
-                  icon={DollarSign}
-                  title="Budget Range"
-                  value={`$${userProfile.locationPreferences.priceRange.min.toLocaleString()} - $${userProfile.locationPreferences.priceRange.max.toLocaleString()}`}
-                  className="bg-blue-50"
-                />
-
-                {userProfile.locationPreferences.selectedFeatures.length >
-                  0 && (
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-gray-600">
-                      Selected Features
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {userProfile.locationPreferences.selectedFeatures.map(
-                        (feature) => (
-                          <span
-                            key={feature}
-                            className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700"
-                          >
-                            {feature}
-                          </span>
-                        ),
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Main Content Area */}
-          <div className="col-span-12 lg:col-span-8 space-y-6">
-            {/* Neighborhoods */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white rounded-2xl p-6 shadow-sm"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-3">
-                  <Building2 className="w-6 h-6 text-blue-600" />
-                  <h2 className="text-xl font-semibold">
-                    Your Matched Neighborhoods
-                  </h2>
-                </div>
-                <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm font-medium">
-                  {userProfile.selectedNeighborhoods.length} selected
-                </span>
-              </div>
-
-              {userProfile.selectedNeighborhoods.length > 0 ? (
-                <div className="space-y-6">
-                  {/* Map */}
-                  <MapOfNeighborhoods
-                    neighborhoods={userProfile.selectedNeighborhoods}
-                    selectedNeighborhood={activeNeighborhood || undefined}
-                    onNeighborhoodSelect={setActiveNeighborhood}
-                  />
-
-                  {/* Active Neighborhood Details */}
-                  {activeNeighborhood && (
-                    <div className="bg-gray-50 rounded-xl p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <h3 className="text-xl font-semibold text-gray-900">
-                            {activeNeighborhood.name}
-                          </h3>
-                          <p className="text-blue-600">
-                            Match Score: {activeNeighborhood.matchScore}%
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => handleViewListings(activeNeighborhood)}
-                          className="px-4 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors"
-                        >
-                          View Listings
-                          <ArrowRight className="w-4 h-4" />
-                        </button>
-                      </div>
-
-                      <p className="text-gray-600 mb-6">
-                        {activeNeighborhood.description}
-                      </p>
-
-                      <div className="grid grid-cols-3 gap-4 mb-6">
-                        <StatCard
-                          label="Average Price"
-                          value={`$${activeNeighborhood.averagePrice.toLocaleString()}`}
-                        />
-                        <StatCard
-                          label="Walk Score"
-                          value={`${activeNeighborhood.walkScore}/100`}
-                        />
-                        <StatCard
-                          label="Transit Score"
-                          value={`${activeNeighborhood.transitScore}/100`}
-                        />
-                      </div>
-
-                      {activeNeighborhood.keyFeatures && (
-                        <div className="space-y-3">
-                          <h4 className="font-medium text-gray-900">
-                            Key Features
-                          </h4>
-                          <div className="flex flex-wrap gap-2">
-                            {activeNeighborhood.keyFeatures.map((feature) => (
-                              <span
-                                key={feature}
-                                className="px-3 py-1 bg-white text-blue-600 rounded-full text-sm border border-blue-100"
-                              >
-                                {feature}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {activeNeighborhood.funFacts && (
-                        <div className="mt-4 space-y-2">
-                          <h4 className="font-medium text-gray-900">
-                            Fun Facts
-                          </h4>
-                          <ul className="list-disc list-inside text-gray-700">
-                            {activeNeighborhood.funFacts.map((fact, idx) => (
-                              <li key={idx}>{fact}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
+              return (
+                <motion.div
+                  key={neighborhood.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  onClick={() => handleToggleNeighborhood(neighborhood)}
+                  className={cn(
+                    "relative p-4 rounded-xl border-2 cursor-pointer transition-all",
+                    "hover:shadow-md hover:border-blue-300",
+                    isSelected && "border-blue-600 bg-blue-50",
+                    isActive && !isSelected && "border-gray-400",
+                    !isActive && !isSelected && "border-gray-200",
+                  )}
+                >
+                  {/* Selection indicator */}
+                  {isSelected && (
+                    <div className="absolute -top-2 -right-2 bg-blue-600 rounded-full p-1">
+                      <CheckCircle2 className="w-4 h-4 text-white" />
                     </div>
                   )}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <Info className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">
-                    No neighborhoods selected yet.
-                  </p>
-                </div>
-              )}
-            </motion.div>
 
-            {/* Action Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="flex gap-4 items-center justify-end"
-            >
-              <button
-                onClick={() => router.push("/onboarding")}
-                className="px-6 py-3 text-gray-700 hover:text-gray-900 font-medium rounded-lg flex items-center gap-2"
-              >
-                <Settings className="w-5 h-5" />
-                Refine Preferences
-              </button>
-              <button
-                onClick={() => router.push("/agentneo")}
-                className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors"
-              >
-                Get Started
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </motion.div>
+                  {/* Content */}
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-gray-900">
+                          {neighborhood.name}
+                        </h3>
+                        <div className="flex items-center text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                          <Star className="w-3 h-3" />
+                          <span className="text-xs ml-1">
+                            {neighborhood.matchScore}%
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                        {neighborhood.description}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <div className="text-lg font-bold text-blue-600">
+                        ${neighborhood.averagePrice.toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Scores */}
+                  <div className="flex gap-4 mt-3 text-xs text-gray-600">
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-3 h-3" />
+                      Walk: {neighborhood.walkScore}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Building2 className="w-3 h-3" />
+                      Transit: {neighborhood.transitScore}
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
+
+        {/* Right Column - Map & Details */}
+        <div className="lg:w-1/2">
+          {activeNeighborhood && (
+            <div className="space-y-4">
+              {/* Map */}
+              {activeNeighborhood.lat && activeNeighborhood.lng && (
+                <div className="rounded-xl overflow-hidden border-2 border-gray-200">
+                  <MapViewNoSSR
+                    lat={activeNeighborhood.lat}
+                    lng={activeNeighborhood.lng}
+                    name={activeNeighborhood.name}
+                  />
+                </div>
+              )}
+
+              {/* Detailed Info */}
+              <div className="bg-gray-50 rounded-xl p-4 space-y-4">
+                <div>
+                  <h4 className="font-semibold text-gray-900">Key Features</h4>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {activeNeighborhood.keyFeatures?.map((feature, idx) => (
+                      <span
+                        key={idx}
+                        className="px-2 py-1 rounded-full bg-white text-blue-600 text-xs border border-blue-200"
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {activeNeighborhood.funFacts && (
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Fun Facts</h4>
+                    <ul className="mt-2 space-y-2">
+                      {activeNeighborhood.funFacts.map((fact, idx) => (
+                        <li
+                          key={idx}
+                          className="text-sm text-gray-600 flex items-start gap-2"
+                        >
+                          <span className="text-blue-600">•</span>
+                          {fact}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* Navigation */}
+      <div className="flex justify-between items-center mt-8 pt-6 border-t">
+        <button
+          onClick={onBack}
+          className="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-900"
+        >
+          <ChevronLeft className="w-4 h-4 mr-2" /> Back
+        </button>
+        <button
+          onClick={() => onComplete(selectedNeighborhoods)}
+          disabled={selectedNeighborhoods.length === 0}
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700
+                     transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Continue with {selectedNeighborhoods.length} selected
+        </button>
+      </div>
+    </OnboardingContainer>
   );
 }
