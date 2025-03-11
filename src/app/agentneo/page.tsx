@@ -134,8 +134,8 @@ export default function AgentNeoPage() {
       }
 
       // Set welcome message
-      const welcomeMessage = {
-        role: "assistant" as const,
+      const welcomeMessage: Message = {
+        role: "assistant",
         content: createWelcomeMessage(profile),
       };
 
@@ -203,17 +203,21 @@ What would you like to know about?`;
     setIsSending(true);
 
     // Add user's new message
-    const newMessages = [
-      ...messages,
-      { role: "user", content: messageContent },
-    ];
+    const userMessage: Message = {
+      role: "user",
+      content: messageContent,
+    };
+
+    const newMessages = [...messages, userMessage];
     setMessages(newMessages);
 
     // "Thinking..." placeholder
-    setMessages((prev) => [
-      ...prev,
-      { role: "assistant", content: "Thinking..." },
-    ]);
+    const thinkingMessage: Message = {
+      role: "assistant",
+      content: "Thinking...",
+    };
+
+    setMessages((prev) => [...prev, thinkingMessage]);
 
     try {
       // Send message to API
@@ -236,23 +240,23 @@ What would you like to know about?`;
       }
 
       // Get the assistant's content from the response
-      // Note: The API returns response.response
       const assistantContent = data.response;
 
       // Replace "Thinking..." with final text
-      setMessages((prev) => [
-        ...prev.slice(0, -1),
-        { role: "assistant", content: assistantContent },
-      ]);
+      const assistantMessage: Message = {
+        role: "assistant",
+        content: assistantContent,
+      };
+
+      setMessages((prev) => [...prev.slice(0, -1), assistantMessage]);
     } catch (err) {
       console.error("Chat error:", err);
-      setMessages((prev) => [
-        ...prev.slice(0, -1),
-        {
-          role: "assistant",
-          content: "I encountered an error. Please try again later.",
-        },
-      ]);
+      const errorMessage: Message = {
+        role: "assistant",
+        content: "I encountered an error. Please try again later.",
+      };
+
+      setMessages((prev) => [...prev.slice(0, -1), errorMessage]);
     } finally {
       setIsSending(false);
     }
