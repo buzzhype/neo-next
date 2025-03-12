@@ -194,7 +194,7 @@ const formatCurrency = (value: number): string => {
 };
 
 // Format number as currency for price per square foot
-const formatPricePerSqFt = (value) => {
+const formatPricePerSqFt = (value: number): string => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
