@@ -112,7 +112,9 @@ export default function Knowledge({
     category: "",
   });
   const [savedHomes, setSavedHomes] = useState(userProfile.savedHomes || []);
-  const [customTags, setCustomTags] = useState(userProfile.customTags || []);
+  const handleRemoveTag = (tag: string) => {
+    setCustomTags(customTags.filter((t: string) => t !== tag));
+  };
   const [newTag, setNewTag] = useState("");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [aiInsights, setAiInsights] = useState(SAMPLE_INSIGHTS);
