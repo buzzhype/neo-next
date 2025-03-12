@@ -185,7 +185,7 @@ const neighborhoodData = [
 ];
 
 // Format number as currency
-const formatCurrency = (value) => {
+const formatCurrency = (value: number): string => {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
