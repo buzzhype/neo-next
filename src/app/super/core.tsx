@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import ChatSection from "./ChatSection";
+import ChatSectionWrapper from "./ChatSectionWrapper";
 import ChatInteraction from "./ChatInteraction";
 import CommandPalette from "./CommandPalette";
 import ArtifactRenderer, { getArtifactIcon } from "./ArtifactRenderer";
@@ -513,7 +514,7 @@ export default function Core() {
           {/* Main chat UI */}
           <div className="flex-1 overflow-hidden">
             // Replace line 523 in core.tsx with this type assertion
-            <ChatSection
+            <ChatSectionWrapper
               messages={displayMessages}
               agents={agents}
               selectedAgent={selectedAgent}
@@ -521,7 +522,7 @@ export default function Core() {
               isLoading={isLoading}
               isDemoTyping={isDemoTyping}
               onArtifactView={handleArtifactView}
-              messagesEndRef={messagesEndRef as React.RefObject<HTMLDivElement>}
+              messagesEndRef={messagesEndRef}
               showSuggestions={showSuggestions}
               selectedQuestionCategory={selectedQuestionCategory}
               onCategorySelect={setSelectedQuestionCategory}
