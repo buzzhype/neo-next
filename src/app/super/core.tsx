@@ -5,6 +5,7 @@ import React, {
   useRef,
   useCallback,
   useReducer,
+  FormEvent,
 } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -35,6 +36,57 @@ import SFMarketTrends from "./SFMarketTrends";
 
 // Your question/answer data
 import { questionsData } from "./questionsData";
+
+// Define TypeScript interfaces and types for clarity and strict typing
+interface Agent {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+}
+
+interface ChatMessage {
+  id: number;
+  role: "user" | "agent" | "system";
+  content: string;
+  timestamp: Date;
+  agentId?: string;
+  artifactType?: string;
+  artifactData?: any;
+}
+
+interface QuestionData {
+  question: string;
+  answer: string;
+  category: string;
+  artifactType?: string;
+  artifactData?: any;
+}
+
+interface ArtifactState {
+  activeArtifact: ChatMessage | null;
+  showPanel: boolean;
+  isFullScreen: boolean;
+  minimizeChat: boolean;
+}
+
+interface DemoState {
+  isRunning: boolean;
+  messages: ChatMessage[];
+  currentStep: number;
+  isTyping: boolean;
+  progress: number;
+  currentArtifact: ChatMessage | null;
+}
+
+type DemoAction =
+  | { type: "START_DEMO"; selectedAgent: string }
+  | { type: "STOP_DEMO" }
+  | { type: "ADD_USER_MESSAGE"; message: ChatMessage }
+  | { type: "ADD_AGENT_MESSAGE"; message: ChatMessage };
+
+// Create a typed alias for questions data
+const questionsDataList: QuestionData[] = questionsData;
 
 // Example neighborhoods for the command palette
 const sampleNeighborhoods = [
@@ -111,11 +163,11 @@ const questionCategories = [
 /**
  * Return suggested questions for a chosen category.
  */
-function getSuggestedQuestions(category = "all") {
+function getSuggestedQuestions(category: string = "all"): string[] {
   if (category === "all") {
-    return questionsData.slice(0, 6).map((q) => q.question);
+    return questionsDataList.slice(0, 6).map((q) => q.question);
   }
-  const filtered = questionsData.filter((q) => q.category === category);
+  const filtered = questionsDataList.filter((q) => q.category === category);
   return filtered.slice(0, 6).map((q) => q.question);
 }
 
@@ -179,22 +231,6 @@ const artifactSteps = [
   },
 ];
 
-// Define types for demo state and actions
-interface DemoState {
-  isRunning: boolean;
-  messages: any[];
-  currentStep: number;
-  isTyping: boolean;
-  progress: number;
-  currentArtifact: any;
-}
-
-type DemoAction =
-  | { type: "START_DEMO"; selectedAgent: string }
-  | { type: "STOP_DEMO" }
-  | { type: "ADD_USER_MESSAGE"; message: any }
-  | { type: "ADD_AGENT_MESSAGE"; message: any };
-
 // Demo mode reducer to manage demo state
 function demoReducer(state: DemoState, action: DemoAction): DemoState {
   switch (action.type) {
@@ -244,14 +280,6 @@ function demoReducer(state: DemoState, action: DemoAction): DemoState {
   }
 }
 
-// Define type for artifact state
-type ArtifactState = {
-  activeArtifact: any;
-  showPanel: boolean;
-  isFullScreen: boolean;
-  minimizeChat: boolean;
-};
-
 // Render custom or normal artifact based on type
 function EnhancedArtifactRenderer({ type, data }: { type: string; data: any }) {
   if (type === "custom-react") {
@@ -265,7 +293,7 @@ function EnhancedArtifactRenderer({ type, data }: { type: string; data: any }) {
 
 export default function Core() {
   // Define available agents
-  const agents = [
+  const agents: Agent[] = [
     {
       id: "firstTimeBuyer",
       name: "First-Time Buyer Guide",
@@ -293,18 +321,22 @@ export default function Core() {
   ];
 
   // Demo mode state using reducer
-  const [demoState, dispatchDemo] = useReducer(demoReducer, {
+  const initialDemoState: DemoState = {
     isRunning: false,
     messages: [],
     currentStep: 0,
     isTyping: false,
     progress: 0,
     currentArtifact: null,
-  });
+  };
+  const [demoState, dispatchDemo] = useReducer<DemoState, DemoAction>(
+    demoReducer,
+    initialDemoState,
+  );
 
   // Main component state
-  const [selectedAgent, setSelectedAgent] = useState("firstTimeBuyer");
-  const [messages, setMessages] = useState([
+  const [selectedAgent, setSelectedAgent] = useState<string>("firstTimeBuyer");
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 123,
       role: "agent",
@@ -315,17 +347,17 @@ export default function Core() {
     },
   ]);
   const [newestMessageId, setNewestMessageId] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [input, setInput] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [input, setInput] = useState<string>("");
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
   const [selectedQuestionCategory, setSelectedQuestionCategory] =
-    useState("all");
-  const [showCommandPalette, setShowCommandPalette] = useState(false);
+    useState<string>("all");
+  const [showCommandPalette, setShowCommandPalette] = useState<boolean>(false);
 
-  // Refs for non-triggering re-renders
-  const inputRef = useRef(input);
-  const isLoadingRef = useRef(isLoading);
-  const selectedAgentRef = useRef(selectedAgent);
+  // Refs for values to avoid re-renders
+  const inputRef = useRef<string>(input);
+  const isLoadingRef = useRef<boolean>(isLoading);
+  const selectedAgentRef = useRef<string>(selectedAgent);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const demoTimerRef = useRef<NodeJS.Timeout | null>(null);
   const responseTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -345,9 +377,20 @@ export default function Core() {
     minimizeChat: false,
   });
 
-  const updateArtifactState = useCallback((updates: Partial<ArtifactState>) => {
-    setArtifactState((prev) => ({ ...prev, ...updates }));
-  }, []);
+  const updateArtifactState = useCallback(
+    (
+      updates:
+        | Partial<ArtifactState>
+        | ((prev: ArtifactState) => ArtifactState),
+    ) => {
+      if (typeof updates === "function") {
+        setArtifactState(updates);
+      } else {
+        setArtifactState((prev) => ({ ...prev, ...updates }));
+      }
+    },
+    [],
+  );
 
   // Determine messages to display (demo vs normal)
   const displayMessages = demoState.isRunning ? demoState.messages : messages;
@@ -376,7 +419,7 @@ export default function Core() {
 
     demoTimerRef.current = setTimeout(() => {
       const step = artifactSteps[demoState.currentStep];
-      const userMsg = {
+      const userMsg: ChatMessage = {
         id: Date.now(),
         role: "user",
         content: step.question,
@@ -386,7 +429,7 @@ export default function Core() {
 
       responseTimerRef.current = setTimeout(() => {
         if (!demoState.isRunning) return;
-        const agentMsg = {
+        const agentMsg: ChatMessage = {
           id: Date.now() + 1,
           role: "agent",
           agentId: selectedAgentRef.current,
@@ -420,35 +463,44 @@ export default function Core() {
     };
   }, [demoState.currentArtifact, demoState.isRunning, updateArtifactState]);
 
-  // Find answer from question data
-  const getAnswerFromQuestionsData = useCallback((userInput) => {
-    const normalized = userInput.toLowerCase().trim();
-    return questionsData.find((q) =>
-      q.question.toLowerCase().includes(normalized),
-    );
-  }, []);
+  // Find answer in question data
+  const getAnswerFromQuestionsData = useCallback(
+    (userInput: string) => {
+      const normalized = userInput.toLowerCase().trim();
+      return questionsDataList.find((q) =>
+        q.question.toLowerCase().includes(normalized),
+      );
+    },
+    [], // no dependencies since questionsDataList is static
+  );
 
-  // Simulate AI response
+  // Simulate AI response - safely with memoization
   const simulateResponse = useCallback(
     (userMessage: string) => {
       if (isLoadingRef.current || demoState.isRunning) return;
+
       setIsLoading(true);
       isLoadingRef.current = true;
+
       const matched = getAnswerFromQuestionsData(userMessage);
+
       responseTimerRef.current = setTimeout(() => {
         const newId = Date.now();
-        let response: any = {
+        let response: ChatMessage = {
           id: newId,
           role: "agent",
           agentId: selectedAgentRef.current,
           content: "",
           timestamp: new Date(),
         };
+
         if (matched) {
           response.content = matched.answer;
           if (matched.artifactType && matched.artifactData) {
             response.artifactType = matched.artifactType;
             response.artifactData = matched.artifactData;
+
+            // Display artifact after delay
             artifactTimerRef.current = setTimeout(() => {
               updateArtifactState({
                 activeArtifact: response,
@@ -460,6 +512,7 @@ export default function Core() {
         } else {
           response.content = `I don't have specific info about "${userMessage}". Are you curious about neighborhoods, mortgages, or something else?`;
         }
+
         setMessages((prev) => [...prev, response]);
         setNewestMessageId(newId);
         setIsLoading(false);
@@ -472,41 +525,49 @@ export default function Core() {
 
   // Handle user form submission
   const handleSubmit = useCallback(
-    (e) => {
+    (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       if (
         !inputRef.current.trim() ||
         isLoadingRef.current ||
         demoState.isRunning
-      )
+      ) {
         return;
-      const userMsg = {
+      }
+
+      const userMsg: ChatMessage = {
         id: Date.now(),
         role: "user",
         content: inputRef.current.trim(),
         timestamp: new Date(),
       };
+
       setMessages((prev) => [...prev, userMsg]);
       setInput("");
       setShowSuggestions(false);
+
       simulateResponse(userMsg.content);
     },
     [simulateResponse, demoState.isRunning],
   );
 
-  // Handle suggested question selection
+  // Handle suggested question
   const handleSuggestedQuestion = useCallback(
     (question: string) => {
-      if (!question.trim() || isLoadingRef.current || demoState.isRunning)
+      if (!question.trim() || isLoadingRef.current || demoState.isRunning) {
         return;
-      const userMsg = {
+      }
+
+      const userMsg: ChatMessage = {
         id: Date.now(),
         role: "user",
         content: question,
         timestamp: new Date(),
       };
+
       setMessages((prev) => [...prev, userMsg]);
       setShowSuggestions(false);
+
       simulateResponse(question);
     },
     [simulateResponse, demoState.isRunning],
@@ -519,13 +580,13 @@ export default function Core() {
       selectedAgentRef.current = agentId;
       const agent = agents.find((a) => a.id === agentId);
       if (agent) {
-        const sysMsg = {
+        const sysMsg: ChatMessage = {
           id: Date.now(),
           role: "system",
           content: `You are now chatting with ${agent.name}`,
           timestamp: new Date(),
         };
-        const greetMsg = {
+        const greetMsg: ChatMessage = {
           id: Date.now() + 1,
           role: "agent",
           agentId,
@@ -540,7 +601,7 @@ export default function Core() {
 
   // Handle artifact view from a message
   const handleArtifactView = useCallback(
-    (message: any) => {
+    (message: ChatMessage) => {
       updateArtifactState({
         activeArtifact: message,
         showPanel: true,
@@ -645,7 +706,7 @@ export default function Core() {
         agents={agents}
         selectedAgent={selectedAgent}
         onSelectAgent={handleSelectAgent}
-        questions={questionsData.map((q) => q.question)}
+        questions={questionsDataList.map((q) => q.question)}
         neighborhoods={sampleNeighborhoods}
       />
 
@@ -772,7 +833,7 @@ export default function Core() {
                     <LineChartIcon className="w-5 h-5 text-blue-200" />
                   ) : (
                     React.createElement(
-                      getArtifactIcon(activeArtifact.artifactType),
+                      getArtifactIcon(activeArtifact.artifactType!),
                       {
                         className: "w-5 h-5 text-blue-200",
                       },
@@ -781,8 +842,12 @@ export default function Core() {
                   <div>
                     <h3 className="font-semibold">
                       {activeArtifact.artifactData?.title ||
-                        activeArtifact.artifactType.charAt(0).toUpperCase() +
-                          activeArtifact.artifactType.slice(1)}
+                        (activeArtifact.artifactType
+                          ? activeArtifact.artifactType
+                              .charAt(0)
+                              .toUpperCase() +
+                            activeArtifact.artifactType.slice(1)
+                          : "")}
                     </h3>
                     <p className="text-xs text-blue-200">
                       Interactive visualization
@@ -823,7 +888,7 @@ export default function Core() {
                 <div className="p-4 h-full">
                   <EnhancedArtifactRenderer
                     key={activeArtifact.id}
-                    type={activeArtifact.artifactType}
+                    type={activeArtifact.artifactType!}
                     data={activeArtifact.artifactData}
                   />
                 </div>
