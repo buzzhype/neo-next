@@ -53,15 +53,6 @@ interface Place {
   city: string;
 }
 
-interface FavoritePlace {
-  id: string;
-  name: string;
-  city: string;
-  category: string;
-  lat: number;
-  lng: number;
-}
-
 import personas, {
   CITIES,
   PROPERTY_TYPES,
@@ -103,7 +94,7 @@ export default function Knowledge({
     features: userProfile.homeFeatures || [],
     hoaMax: userProfile.hoaMax || "Any",
   });
-  const [favoritePlaces, setFavoritePlaces] = useState<FavoritePlace[]>(
+  const [favoritePlaces, setFavoritePlaces] = useState(
     userProfile.favoritePlaces || [],
   );
   const [newPlace, setNewPlace] = useState({
@@ -112,9 +103,7 @@ export default function Knowledge({
     category: "",
   });
   const [savedHomes, setSavedHomes] = useState(userProfile.savedHomes || []);
-  const handleRemoveTag = (tag: string) => {
-    setCustomTags(customTags.filter((t: string) => t !== tag));
-  };
+  const [customTags, setCustomTags] = useState(userProfile.customTags || []);
   const [newTag, setNewTag] = useState("");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [aiInsights, setAiInsights] = useState(SAMPLE_INSIGHTS);
@@ -256,9 +245,7 @@ export default function Knowledge({
   };
 
   const handleRemovePlace = (id: string) => {
-    setFavoritePlaces(
-      favoritePlaces.filter((place: FavoritePlace) => place.id !== id),
-    );
+    setFavoritePlaces(favoritePlaces.filter((place) => place.id !== id));
   };
 
   const handleAddTag = () => {
