@@ -512,6 +512,7 @@ export default function Core() {
         >
           {/* Main chat UI */}
           <div className="flex-1 overflow-hidden">
+            // Replace line 523 in core.tsx with this type assertion
             <ChatSection
               messages={displayMessages}
               agents={agents}
