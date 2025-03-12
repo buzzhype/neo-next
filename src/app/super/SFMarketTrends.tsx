@@ -252,13 +252,13 @@ export default function SFMarketTrends() {
       case "medianPrice":
         return formatCurrency;
       case "avgDOM":
-        return (value) => `${value} days`;
+        return (value: number): string => `${value} days`;
       case "inventory":
-        return (value) => `${value} homes`;
+        return (value: number): string => `${value} homes`;
       case "salesVolume":
-        return (value) => `${value} sales`;
+        return (value: number): string => `${value} sales`;
       default:
-        return (value) => value;
+        return (value: number): string => value.toString();
     }
   };
 
