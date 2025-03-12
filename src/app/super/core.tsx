@@ -179,8 +179,24 @@ const artifactSteps = [
   },
 ];
 
+// Define types for demo state and actions
+interface DemoState {
+  isRunning: boolean;
+  messages: any[];
+  currentStep: number;
+  isTyping: boolean;
+  progress: number;
+  currentArtifact: any;
+}
+
+type DemoAction =
+  | { type: "START_DEMO"; selectedAgent: string }
+  | { type: "STOP_DEMO" }
+  | { type: "ADD_USER_MESSAGE"; message: any }
+  | { type: "ADD_AGENT_MESSAGE"; message: any };
+
 // Demo mode reducer to manage demo state
-function demoReducer(state, action) {
+function demoReducer(state: DemoState, action: DemoAction): DemoState {
   switch (action.type) {
     case "START_DEMO":
       return {
