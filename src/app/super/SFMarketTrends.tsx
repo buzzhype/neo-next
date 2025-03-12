@@ -13,7 +13,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Tab } from "lucide-react";
 
 // Sample data for San Francisco real estate trends
 const marketData = [
