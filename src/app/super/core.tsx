@@ -234,6 +234,9 @@ export default function Core() {
   const [artifactFullScreen, setArtifactFullScreen] = useState(false);
   const [minimizeChat, setMinimizeChat] = useState(false);
 
+  // Ref for chat auto-scroll - Fixed type definition to match what ChatSection expects
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
   // The interactive demo
   // Pass a callback so the demo can auto-show artifacts as they appear
   const {
@@ -251,9 +254,6 @@ export default function Core() {
 
   // The array of messages: normal or from the demo
   const displayMessages = isDemoRunning ? demoMessages : messages;
-
-  // Ref for chat auto-scroll
-  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Build suggestions for the user
   const suggestedQuestions = getSuggestedQuestions(selectedQuestionCategory);
