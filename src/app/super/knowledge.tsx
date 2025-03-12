@@ -53,6 +53,15 @@ interface Place {
   city: string;
 }
 
+interface FavoritePlace {
+  id: string;
+  name: string;
+  city: string;
+  category: string;
+  lat: number;
+  lng: number;
+}
+
 import personas, {
   CITIES,
   PROPERTY_TYPES,
@@ -94,7 +103,7 @@ export default function Knowledge({
     features: userProfile.homeFeatures || [],
     hoaMax: userProfile.hoaMax || "Any",
   });
-  const [favoritePlaces, setFavoritePlaces] = useState(
+  const [favoritePlaces, setFavoritePlaces] = useState<FavoritePlace[]>(
     userProfile.favoritePlaces || [],
   );
   const [newPlace, setNewPlace] = useState({
@@ -245,7 +254,9 @@ export default function Knowledge({
   };
 
   const handleRemovePlace = (id: string) => {
-    setFavoritePlaces(favoritePlaces.filter((place) => place.id !== id));
+    setFavoritePlaces(
+      favoritePlaces.filter((place: FavoritePlace) => place.id !== id),
+    );
   };
 
   const handleAddTag = () => {
