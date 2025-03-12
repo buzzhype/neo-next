@@ -1,12 +1,5 @@
 "use client";
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useReducer,
-  FormEvent,
-} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Sparkles,
@@ -21,11 +14,6 @@ import {
   ExternalLink,
   RefreshCw,
   ArrowLeft,
-  Brain,
-  Home,
-  Star,
-  DollarSign,
-  Building,
 } from "lucide-react";
 
 import ChatSection from "./ChatSection";
@@ -34,266 +22,177 @@ import CommandPalette from "./CommandPalette";
 import ArtifactRenderer, { getArtifactIcon } from "./ArtifactRenderer";
 import SFMarketTrends from "./SFMarketTrends";
 
-// Your question/answer data
+// Import *all* your Q&A data
 import { questionsData } from "./questionsData";
 
-// Define TypeScript interfaces and types for clarity and strict typing
-interface Agent {
-  id: string;
-  name: string;
-  icon: string;
-  description: string;
-}
-
-interface ChatMessage {
-  id: number;
-  role: "user" | "agent" | "system";
-  content: string;
-  timestamp: Date;
-  agentId?: string;
-  artifactType?: string;
-  artifactData?: any;
-}
-
-interface QuestionData {
-  question: string;
-  answer: string;
-  category: string;
-  artifactType?: string;
-  artifactData?: any;
-}
-
-interface ArtifactState {
-  activeArtifact: ChatMessage | null;
-  showPanel: boolean;
-  isFullScreen: boolean;
-  minimizeChat: boolean;
-}
-
-interface DemoState {
-  isRunning: boolean;
-  messages: ChatMessage[];
-  currentStep: number;
-  isTyping: boolean;
-  progress: number;
-  currentArtifact: ChatMessage | null;
-}
-
-type DemoAction =
-  | { type: "START_DEMO"; selectedAgent: string }
-  | { type: "STOP_DEMO" }
-  | { type: "ADD_USER_MESSAGE"; message: ChatMessage }
-  | { type: "ADD_AGENT_MESSAGE"; message: ChatMessage };
-
-// Create a typed alias for questions data
-const questionsDataList: QuestionData[] = questionsData;
-
-// Example neighborhoods for the command palette
+// Example neighborhoods for the Command Palette
 const sampleNeighborhoods = [
-  {
-    name: "Pacific Heights",
-    description: "Upscale neighborhood with panoramic views",
-  },
-  {
-    name: "Mission District",
-    description: "Vibrant area with murals and nightlife",
-  },
-  {
-    name: "Marina District",
-    description: "Scenic waterfront area with shops and dining",
-  },
-  {
-    name: "SoMa",
-    description: "Urban district with tech companies and entertainment",
-  },
+  { name: "Pacific Heights", description: "Upscale area with panoramic views" },
+  { name: "Mission District", description: "Vibrant, culturally diverse" },
+  { name: "Marina District", description: "Scenic waterfront" },
+  { name: "SoMa", description: "Urban district with tech companies" },
 ];
 
-// Example categories for suggestions
+// Example categories
 const questionCategories = [
-  {
-    id: "all",
-    name: "All Topics",
-    icon: <span>✨</span>,
-    color: "bg-blue-100 text-blue-700",
-  },
-  {
-    id: "market",
-    name: "Market Trends",
-    icon: <span>📈</span>,
-    color: "bg-green-100 text-green-700",
-  },
+  { id: "all", name: "All Topics", color: "bg-blue-100 text-blue-700" },
+  { id: "market", name: "Market Trends", color: "bg-green-100 text-green-700" },
   {
     id: "neighborhoods",
     name: "Neighborhoods",
-    icon: <span>📍</span>,
     color: "bg-purple-100 text-purple-700",
   },
   {
     id: "firstTimeBuyer",
     name: "First-Time Buyers",
-    icon: <span>🏠</span>,
     color: "bg-pink-100 text-pink-700",
-  },
-  {
-    id: "investment",
-    name: "Investment",
-    icon: <span>💼</span>,
-    color: "bg-amber-100 text-amber-700",
-  },
-  {
-    id: "mortgage",
-    name: "Mortgages",
-    icon: <span>💲</span>,
-    color: "bg-cyan-100 text-cyan-700",
-  },
-  {
-    id: "process",
-    name: "Buying Process",
-    icon: <span>🔑</span>,
-    color: "bg-indigo-100 text-indigo-700",
-  },
-  {
-    id: "property",
-    name: "Property Types",
-    icon: <span>🏡</span>,
-    color: "bg-emerald-100 text-emerald-700",
   },
 ];
 
 /**
- * Return suggested questions for a chosen category.
+ * Return up to six top suggested questions for a chosen category
  */
-function getSuggestedQuestions(category: string = "all"): string[] {
+function getSuggestedQuestions(category = "all") {
   if (category === "all") {
-    return questionsDataList.slice(0, 6).map((q) => q.question);
+    return questionsData.slice(0, 6).map((q) => q.question);
   }
-  const filtered = questionsDataList.filter((q) => q.category === category);
+  const filtered = questionsData.filter((q) => q.category === category);
   return filtered.slice(0, 6).map((q) => q.question);
 }
 
-// Demo mode steps for interactive demo
-const artifactSteps = [
-  {
-    question: "What are the current real estate market trends in SF?",
-    artifactType: "custom-react",
-    artifactData: {
-      componentType: "SFMarketTrends",
-      title: "San Francisco Real Estate Market Trends",
-    },
-    answer:
-      "Here's the latest SF market data: median prices up 3.2% YoY, etc. Would you like more neighborhood details?",
-  },
-  {
-    question: "What are the best neighborhoods for families?",
-    artifactType: "map",
-    artifactData: {
-      title: "Family-Friendly Neighborhoods",
-      centerLat: 37.7749,
-      centerLng: -122.4194,
-      zoom: 12,
-      markers: [
-        {
-          name: "Noe Valley",
-          lat: 37.7502,
-          lng: -122.4337,
-          score: 8.5,
-        },
-        {
-          name: "West Portal",
-          lat: 37.7405,
-          lng: -122.4663,
-          score: 8.3,
-        },
-      ],
-    },
-    answer:
-      "Family-friendly picks include Noe Valley, West Portal, etc. Each area offers good schools and walkability.",
-  },
-  {
-    question: "How much house can I afford with $200,000 annual income?",
-    artifactType: "calculator",
-    artifactData: {
-      title: "Home Affordability Calculator",
-      income: 200000,
-      downPayment: 300000,
-      monthlyDebts: 2000,
-      interestRate: 5.8,
-      propertyTax: 1.2,
-      insurance: 0.5,
-      results: {
-        maxPurchasePrice: 1250000,
-        monthlyPayment: 7850,
-        breakdownChart: true,
-      },
-    },
-    answer:
-      "With $200k income, you could afford around $1.25M, monthly payment ~$7,850. This depends on exact rates, though!",
-  },
-];
-
-// Demo mode reducer to manage demo state
-function demoReducer(state: DemoState, action: DemoAction): DemoState {
-  switch (action.type) {
-    case "START_DEMO":
-      return {
-        ...state,
-        isRunning: true,
-        messages: [
-          {
-            id: Date.now(),
-            role: "agent",
-            agentId: action.selectedAgent,
-            content:
-              "Welcome to the Interactive Demo! I'll share some SF real estate steps with artifacts. Enjoy!",
-            timestamp: new Date(),
-          },
-        ],
-        currentStep: 0,
-        isTyping: false,
-        progress: 0,
-        currentArtifact: null,
-      };
-    case "STOP_DEMO":
-      return {
-        ...state,
-        isRunning: false,
-        currentArtifact: null,
-      };
-    case "ADD_USER_MESSAGE":
-      return {
-        ...state,
-        messages: [...state.messages, action.message],
-        isTyping: true,
-        progress: ((state.currentStep + 0.4) / artifactSteps.length) * 100,
-      };
-    case "ADD_AGENT_MESSAGE":
-      return {
-        ...state,
-        messages: [...state.messages, action.message],
-        isTyping: false,
-        currentStep: state.currentStep + 1,
-        currentArtifact: action.message,
-        progress: ((state.currentStep + 1) / artifactSteps.length) * 100,
-      };
-    default:
-      return state;
-  }
-}
-
-// Render custom or normal artifact based on type
+/**
+ * Extended artifact renderer for "custom-react" artifacts
+ */
 function EnhancedArtifactRenderer({ type, data }: { type: string; data: any }) {
+  // If type is "custom-react", e.g. SFMarketTrends
   if (type === "custom-react") {
     if (data.componentType === "SFMarketTrends") {
       return <SFMarketTrends />;
     }
     return null;
   }
+  // Otherwise use the standard artifact logic
   return <ArtifactRenderer type={type} data={data} />;
 }
 
+/**
+ * Interactive demo hook that automatically cycles through
+ * **every** question in questionsData that has artifact data,
+ * calling onOpenArtifact(...) for each artifact-based step.
+ */
+function useDemoMode(
+  agents: any[],
+  selectedAgent: string,
+  onOpenArtifact: (artifactMsg: any) => void,
+) {
+  const [demoMessages, setDemoMessages] = useState<any[]>([]);
+  const [isRunning, setIsRunning] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isTyping, setIsTyping] = useState(false);
+  const [demoProgress, setDemoProgress] = useState(0);
+
+  /**
+   * Identify all questions from questionsData that have
+   * an artifact, i.e. artifactType && artifactData are present.
+   */
+  const artifactSteps = questionsData.filter(
+    (q) => q.artifactType && q.artifactData,
+  );
+
+  // Convert them into "demo steps" with question/answer/artifact
+  const steps = artifactSteps.map((q) => ({
+    question: q.question,
+    answer: q.answer,
+    artifactType: q.artifactType,
+    artifactData: q.artifactData,
+  }));
+
+  // Start the demo
+  function startDemo() {
+    setIsRunning(true);
+    setIsTyping(false);
+    setDemoMessages([]);
+    setCurrentStep(0);
+    setDemoProgress(0);
+
+    // Intro message
+    const introMsg = {
+      id: Date.now(),
+      role: "agent",
+      agentId: selectedAgent,
+      content: `Welcome to the Interactive Demo! I have ${steps.length} artifact-based questions to show you.`,
+      timestamp: new Date(),
+    };
+    setDemoMessages([introMsg]);
+  }
+
+  // Stop the demo
+  function stopDemo() {
+    setIsRunning(false);
+  }
+
+  // Step the demo forward
+  useEffect(() => {
+    if (!isRunning || isTyping || currentStep >= steps.length) return;
+
+    // Show next question after a short delay
+    const timeout = setTimeout(() => {
+      const step = steps[currentStep];
+      // Add user question
+      const userMsg = {
+        id: Date.now(),
+        role: "user",
+        content: step.question,
+        timestamp: new Date(),
+      };
+      setDemoMessages((prev) => [...prev, userMsg]);
+      setIsTyping(true);
+      setDemoProgress(((currentStep + 0.4) / steps.length) * 100);
+
+      // Wait again, then add agent response w/ artifact
+      setTimeout(() => {
+        const agentMsg = {
+          id: Date.now() + 1,
+          role: "agent",
+          agentId: selectedAgent,
+          content: step.answer,
+          artifactType: step.artifactType,
+          artifactData: step.artifactData,
+          timestamp: new Date(),
+        };
+
+        setDemoMessages((prev) => [...prev, agentMsg]);
+
+        // If there's an artifact, auto-open it
+        if (agentMsg.artifactType && agentMsg.artifactData) {
+          setTimeout(() => {
+            onOpenArtifact(agentMsg); // callback from parent
+          }, 600);
+        }
+
+        setIsTyping(false);
+        setCurrentStep((prev) => prev + 1);
+        setDemoProgress(((currentStep + 1) / steps.length) * 100);
+      }, 1500);
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, [isRunning, isTyping, currentStep, selectedAgent, steps]);
+
+  return {
+    demoMessages,
+    isRunning,
+    isTyping,
+    demoProgress,
+    startDemo,
+    stopDemo,
+  };
+}
+
 export default function Core() {
-  // Define available agents
-  const agents: Agent[] = [
+  // Agents
+  const [selectedAgent, setSelectedAgent] = useState("firstTimeBuyer");
+  const agents = [
     {
       id: "firstTimeBuyer",
       name: "First-Time Buyer Guide",
@@ -301,367 +200,212 @@ export default function Core() {
       description: "Helps new buyers navigate the market",
     },
     {
-      id: "luxuryAgent",
-      name: "Luxury Property Agent",
-      icon: "star",
-      description: "Focuses on high-end real estate",
-    },
-    {
-      id: "investorAgent",
-      name: "Investment Advisor",
-      icon: "dollarSign",
-      description: "Analyzes ROI on properties",
-    },
-    {
       id: "neighborhoodExpert",
       name: "Neighborhood Expert",
       icon: "building",
-      description: "Deep knowledge of local SF districts",
+      description: "Deep knowledge of local districts",
     },
   ];
 
-  // Demo mode state using reducer
-  const initialDemoState: DemoState = {
-    isRunning: false,
-    messages: [],
-    currentStep: 0,
-    isTyping: false,
-    progress: 0,
-    currentArtifact: null,
-  };
-  const [demoState, dispatchDemo] = useReducer<DemoState, DemoAction>(
-    demoReducer,
-    initialDemoState,
-  );
-
-  // Main component state
-  const [selectedAgent, setSelectedAgent] = useState<string>("firstTimeBuyer");
-  const [messages, setMessages] = useState<ChatMessage[]>([
+  // Normal chat messages
+  const [messages, setMessages] = useState<any[]>([
     {
       id: 123,
       role: "agent",
       agentId: "firstTimeBuyer",
       content:
-        "Hi! I'm your First-Time Buyer Guide. Ask me about SF real estate, neighborhoods, or mortgages.",
+        "Hi! I'm your SF real estate assistant. Ask about market trends, neighborhoods, or anything else!",
       timestamp: new Date(Date.now() - 60000),
     },
   ]);
   const [newestMessageId, setNewestMessageId] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [input, setInput] = useState<string>("");
-  const [showSuggestions, setShowSuggestions] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [input, setInput] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const [selectedQuestionCategory, setSelectedQuestionCategory] =
-    useState<string>("all");
-  const [showCommandPalette, setShowCommandPalette] = useState<boolean>(false);
+    useState("all");
 
-  // Refs for values to avoid re-renders
-  const inputRef = useRef<string>(input);
-  const isLoadingRef = useRef<boolean>(isLoading);
-  const selectedAgentRef = useRef<string>(selectedAgent);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const demoTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const responseTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const artifactTimerRef = useRef<NodeJS.Timeout | null>(null);
+  // Command palette
+  const [showCommandPalette, setShowCommandPalette] = useState(false);
 
-  useEffect(() => {
-    inputRef.current = input;
-    isLoadingRef.current = isLoading;
-    selectedAgentRef.current = selectedAgent;
-  }, [input, isLoading, selectedAgent]);
+  // Artifact panel
+  const [activeArtifact, setActiveArtifact] = useState<any>(null);
+  const [showArtifactPanel, setShowArtifactPanel] = useState(false);
+  const [artifactFullScreen, setArtifactFullScreen] = useState(false);
+  const [minimizeChat, setMinimizeChat] = useState(false);
 
-  // Artifact panel state
-  const [artifactState, setArtifactState] = useState<ArtifactState>({
-    activeArtifact: null,
-    showPanel: false,
-    isFullScreen: false,
-    minimizeChat: false,
+  // The interactive demo
+  // Pass a callback so the demo can auto-show artifacts as they appear
+  const {
+    demoMessages,
+    isRunning: isDemoRunning,
+    isTyping: isDemoTyping,
+    demoProgress,
+    startDemo,
+    stopDemo,
+  } = useDemoMode(agents, selectedAgent, (agentMsg: any) => {
+    setActiveArtifact(agentMsg);
+    setShowArtifactPanel(true);
+    setMinimizeChat(true);
   });
 
-  const updateArtifactState = useCallback(
-    (
-      updates:
-        | Partial<ArtifactState>
-        | ((prev: ArtifactState) => ArtifactState),
-    ) => {
-      if (typeof updates === "function") {
-        setArtifactState(updates);
-      } else {
-        setArtifactState((prev) => ({ ...prev, ...updates }));
-      }
-    },
-    [],
-  );
+  // The array of messages: normal or from the demo
+  const displayMessages = isDemoRunning ? demoMessages : messages;
 
-  // Determine messages to display (demo vs normal)
-  const displayMessages = demoState.isRunning ? demoState.messages : messages;
+  // Ref for chat auto-scroll
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Get suggested questions for the selected category
+  // Build suggestions for the user
   const suggestedQuestions = getSuggestedQuestions(selectedQuestionCategory);
 
-  // Clean up timers on unmount
+  // Command+K detection
   useEffect(() => {
-    return () => {
-      if (demoTimerRef.current) clearTimeout(demoTimerRef.current);
-      if (responseTimerRef.current) clearTimeout(responseTimerRef.current);
-      if (artifactTimerRef.current) clearTimeout(artifactTimerRef.current);
-    };
-  }, []);
-
-  // Demo step processor
-  useEffect(() => {
-    if (
-      !demoState.isRunning ||
-      demoState.isTyping ||
-      demoState.currentStep >= artifactSteps.length
-    ) {
-      return;
-    }
-
-    demoTimerRef.current = setTimeout(() => {
-      const step = artifactSteps[demoState.currentStep];
-      const userMsg: ChatMessage = {
-        id: Date.now(),
-        role: "user",
-        content: step.question,
-        timestamp: new Date(),
-      };
-      dispatchDemo({ type: "ADD_USER_MESSAGE", message: userMsg });
-
-      responseTimerRef.current = setTimeout(() => {
-        if (!demoState.isRunning) return;
-        const agentMsg: ChatMessage = {
-          id: Date.now() + 1,
-          role: "agent",
-          agentId: selectedAgentRef.current,
-          artifactType: step.artifactType,
-          artifactData: step.artifactData,
-          content: step.answer,
-          timestamp: new Date(),
-        };
-        dispatchDemo({ type: "ADD_AGENT_MESSAGE", message: agentMsg });
-      }, 2000);
-    }, 3000);
-
-    return () => {
-      if (demoTimerRef.current) clearTimeout(demoTimerRef.current);
-      if (responseTimerRef.current) clearTimeout(responseTimerRef.current);
-    };
-  }, [demoState.isRunning, demoState.currentStep, demoState.isTyping]);
-
-  // Handle demo artifact display
-  useEffect(() => {
-    if (!demoState.isRunning || !demoState.currentArtifact) return;
-    artifactTimerRef.current = setTimeout(() => {
-      updateArtifactState({
-        activeArtifact: demoState.currentArtifact,
-        showPanel: true,
-        minimizeChat: true,
-      });
-    }, 100);
-    return () => {
-      if (artifactTimerRef.current) clearTimeout(artifactTimerRef.current);
-    };
-  }, [demoState.currentArtifact, demoState.isRunning, updateArtifactState]);
-
-  // Find answer in question data
-  const getAnswerFromQuestionsData = useCallback(
-    (userInput: string) => {
-      const normalized = userInput.toLowerCase().trim();
-      return questionsDataList.find((q) =>
-        q.question.toLowerCase().includes(normalized),
-      );
-    },
-    [], // no dependencies since questionsDataList is static
-  );
-
-  // Simulate AI response - safely with memoization
-  const simulateResponse = useCallback(
-    (userMessage: string) => {
-      if (isLoadingRef.current || demoState.isRunning) return;
-
-      setIsLoading(true);
-      isLoadingRef.current = true;
-
-      const matched = getAnswerFromQuestionsData(userMessage);
-
-      responseTimerRef.current = setTimeout(() => {
-        const newId = Date.now();
-        let response: ChatMessage = {
-          id: newId,
-          role: "agent",
-          agentId: selectedAgentRef.current,
-          content: "",
-          timestamp: new Date(),
-        };
-
-        if (matched) {
-          response.content = matched.answer;
-          if (matched.artifactType && matched.artifactData) {
-            response.artifactType = matched.artifactType;
-            response.artifactData = matched.artifactData;
-
-            // Display artifact after delay
-            artifactTimerRef.current = setTimeout(() => {
-              updateArtifactState({
-                activeArtifact: response,
-                showPanel: true,
-                minimizeChat: true,
-              });
-            }, 800);
-          }
-        } else {
-          response.content = `I don't have specific info about "${userMessage}". Are you curious about neighborhoods, mortgages, or something else?`;
-        }
-
-        setMessages((prev) => [...prev, response]);
-        setNewestMessageId(newId);
-        setIsLoading(false);
-        isLoadingRef.current = false;
-        setShowSuggestions(true);
-      }, 1500);
-    },
-    [getAnswerFromQuestionsData, updateArtifactState, demoState.isRunning],
-  );
-
-  // Handle user form submission
-  const handleSubmit = useCallback(
-    (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      if (
-        !inputRef.current.trim() ||
-        isLoadingRef.current ||
-        demoState.isRunning
-      ) {
-        return;
-      }
-
-      const userMsg: ChatMessage = {
-        id: Date.now(),
-        role: "user",
-        content: inputRef.current.trim(),
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, userMsg]);
-      setInput("");
-      setShowSuggestions(false);
-
-      simulateResponse(userMsg.content);
-    },
-    [simulateResponse, demoState.isRunning],
-  );
-
-  // Handle suggested question
-  const handleSuggestedQuestion = useCallback(
-    (question: string) => {
-      if (!question.trim() || isLoadingRef.current || demoState.isRunning) {
-        return;
-      }
-
-      const userMsg: ChatMessage = {
-        id: Date.now(),
-        role: "user",
-        content: question,
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => [...prev, userMsg]);
-      setShowSuggestions(false);
-
-      simulateResponse(question);
-    },
-    [simulateResponse, demoState.isRunning],
-  );
-
-  // Handle agent selection
-  const handleSelectAgent = useCallback(
-    (agentId: string) => {
-      setSelectedAgent(agentId);
-      selectedAgentRef.current = agentId;
-      const agent = agents.find((a) => a.id === agentId);
-      if (agent) {
-        const sysMsg: ChatMessage = {
-          id: Date.now(),
-          role: "system",
-          content: `You are now chatting with ${agent.name}`,
-          timestamp: new Date(),
-        };
-        const greetMsg: ChatMessage = {
-          id: Date.now() + 1,
-          role: "agent",
-          agentId,
-          content: `Hello! I'm your ${agent.name}. How can I assist?`,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, sysMsg, greetMsg]);
-      }
-    },
-    [agents],
-  );
-
-  // Handle artifact view from a message
-  const handleArtifactView = useCallback(
-    (message: ChatMessage) => {
-      updateArtifactState({
-        activeArtifact: message,
-        showPanel: true,
-        minimizeChat: true,
-      });
-    },
-    [updateArtifactState],
-  );
-
-  // Toggle artifact fullscreen
-  const toggleArtifactFullScreen = useCallback(() => {
-    updateArtifactState((prev) => ({
-      ...prev,
-      isFullScreen: !prev.isFullScreen,
-      minimizeChat: true,
-    }));
-  }, [updateArtifactState]);
-
-  // Toggle chat visibility
-  const toggleChatVisibility = useCallback(() => {
-    updateArtifactState((prev) => ({
-      ...prev,
-      minimizeChat: !prev.minimizeChat,
-    }));
-  }, [updateArtifactState]);
-
-  // Close artifact panel
-  const closeArtifactPanel = useCallback(() => {
-    updateArtifactState({
-      showPanel: false,
-      isFullScreen: false,
-      minimizeChat: false,
-    });
-  }, [updateArtifactState]);
-
-  // Toggle demo mode
-  const toggleDemo = useCallback(() => {
-    if (demoState.isRunning) {
-      dispatchDemo({ type: "STOP_DEMO" });
-    } else {
-      dispatchDemo({
-        type: "START_DEMO",
-        selectedAgent: selectedAgentRef.current,
-      });
-    }
-  }, [demoState.isRunning]);
-
-  // Global keyboard shortcut for Command+K
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+    function handleKeyDown(e: KeyboardEvent) {
+      const isMac = navigator.platform.toUpperCase().includes("MAC");
+      const combo = isMac
+        ? e.metaKey && e.key === "k"
+        : e.ctrlKey && e.key === "k";
+      if (combo) {
         e.preventDefault();
         setShowCommandPalette(true);
       }
-    };
+    }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Animation variants for artifact panel and chat section
+  // Basic Q&A logic
+  function findMatch(userMsg: string) {
+    const normalized = userMsg.toLowerCase().trim();
+    return questionsData.find((q) =>
+      q.question.toLowerCase().includes(normalized),
+    );
+  }
+
+  function simulateResponse(userMessage: string) {
+    setIsLoading(true);
+    const matched = findMatch(userMessage);
+
+    setTimeout(() => {
+      const newId = Date.now();
+      const response: any = {
+        id: newId,
+        role: "agent",
+        agentId: selectedAgent,
+        content: "",
+        timestamp: new Date(),
+      };
+
+      if (matched) {
+        response.content = matched.answer;
+        if (matched.artifactType && matched.artifactData) {
+          response.artifactType = matched.artifactType;
+          response.artifactData = matched.artifactData;
+          // Show the artifact automatically
+          setTimeout(() => {
+            setActiveArtifact(response);
+            setShowArtifactPanel(true);
+            setMinimizeChat(true);
+          }, 800);
+        }
+      } else {
+        response.content = `No direct match for "${userMessage}". Maybe try something about mortgages or local neighborhoods.`;
+      }
+
+      setMessages((prev) => [...prev, response]);
+      setNewestMessageId(newId);
+      setIsLoading(false);
+      setShowSuggestions(true);
+    }, 1500);
+  }
+
+  // Handling user input
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading || isDemoRunning) return;
+
+    const userMsg = {
+      id: Date.now(),
+      role: "user",
+      content: input.trim(),
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
+    setShowSuggestions(false);
+
+    simulateResponse(userMsg.content);
+  };
+
+  // Handling a suggested question
+  const handleSuggestedQuestion = (question: string) => {
+    if (!question.trim() || isLoading || isDemoRunning) return;
+    const userMsg = {
+      id: Date.now(),
+      role: "user",
+      content: question,
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, userMsg]);
+    setShowSuggestions(false);
+
+    simulateResponse(question);
+  };
+
+  // Switching agent
+  const handleSelectAgent = (agentId: string) => {
+    setSelectedAgent(agentId);
+    const agent = agents.find((a) => a.id === agentId);
+    if (!agent) return;
+
+    const sysMsg = {
+      id: Date.now(),
+      role: "system",
+      content: `You are now chatting with ${agent.name}`,
+      timestamp: new Date(),
+    };
+    const greetMsg = {
+      id: Date.now() + 1,
+      role: "agent",
+      agentId,
+      content: `Hello! I'm your ${agent.name}. How can I help?`,
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, sysMsg, greetMsg]);
+  };
+
+  // User clicked the artifact chip in a bubble
+  const handleArtifactView = (msg: any) => {
+    setActiveArtifact(msg);
+    setShowArtifactPanel(true);
+    setMinimizeChat(true);
+  };
+
+  // Fullscreen toggle
+  const toggleArtifactFullScreen = () => {
+    setArtifactFullScreen(!artifactFullScreen);
+    setMinimizeChat(true);
+  };
+
+  // Minimize or restore chat
+  const toggleChatVisibility = () => {
+    setMinimizeChat(!minimizeChat);
+  };
+
+  // Close artifact
+  const closeArtifactPanel = () => {
+    setShowArtifactPanel(false);
+    setArtifactFullScreen(false);
+    setMinimizeChat(false);
+  };
+
+  // Start or stop demo
+  const toggleDemo = () => {
+    if (isDemoRunning) stopDemo();
+    else startDemo();
+  };
+
+  // Panel animations
   const artifactPanelVariants = {
     hidden: { x: "100%" },
     visible: {
@@ -682,19 +426,16 @@ export default function Core() {
 
   const chatSectionVariants = {
     normal: {
-      width: artifactState.showPanel ? "40%" : "100%",
+      width: showArtifactPanel ? "30%" : "100%",
       opacity: 1,
       x: 0,
     },
     minimized: {
-      width: "40%",
+      width: "30%",
       opacity: 0.8,
       x: 0,
     },
   };
-
-  const { activeArtifact, showPanel, isFullScreen, minimizeChat } =
-    artifactState;
 
   return (
     <div className="h-screen w-full flex overflow-hidden bg-gray-50 relative">
@@ -706,13 +447,13 @@ export default function Core() {
         agents={agents}
         selectedAgent={selectedAgent}
         onSelectAgent={handleSelectAgent}
-        questions={questionsDataList.map((q) => q.question)}
+        questions={questionsData.map((q) => q.question)}
         neighborhoods={sampleNeighborhoods}
       />
 
-      {/* Demo Progress Bar */}
+      {/* Demo progress bar */}
       <AnimatePresence>
-        {demoState.isRunning && (
+        {isDemoRunning && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -722,55 +463,62 @@ export default function Core() {
             <motion.div
               className="h-full bg-blue-600"
               initial={{ width: 0 }}
-              animate={{ width: `${demoState.progress}%` }}
+              animate={{ width: `${demoProgress}%` }}
               transition={{ type: "spring", damping: 30 }}
             />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Demo Mode Toggle Button */}
+      {/* Demo Button */}
       <motion.button
         onClick={toggleDemo}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={`fixed top-4 right-4 z-10 px-4 py-2 rounded-lg text-sm font-medium shadow-md flex items-center gap-2 ${
-          demoState.isRunning
+          isDemoRunning
             ? "bg-red-500 hover:bg-red-600 text-white"
             : "bg-gradient-to-r from-blue-600 to-blue-800 text-white hover:from-blue-700 hover:to-blue-900"
         }`}
       >
-        {demoState.isRunning ? (
+        {isDemoRunning ? (
           <>
-            <X className="w-4 h-4" /> Stop Demo
+            <X className="w-4 h-4" />
+            Stop Demo
           </>
         ) : (
           <>
-            <Sparkles className="w-4 h-4" /> Interactive Demo
+            <Sparkles className="w-4 h-4" />
+            Interactive Demo
           </>
         )}
       </motion.button>
 
-      {/* Main Layout */}
+      {/* Layout */}
       <div className="flex-1 flex h-full w-full overflow-hidden">
-        {/* Chat Section (Left Side) */}
+        {/* Chat Section */}
         <motion.div
           initial="normal"
           animate={
-            !showPanel ? "normal" : minimizeChat ? "minimized" : "normal"
+            !showArtifactPanel
+              ? "normal"
+              : minimizeChat
+                ? "minimized"
+                : "normal"
           }
           variants={chatSectionVariants}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="h-full flex flex-col relative overflow-y-auto"
+          className="h-full flex flex-col relative overflow-hidden"
         >
-          <div className="flex-1 overflow-y-auto">
+          {/* Main chat UI */}
+          <div className="flex-1 overflow-hidden">
             <ChatSection
               messages={displayMessages}
               agents={agents}
               selectedAgent={selectedAgent}
               newestMessageId={newestMessageId}
               isLoading={isLoading}
-              isDemoTyping={demoState.isTyping}
+              isDemoTyping={isDemoTyping}
               onArtifactView={handleArtifactView}
               messagesEndRef={messagesEndRef}
               showSuggestions={showSuggestions}
@@ -779,7 +527,7 @@ export default function Core() {
               suggestedQuestions={suggestedQuestions}
               onSuggestedQuestion={handleSuggestedQuestion}
               questionCategories={questionCategories}
-              isDemoRunning={demoState.isRunning}
+              isDemoRunning={isDemoRunning}
             />
           </div>
 
@@ -788,7 +536,7 @@ export default function Core() {
             onInputChange={setInput}
             onSubmit={handleSubmit}
             isLoading={isLoading}
-            isDemoRunning={demoState.isRunning}
+            isDemoRunning={isDemoRunning}
             isHomeSearchMode={true}
             selectedAgent={selectedAgent}
             agents={agents}
@@ -796,7 +544,8 @@ export default function Core() {
             onOpenCommandPalette={() => setShowCommandPalette(true)}
           />
 
-          {showPanel && (
+          {/* If artifact is open, let user minimize/expand chat */}
+          {showArtifactPanel && (
             <div className="absolute top-1/2 right-0 transform -translate-y-1/2">
               <motion.button
                 onClick={toggleChatVisibility}
@@ -814,40 +563,34 @@ export default function Core() {
           )}
         </motion.div>
 
-        {/* Artifact Panel (Right Sidebar) */}
+        {/* Artifact Panel */}
         <AnimatePresence>
-          {showPanel && activeArtifact && (
+          {showArtifactPanel && activeArtifact && (
             <motion.div
               initial="hidden"
-              animate={isFullScreen ? "fullscreen" : "visible"}
+              animate={artifactFullScreen ? "fullscreen" : "visible"}
               exit="exit"
               variants={artifactPanelVariants}
               className={`bg-white border-l border-gray-200 flex flex-col overflow-hidden z-20 shadow-xl ${
-                isFullScreen ? "fixed inset-0" : "flex-1"
+                artifactFullScreen ? "fixed inset-0" : "flex-1"
               }`}
             >
-              {/* Artifact Header */}
+              {/* Header */}
               <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 border-b border-blue-700 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {activeArtifact.artifactType === "custom-react" ? (
                     <LineChartIcon className="w-5 h-5 text-blue-200" />
                   ) : (
                     React.createElement(
-                      getArtifactIcon(activeArtifact.artifactType!),
-                      {
-                        className: "w-5 h-5 text-blue-200",
-                      },
+                      getArtifactIcon(activeArtifact.artifactType),
+                      { className: "w-5 h-5 text-blue-200" },
                     )
                   )}
                   <div>
                     <h3 className="font-semibold">
                       {activeArtifact.artifactData?.title ||
-                        (activeArtifact.artifactType
-                          ? activeArtifact.artifactType
-                              .charAt(0)
-                              .toUpperCase() +
-                            activeArtifact.artifactType.slice(1)
-                          : "")}
+                        activeArtifact.artifactType.charAt(0).toUpperCase() +
+                          activeArtifact.artifactType.slice(1)}
                     </h3>
                     <p className="text-xs text-blue-200">
                       Interactive visualization
@@ -858,9 +601,11 @@ export default function Core() {
                   <button
                     onClick={toggleArtifactFullScreen}
                     className="p-1.5 hover:bg-blue-700/50 rounded-full transition-colors"
-                    title={isFullScreen ? "Exit fullscreen" : "Fullscreen"}
+                    title={
+                      artifactFullScreen ? "Exit fullscreen" : "Fullscreen"
+                    }
                   >
-                    {isFullScreen ? (
+                    {artifactFullScreen ? (
                       <Minimize2 className="w-5 h-5 text-white" />
                     ) : (
                       <Maximize2 className="w-5 h-5 text-white" />
@@ -883,22 +628,22 @@ export default function Core() {
                 </div>
               </div>
 
-              {/* Artifact Content */}
+              {/* Body */}
               <div className="flex-1 overflow-auto">
                 <div className="p-4 h-full">
                   <EnhancedArtifactRenderer
                     key={activeArtifact.id}
-                    type={activeArtifact.artifactType!}
+                    type={activeArtifact.artifactType}
                     data={activeArtifact.artifactData}
                   />
                 </div>
               </div>
 
-              {/* Artifact Footer */}
+              {/* Footer */}
               <div className="p-3 border-t border-gray-200 bg-gray-50 flex justify-between items-center">
                 <div className="text-xs text-gray-500 flex items-center gap-1.5">
                   <Info className="w-3 h-3" />
-                  <span>Data based on SF MLS stats</span>
+                  <span>Sample data from SF real estate listings</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
@@ -921,16 +666,16 @@ export default function Core() {
         </AnimatePresence>
       </div>
 
-      {/* Floating Artifact Toggle Button */}
+      {/* If artifact is closed but we still have an activeArtifact, show a floating button */}
       <AnimatePresence>
-        {activeArtifact && !showPanel && (
+        {activeArtifact && !showArtifactPanel && (
           <motion.button
-            initial={{ opacity: 0, scale: 0.8, x: 20 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0.8, x: 20 }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => updateArtifactState({ showPanel: true })}
+            onClick={() => setShowArtifactPanel(true)}
             className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all z-20"
             title="Show Data"
           >
