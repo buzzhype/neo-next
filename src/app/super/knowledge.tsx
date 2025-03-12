@@ -192,7 +192,7 @@ export default function Knowledge({
   };
 
   const getFileIcon = (fileName: string) => {
-    const extension = fileName.split(".").pop()?.toLowerCase();
+    const extension = fileName.split(".").pop()?.toLowerCase() || "";
     if (extension === "pdf")
       return <FileText className="w-6 h-6 text-red-500" />;
     if (["doc", "docx"].includes(extension))
@@ -205,7 +205,7 @@ export default function Knowledge({
   };
 
   const getFileCategory = (fileName: string) => {
-    const extension = fileName.split(".").pop()?.toLowerCase();
+    const extension = fileName.split(".").pop()?.toLowerCase() || "";
     if (["pdf", "doc", "docx", "txt"].includes(extension)) return "documents";
     if (["jpg", "jpeg", "png", "gif", "svg"].includes(extension))
       return "images";
