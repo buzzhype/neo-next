@@ -520,7 +520,7 @@ export default function Core() {
               isLoading={isLoading}
               isDemoTyping={isDemoTyping}
               onArtifactView={handleArtifactView}
-              messagesEndRef={messagesEndRef}
+              messagesEndRef={messagesEndRef as React.RefObject<HTMLDivElement>}
               showSuggestions={showSuggestions}
               selectedQuestionCategory={selectedQuestionCategory}
               onCategorySelect={setSelectedQuestionCategory}
