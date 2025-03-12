@@ -43,6 +43,16 @@ import {
   Train,
 } from "lucide-react";
 
+// Add this interface near the top of your file, with the other interfaces
+interface Place {
+  name: string;
+  category: string;
+  description: string;
+  lat: number;
+  lng: number;
+  city: string;
+}
+
 import personas, {
   CITIES,
   PROPERTY_TYPES,
@@ -104,8 +114,7 @@ export default function Knowledge({
   const [selectedCity, setSelectedCity] = useState(
     CITIES.find((c) => c.id === userProfile.city) || CITIES[0],
   );
-  const [visiblePlaces, setVisiblePlaces] = useState([]);
-
+  const [visiblePlaces, setVisiblePlaces] = useState<Place[]>([]);
   useEffect(() => {
     if (setUserProfile && Object.keys(homePreferences).length > 0) {
       setUserProfile({
