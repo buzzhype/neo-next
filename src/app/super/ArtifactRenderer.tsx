@@ -75,7 +75,7 @@ export default function ArtifactRenderer({
        * - "comparison"
        */
       if (data.type === "line") {
-        return <LineChart data={data} />;
+        return <LineChart chartData={data} />; // Changed data={data} to chartData={data}
       } else if (data.type === "bar") {
         return <BarChart data={data} />;
       } else if (data.type === "pie") {
