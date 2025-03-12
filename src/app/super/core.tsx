@@ -244,6 +244,14 @@ function demoReducer(state: DemoState, action: DemoAction): DemoState {
   }
 }
 
+// Define type for artifact state
+type ArtifactState = {
+  activeArtifact: any;
+  showPanel: boolean;
+  isFullScreen: boolean;
+  minimizeChat: boolean;
+};
+
 // Render custom or normal artifact based on type
 function EnhancedArtifactRenderer({ type, data }: { type: string; data: any }) {
   if (type === "custom-react") {
@@ -330,14 +338,14 @@ export default function Core() {
   }, [input, isLoading, selectedAgent]);
 
   // Artifact panel state
-  const [artifactState, setArtifactState] = useState({
+  const [artifactState, setArtifactState] = useState<ArtifactState>({
     activeArtifact: null,
     showPanel: false,
     isFullScreen: false,
     minimizeChat: false,
   });
 
-  const updateArtifactState = useCallback((updates) => {
+  const updateArtifactState = useCallback((updates: Partial<ArtifactState>) => {
     setArtifactState((prev) => ({ ...prev, ...updates }));
   }, []);
 
