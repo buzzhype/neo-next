@@ -1009,7 +1009,8 @@ export default function Knowledge({
                     onChange={(e) => {
                       const cityId = e.target.value;
                       setUserProfile({ ...userProfile, city: cityId });
-                      const city = CITIES.find((c) => c.id === cityId);
+                      const city =
+                        CITIES.find((c) => c.id === cityId) || CITIES[0];
                       setSelectedCity(city);
                       setMapCenter([city.lat, city.lng]);
                     }}
