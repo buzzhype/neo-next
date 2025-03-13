@@ -399,234 +399,6 @@ export const questionsData = [
       ],
     },
   },
-  {
-    id: "q9",
-    category: "firstTimeBuyer",
-    question: "What first-time homebuyer programs are available in California?",
-    answer:
-      "California offers several programs to help first-time homebuyers. The CalHFA MyHome Assistance Program provides a deferred-payment junior loan of up to 3.5% of the purchase price to help with down payment and closing costs. The CalHFA Zero Interest Program (ZIP) offers a 0% interest junior loan for closing costs of up to 3% of the loan amount. The California Dream For All program provides shared appreciation loans for up to 20% of a home's purchase price. The CalHFA FHA program combines an FHA loan with down payment assistance. Many local counties and cities offer additional programs, such as San Francisco's Down Payment Assistance Loan Program (DALP) which provides loans up to $375,000. These programs typically have income limits, require homebuyer education courses, and have specific property requirements, so it's important to check current eligibility criteria.",
-    artifactType: "table",
-    artifactData: {
-      title: "California First-Time Homebuyer Programs",
-      columns: [
-        "Program",
-        "Assistance Type",
-        "Amount",
-        "Income Limits",
-        "Special Requirements",
-      ],
-      rows: [
-        [
-          "CalHFA MyHome",
-          "Deferred junior loan",
-          "Up to 3.5% of purchase price",
-          "Varies by county",
-          "Must complete homebuyer education",
-        ],
-        [
-          "CalHFA ZIP",
-          "Zero-interest junior loan",
-          "Up to 3% of loan amount",
-          "Varies by county",
-          "For closing costs only",
-        ],
-        [
-          "CA Dream For All",
-          "Shared appreciation loan",
-          "Up to 20% of purchase price",
-          "150% of county AMI",
-          "Shared equity when sold",
-        ],
-        [
-          "CalHFA FHA",
-          "FHA first mortgage with assistance",
-          "Varies",
-          "Varies by county",
-          "FICO 660+ required",
-        ],
-        [
-          "SF DALP",
-          "Deferred loan",
-          "Up to $375,000",
-          "150% of SF AMI",
-          "San Francisco only",
-        ],
-        [
-          "CalVet Home Loans",
-          "Competitive mortgage",
-          "Varies",
-          "None",
-          "CA veterans only",
-        ],
-        [
-          "Golden State Finance",
-          "Down payment grant",
-          "Up to 5% of loan amount",
-          "Varies",
-          "No repayment required",
-        ],
-      ],
-    },
-  },
-
-  // Investment Properties
-  {
-    id: "q10",
-    category: "investment",
-    question:
-      "What are the best neighborhoods for investment properties in San Francisco?",
-    answer:
-      "For investment properties in San Francisco, several neighborhoods stand out based on appreciation potential, rental demand, and yield. Bayview-Hunters Point is experiencing significant redevelopment with major projects underway, offering lower entry points and strong appreciation potential. The Excelsior and Visitacion Valley provide more affordable options with solid rental demand and improving amenities. SoMa and Mission Bay continue to benefit from tech industry growth and new development. For higher-end investments, Hayes Valley and Dogpatch offer strong appreciation with their trendy status and ongoing development. The Outer Sunset is gaining popularity with families and offers good value with rental appeal to students from nearby SFSU. Each area has different risk-reward profiles, with emerging neighborhoods offering higher potential returns but with greater uncertainty compared to established areas.",
-    artifactType: "table",
-    artifactData: {
-      title: "Top Investment Neighborhoods in San Francisco",
-      columns: [
-        "Neighborhood",
-        "Median Price",
-        "Average Rent (2BR)",
-        "Cap Rate",
-        "5-Year Appreciation",
-        "Investment Profile",
-      ],
-      rows: [
-        [
-          "Bayview-Hunters Point",
-          "$985,000",
-          "$3,250",
-          "4.2%",
-          "28%",
-          "High potential, higher risk",
-        ],
-        [
-          "Excelsior",
-          "$1,150,000",
-          "$3,400",
-          "3.8%",
-          "24%",
-          "Moderate potential, moderate risk",
-        ],
-        [
-          "Visitacion Valley",
-          "$1,050,000",
-          "$3,300",
-          "4.0%",
-          "25%",
-          "Moderate potential, moderate risk",
-        ],
-        [
-          "SoMa",
-          "$1,250,000",
-          "$4,200",
-          "3.5%",
-          "22%",
-          "Steady growth, lower risk",
-        ],
-        [
-          "Mission Bay",
-          "$1,380,000",
-          "$4,500",
-          "3.3%",
-          "20%",
-          "Steady growth, lower risk",
-        ],
-        [
-          "Hayes Valley",
-          "$1,460,000",
-          "$4,300",
-          "3.0%",
-          "18%",
-          "Lower yield, lower risk",
-        ],
-        [
-          "Dogpatch",
-          "$1,350,000",
-          "$4,100",
-          "3.2%",
-          "19%",
-          "Trendy area, moderate risk",
-        ],
-        [
-          "Outer Sunset",
-          "$1,280,000",
-          "$3,600",
-          "3.6%",
-          "21%",
-          "Family-friendly, moderate risk",
-        ],
-      ],
-    },
-  },
-  {
-    id: "q11",
-    category: "investment",
-    question:
-      "What's the average cap rate for rental properties in San Francisco?",
-    answer:
-      "Cap rates in San Francisco currently range from 2.5% to 4.5%, which is lower than many other US markets but typical for high-value coastal cities. The city-wide average is approximately 3.3% for residential rental properties. Multi-family properties tend to have slightly higher cap rates (3.5-4.5%) compared to single-family rentals (2.5-3.5%). Cap rates vary significantly by neighborhood, with more established affluent areas like Pacific Heights seeing rates as low as 2.5%, while emerging neighborhoods like Bayview can offer rates up to 4.5%. While these cap rates may seem low compared to other markets, San Francisco investors typically benefit from strong long-term appreciation, tax advantages, and relatively stable tenant demand. Many successful investors in this market focus more on long-term equity building rather than immediate cash flow.",
-    artifactType: "chart",
-    artifactData: {
-      type: "bar",
-      title: "Average Cap Rates by San Francisco Neighborhood",
-      xAxis: "Neighborhood",
-      yAxis: "Cap Rate (%)",
-      data: [
-        { neighborhood: "Bayview", capRate: 4.5 },
-        { neighborhood: "Excelsior", capRate: 4.2 },
-        { neighborhood: "Outer Mission", capRate: 4.0 },
-        { neighborhood: "Ingleside", capRate: 3.9 },
-        { neighborhood: "Outer Sunset", capRate: 3.7 },
-        { neighborhood: "South Beach", capRate: 3.4 },
-        { neighborhood: "Mission District", capRate: 3.3 },
-        { neighborhood: "Noe Valley", capRate: 3.0 },
-        { neighborhood: "Hayes Valley", capRate: 2.9 },
-        { neighborhood: "Marina", capRate: 2.7 },
-        { neighborhood: "Pacific Heights", capRate: 2.5 },
-      ],
-    },
-  },
-  {
-    id: "q12",
-    category: "investment",
-    question:
-      "Should I invest in single-family homes or multi-family properties?",
-    answer:
-      "The decision between single-family and multi-family properties depends on your investment goals, capital resources, and management preferences. Single-family homes in San Francisco typically offer lower maintenance, easier management, and potentially stronger appreciation in desirable neighborhoods. They're often easier to sell and may attract longer-term tenants. However, they present higher vacancy risk (100% vacant when empty) and generally lower cash flow yields (typically 2.5-3.5% cap rates). Multi-family properties provide diversified vacancy risk, better cash flow (3.5-4.5% cap rates), and economies of scale for maintenance and management. They offer the potential for value-add improvements and may qualify for commercial financing with better terms. However, they require more active management, have higher entry costs, and can be more difficult to sell. Your decision should align with your investment strategy, risk tolerance, and whether you're prioritizing appreciation or cash flow.",
-    artifactType: "table",
-    artifactData: {
-      title: "Single-Family vs. Multi-Family Investment Comparison",
-      columns: ["Factor", "Single-Family Homes", "Multi-Family Properties"],
-      rows: [
-        ["Entry Cost", "$1.2M-$3M+", "$2.5M-$10M+"],
-        ["Cap Rate (Typical)", "2.5-3.5%", "3.5-4.5%"],
-        ["Cash Flow", "Lower", "Higher"],
-        [
-          "Appreciation Potential",
-          "Higher in premium areas",
-          "Moderate, more consistent",
-        ],
-        ["Vacancy Risk", "High (all-or-nothing)", "Diversified"],
-        ["Management Complexity", "Lower", "Higher"],
-        [
-          "Maintenance Costs",
-          "Varies by property age",
-          "More predictable, economies of scale",
-        ],
-        [
-          "Financing Options",
-          "Residential loans, lower rates",
-          "Commercial loans, better terms",
-        ],
-        [
-          "Tenant Quality",
-          "Often longer-term",
-          "More turnover, varies by unit",
-        ],
-        ["Exit Strategy", "Easier to sell", "Smaller buyer pool"],
-        ["Value-Add Potential", "Limited", "Higher through optimization"],
-      ],
-    },
-  },
-
   // Mortgage & Financing
   {
     id: "q13",
@@ -690,69 +462,6 @@ export const questionsData = [
     },
   },
   {
-    id: "q14",
-    category: "mortgage",
-    question: "How do I qualify for a jumbo loan in San Francisco?",
-    answer:
-      "Qualifying for a jumbo loan in San Francisco (loans exceeding $726,200 for 2024) is more stringent than for conventional loans. Typically, you'll need a credit score of at least 700, though 720+ is preferred for the best rates. Most lenders require a debt-to-income ratio below 43%, with some premium lenders preferring under 38%. Down payment requirements are higher, usually 20% minimum, with some lenders requiring 25-30% for larger loan amounts. You'll need to demonstrate substantial cash reserves, often 6-12 months of mortgage payments (including taxes and insurance). Income verification is rigorous, requiring two years of tax returns, W-2s, and recent pay stubs. Self-employed borrowers face additional scrutiny. The property will undergo a thorough appraisal, potentially including a second opinion for high-value homes. Shopping around is crucial as jumbo loan terms and requirements vary significantly between lenders, with some offering more favorable terms for high-net-worth clients.",
-    artifactType: "table",
-    artifactData: {
-      title: "Jumbo Loan Requirements in San Francisco",
-      columns: [
-        "Requirement",
-        "Typical Minimum",
-        "Preferred for Best Rates",
-        "Notes",
-      ],
-      rows: [
-        [
-          "Loan Amount",
-          "$726,201+",
-          "Varies",
-          "2024 conforming limit for SF County",
-        ],
-        ["Credit Score", "700", "740+", "Some premium lenders require 760+"],
-        ["Down Payment", "20%", "25-30%", "Higher for $2M+ loans"],
-        [
-          "Debt-to-Income Ratio",
-          "43%",
-          "36-38%",
-          "Lower DTI preferred for larger loans",
-        ],
-        [
-          "Cash Reserves",
-          "6 months",
-          "12+ months",
-          "All mortgage obligations plus expenses",
-        ],
-        [
-          "Income Documentation",
-          "2 years",
-          "2+ years",
-          "More scrutiny for variable income",
-        ],
-        [
-          "Employment History",
-          "2 years",
-          "2+ years in same field",
-          "Stability highly valued",
-        ],
-        [
-          "Property Types",
-          "SFR, condos, townhomes",
-          "Single-family preferred",
-          "Higher requirements for condos/co-ops",
-        ],
-        [
-          "Second Appraisal",
-          "Sometimes",
-          "Likely for $1.5M+",
-          "Additional cost to borrower",
-        ],
-      ],
-    },
-  },
-  {
     id: "q15",
     category: "mortgage",
     question: "Should I choose a fixed-rate or adjustable-rate mortgage?",
@@ -802,7 +511,6 @@ export const questionsData = [
       ],
     },
   },
-
   // Home Buying Process
   {
     id: "q16",
@@ -949,1382 +657,1403 @@ export const questionsData = [
       total: 40000,
     },
   },
+  // New entries for missing answerable questions
   {
-    id: "q18",
-    category: "process",
-    question: "How do I make a competitive offer in San Francisco's market?",
+    id: "q31",
+    category: "market",
+    question: "How has the San Francisco housing inventory changed recently?",
     answer:
-      "In San Francisco's competitive market, making a standout offer requires strategic preparation. Begin with a strong financial foundation by securing a pre-approval letter from a reputable local lender, which demonstrates your ability to close. Consider offering 3-5% earnest money to show serious commitment. While purchase price is critical, also evaluate contingency periods and terms. Consider shortened inspection (5-7 days) and financing (14-21 days) contingencies if possible. In highly competitive situations, waiving contingencies might be necessary, though this carries risk. A personal letter to sellers (where permitted) explaining your connection to the property can sometimes differentiate your offer. If you're comfortable, consider an escalation clause that automatically increases your offer up to a maximum amount if other higher bids are received. Working with an experienced local agent who has strong relationships with listing agents can provide valuable insights on seller preferences and help craft the most appealing offer for each specific situation.",
-    artifactType: "checklist",
-    artifactData: {
-      title: "San Francisco Competitive Offer Checklist",
-      items: [
-        {
-          category: "Financial Preparation",
-          tasks: [
-            {
-              task: "Secure a strong pre-approval from a reputable local lender",
-              essential: true,
-            },
-            {
-              task: "Be prepared for a down payment of 20-25% (or more in luxury markets)",
-              essential: true,
-            },
-            {
-              task: "Offer 3-5% earnest money deposit (higher than typical 1-3%)",
-              recommended: true,
-            },
-            {
-              task: "Consider proof of funds documentation for down payment and reserves",
-              recommended: true,
-            },
-          ],
-        },
-        {
-          category: "Offer Terms",
-          tasks: [
-            {
-              task: "Offer at or above asking price based on comparable sales",
-              essential: true,
-            },
-            {
-              task: "Consider an escalation clause for highly competitive properties",
-              recommended: false,
-            },
-            {
-              task: "Align closing timeline with seller preferences",
-              essential: true,
-            },
-            {
-              task: "Offer free rent-back if seller needs time after closing",
-              recommended: false,
-            },
-          ],
-        },
-        {
-          category: "Contingencies",
-          tasks: [
-            {
-              task: "Shorten inspection contingency to 5-7 days (vs. standard 10-17)",
-              recommended: true,
-            },
-            {
-              task: "Shorten financing contingency to 14-21 days (vs. standard 21-30)",
-              recommended: true,
-            },
-            {
-              task: "Consider waiving appraisal contingency if you have additional funds",
-              recommended: false,
-            },
-            {
-              task: "Consider pre-inspections before making offer",
-              recommended: true,
-            },
-          ],
-        },
-        {
-          category: "Strategic Additions",
-          tasks: [
-            {
-              task: "Include personal letter to seller (where legally permitted)",
-              recommended: false,
-            },
-            {
-              task: "Use local lender familiar with SF market",
-              essential: true,
-            },
-            {
-              task: "Ensure real estate agent calls listing agent to understand seller priorities",
-              essential: true,
-            },
-            {
-              task: "Consider offering to cover seller closing costs",
-              recommended: false,
-            },
-          ],
-        },
-      ],
-    },
-  },
-
-  // Property-specific Questions
-  {
-    id: "q19",
-    category: "property",
-    question: "What should I look for during a home inspection?",
-    answer:
-      "During a home inspection in San Francisco, pay special attention to several key areas given the city's unique housing stock and environmental factors. Foundation issues are particularly important due to the city's seismic activity and hilly terrain—look for cracks, sloping floors, or doors that don't close properly. Given the city's fog and moisture, inspect for water damage and mold, especially in older homes with original windows or in basement areas. Electrical systems in historic homes often need updating, so check for outdated knob-and-tube wiring, inadequate service panels, or aluminum wiring. San Francisco's older housing stock may contain lead paint (pre-1978) and asbestos insulation. Roof condition is critical due to winter rains, with particular attention to proper drainage on flat roofs common in many neighborhoods. Plumbing should be checked for galvanized pipes that may need replacement. For multi-unit buildings, evaluate shared utilities and building systems. Beyond the standard inspection, consider specialized inspections for seismic safety, drainage, or chimney condition in older properties.",
-    artifactType: "checklist",
-    artifactData: {
-      title: "San Francisco Home Inspection Checklist",
-      categories: [
-        {
-          name: "Foundation & Structure",
-          items: [
-            {
-              item: "Check for foundation cracks or movement",
-              critical: true,
-              sfSpecific: true,
-            },
-            {
-              item: "Look for sloping floors or uneven surfaces",
-              critical: true,
-              sfSpecific: true,
-            },
-            {
-              item: "Inspect for proper seismic retrofitting",
-              critical: true,
-              sfSpecific: true,
-            },
-            {
-              item: "Examine foundation bolting and bracing",
-              critical: true,
-              sfSpecific: true,
-            },
-            {
-              item: "Look for evidence of settling or sinkholes",
-              critical: false,
-              sfSpecific: true,
-            },
-          ],
-        },
-        {
-          name: "Water Issues & Moisture",
-          items: [
-            {
-              item: "Check for water intrusion in basement/lower levels",
-              critical: true,
-              sfSpecific: true,
-            },
-            {
-              item: "Inspect for mold, especially in foggy neighborhoods",
-              critical: true,
-              sfSpecific: true,
-            },
-            {
-              item: "Examine drainage systems and gutters",
-              critical: true,
-              sfSpecific: false,
-            },
-            {
-              item: "Look for signs of water damage on ceilings/walls",
-              critical: true,
-              sfSpecific: false,
-            },
-            {
-              item: "Check window seals and weatherproofing",
-              critical: false,
-              sfSpecific: true,
-            },
-          ],
-        },
-        {
-          name: "Electrical System",
-          items: [
-            {
-              item: "Identify outdated knob-and-tube wiring",
-              critical: true,
-              sfSpecific: true,
-            },
-            {
-              item: "Ensure adequate electrical service (100A minimum)",
-              critical: true,
-              sfSpecific: false,
-            },
-            {
-              item: "Look for aluminum wiring (fire hazard)",
-              critical: true,
-              sfSpecific: false,
-            },
-            {
-              item: "Check GFCI outlets in kitchens/bathrooms",
-              critical: false,
-              sfSpecific: false,
-            },
-            {
-              item: "Ensure proper grounding throughout",
-              critical: false,
-              sfSpecific: false,
-            },
-          ],
-        },
-        {
-          name: "Plumbing",
-          items: [
-            {
-              item: "Identify galvanized pipes that may need replacement",
-              critical: true,
-              sfSpecific: true,
-            },
-            {
-              item: "Check water pressure and drainage",
-              critical: false,
-              sfSpecific: false,
-            },
-            {
-              item: "Inspect for leaks under sinks and fixtures",
-              critical: false,
-              sfSpecific: false,
-            },
-            {
-              item: "Examine sewer lateral condition",
-              critical: true,
-              sfSpecific: true,
-            },
-            {
-              item: "Test water heater (age, capacity, seismic strapping)",
-              critical: false,
-              sfSpecific: true,
-            },
-          ],
-        },
-        {
-          name: "Roof & Exterior",
-          items: [
-            {
-              item: "Check flat roof membrane and drainage",
-              critical: true,
-              sfSpecific: true,
-            },
-            {
-              item: "Inspect for proper flashing around chimneys/vents",
-              critical: true,
-              sfSpecific: false,
-            },
-            {
-              item: "Look for deterioration of Victorian exterior details",
-              critical: false,
-              sfSpecific: true,
-            },
-            {
-              item: "Examine stucco for cracks or damage",
-              critical: false,
-              sfSpecific: true,
-            },
-            {
-              item: "Check deck waterproofing and structural integrity",
-              critical: true,
-              sfSpecific: true,
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    id: "q20",
-    category: "property",
-    question:
-      "What's the difference between condo, TIC, and single-family homes in SF?",
-    answer:
-      "San Francisco offers three main residential property types, each with distinct characteristics. Single-family homes provide complete ownership of both the building and land. You have maximum control over your property, no HOA fees, and potentially stronger appreciation, but with higher purchase prices and full responsibility for all maintenance. Condominiums involve individual ownership of your unit's interior space plus an undivided interest in common areas. Condos typically offer lower maintenance responsibilities, amenities, and entry prices, but include monthly HOA fees, potential special assessments, and less privacy. Tenancy-in-Common (TIC) properties are unique to San Francisco and involve sharing ownership of the entire building with other TIC owners. TICs usually offer lower purchase prices (10-20% below comparable condos) but have significant drawbacks: they generally require specialized TIC loans with higher interest rates, face more complex resale processes, and may involve group decision-making for building matters. The choice depends on your budget, lifestyle preferences, maintenance willingness, and financial priorities.",
-    artifactType: "comparison",
-    artifactData: {
-      title: "Property Types in San Francisco Comparison",
-      items: [
-        {
-          type: "Single-Family Home",
-          pricing: "Highest entry price, strongest appreciation potential",
-          ownership: "Fee simple ownership of building and land",
-          financing:
-            "Traditional mortgages, best rates, conforming and jumbo available",
-          maintenanceResponsibility:
-            "Owner responsible for all maintenance and repairs",
-          monthlyExpenses: "No HOA fees, highest property taxes",
-          advantages: [
-            "Complete control over property",
-            "No shared walls or HOA restrictions",
-            "Potentially stronger appreciation",
-            "Better privacy and outdoor space options",
-          ],
-          disadvantages: [
-            "Highest entry cost in SF market",
-            "Full maintenance responsibility",
-            "Higher property taxes",
-            "Limited inventory in many neighborhoods",
-          ],
-          typicalBuyer: "Families, luxury buyers, long-term investors",
-          resaleConsiderations: "Easiest to sell, broadest buyer pool",
-        },
-        {
-          type: "Condominium",
-          pricing: "Lower than single-family, higher than TIC",
-          ownership:
-            "Fee simple ownership of unit interior plus undivided interest in common areas",
-          financing: "Traditional mortgages, slightly higher rates than SFH",
-          maintenanceResponsibility:
-            "Interior: unit owner; Exterior/common areas: HOA",
-          monthlyExpenses: "HOA fees ($400-$1,200+ monthly), property taxes",
-          advantages: [
-            "Lower purchase price than single-family homes",
-            "Reduced maintenance responsibilities",
-            "Amenities in many buildings",
-            "Strong resale potential",
-          ],
-          disadvantages: [
-            "Monthly HOA fees",
-            "Potential special assessments",
-            "Less privacy",
-            "HOA rules may restrict rentals or renovations",
-          ],
-          typicalBuyer: "First-time buyers, downsizers, investors",
-          resaleConsiderations:
-            "Generally strong market, HOA quality impacts value",
-        },
-        {
-          type: "Tenancy-in-Common (TIC)",
-          pricing: "Lowest entry price (10-20% below comparable condos)",
-          ownership:
-            "Fractional ownership of entire building, usage rights to specific unit",
-          financing:
-            "Specialized TIC loans, higher rates, limited lender options",
-          maintenanceResponsibility:
-            "Shared responsibility based on TIC agreement",
-          monthlyExpenses:
-            "HOA-like fees, property taxes, higher loan payments",
-          advantages: [
-            "Lowest purchase price",
-            "Entry to desirable neighborhoods at lower cost",
-            "Potential for condo conversion in some buildings",
-            "Similar living experience to condos",
-          ],
-          disadvantages: [
-            "Higher interest rates",
-            "Smaller buyer pool when selling",
-            "Group financing risk in some structures",
-            "Complex governance structure",
-          ],
-          typicalBuyer:
-            "First-time buyers seeking entry to market, risk-tolerant buyers",
-          resaleConsiderations:
-            "Limited buyer pool, longer selling times, conversion potential impacts value",
-        },
-      ],
-    },
-  },
-  {
-    id: "q21",
-    category: "property",
-    question: "Should I buy a fixer-upper or move-in ready home?",
-    answer:
-      "The decision between a fixer-upper and a move-in ready home depends on your budget, timeline, risk tolerance, and personal preferences. In San Francisco, fixer-uppers typically sell for 15-25% below comparable renovated properties but require significant investment to update. They offer potential for building equity through forced appreciation, customization to your taste, and potentially accessing neighborhoods otherwise out of your price range. However, renovations in San Francisco involve unique challenges: strict permitting processes that can take 6-18 months for major projects, contractor shortages causing delays, and renovation costs averaging $300-$500+ per square foot. Additionally, many SF fixer-uppers are older properties that may reveal unexpected issues during renovation. Move-in ready homes offer convenience, predictable costs, immediate enjoyment, and often include modern energy-efficient features, but come at a premium price with less opportunity for customization. Your decision should consider financial factors (purchase budget vs. renovation budget), timeline flexibility, renovation experience, stress tolerance, and how long you plan to own the property.",
-    artifactType: "comparison",
-    artifactData: {
-      title: "Fixer-Upper vs. Move-In Ready in San Francisco",
-      scenario: {
-        neighborhoodExample: "Bernal Heights",
-        fixerUpperPrice: "$1,250,000",
-        moveInReadyPrice: "$1,650,000",
-        propertyDetails: "3BR/2BA, 1,800 sq ft Victorian",
-      },
-      comparison: [
-        {
-          category: "Financial Considerations",
-          fixerUpper: {
-            initialCost: "$1,250,000 purchase",
-            renovationCost: "$360,000-$540,000 ($200-$300/sq ft)",
-            totalInvestment: "$1,610,000-$1,790,000",
-            financingComplexity: "Requires renovation loan or substantial cash",
-            potentialEquityGain:
-              "Potentially $100,000-$250,000 with smart renovations",
-          },
-          moveInReady: {
-            initialCost: "$1,650,000 purchase",
-            renovationCost: "$0 (minor personalization only)",
-            totalInvestment: "$1,650,000",
-            financingComplexity: "Standard mortgage process",
-            potentialEquityGain: "Limited to market appreciation only",
-          },
-        },
-        {
-          category: "Timeline & Process",
-          fixerUpper: {
-            moveInTimeline: "6-18+ months after purchase (depending on scope)",
-            permitProcess: "3-12+ months for major renovations",
-            constructionPeriod: "3-6+ months (often longer in SF)",
-            stressLevel: "High - managing contractors, permits, decisions",
-            unexpectedIssues: "High probability with SF's older housing stock",
-          },
-          moveInReady: {
-            moveInTimeline: "30-45 days (standard closing period)",
-            permitProcess: "None required immediately",
-            constructionPeriod: "None required immediately",
-            stressLevel: "Low - standard purchase process only",
-            unexpectedIssues: "Low probability initially",
-          },
-        },
-        {
-          category: "Property Considerations",
-          fixerUpper: {
-            customization: "High - design to your specifications",
-            energyEfficiency:
-              "Can incorporate modern systems during renovation",
-            historicalFeatures:
-              "Opportunity to preserve/restore character elements",
-            layoutOptions: "Potential to reconfigure to modern preferences",
-            outdoorSpace: "Potential to optimize during renovation",
-          },
-          moveInReady: {
-            customization: "Low - accept previous owner's choices",
-            energyEfficiency: "Depends on recent renovations",
-            historicalFeatures: "May have been removed in previous renovations",
-            layoutOptions: "Fixed unless undertaking new renovation",
-            outdoorSpace: "As-is condition",
-          },
-        },
-      ],
-      bestFor: {
-        fixerUpper: [
-          "Buyers with renovation experience",
-          "Those with flexible timelines",
-          "Design-oriented buyers seeking customization",
-          "Investors focused on forced appreciation",
-          "Buyers willing to trade time/stress for potential equity",
-        ],
-        moveInReady: [
-          "First-time homebuyers",
-          "Busy professionals with limited time",
-          "Families needing immediate stability",
-          "Buyers with limited tolerance for uncertainty",
-          "Those without additional renovation budget",
-        ],
-      },
-    },
-  },
-
-  // Legal & Regulatory
-  {
-    id: "q22",
-    category: "legal",
-    question:
-      "What are the disclosure requirements when selling a home in California?",
-    answer:
-      "California has among the most comprehensive seller disclosure requirements in the nation. Sellers must complete a Transfer Disclosure Statement (TDS) detailing known property defects, neighborhood noise issues, past damage, and material facts affecting value. The Natural Hazard Disclosure Statement (NHD) identifies if the property is in earthquake fault zones, flood hazards, fire hazard areas, or other designated hazard zones. Additionally, sellers must disclose the presence of lead-based paint in homes built before 1978, provide a Megan's Law database disclosure, and report deaths on the property within the past three years. San Francisco has additional local requirements, including a 3R Report showing permit history, seismic hazard disclosures, and energy and water conservation compliance. Sellers must disclose neighborhood nuisances, pending special assessments, HOA information for condos/TICs, and rent control status for multi-unit buildings. These disclosures must be made in good faith, and failure to disclose known issues can result in liability for the seller, including potential lawsuits for fraudulent concealment or misrepresentation.",
-    artifactType: "checklist",
-    artifactData: {
-      title: "California & San Francisco Seller Disclosure Requirements",
-      categories: [
-        {
-          name: "State-Required Disclosures",
-          items: [
-            {
-              disclosure: "Transfer Disclosure Statement (TDS)",
-              required: true,
-              details:
-                "Comprehensive form covering property condition, defects, systems",
-            },
-            {
-              disclosure: "Natural Hazard Disclosure Statement (NHD)",
-              required: true,
-              details:
-                "Flood, fire, earthquake zones, special assessment districts",
-            },
-            {
-              disclosure: "Lead-Based Paint Disclosure",
-              required: true,
-              details: "For all homes built before 1978",
-            },
-            {
-              disclosure: "Megan's Law Database Disclosure",
-              required: true,
-              details: "Information about registered sex offenders database",
-            },
-            {
-              disclosure: "Death on the Property Disclosure",
-              required: true,
-              details:
-                "Any death on property within last 3 years (HIV/AIDS exempted)",
-            },
-            {
-              disclosure: "Military Ordnance Disclosure",
-              required: true,
-              details:
-                "If property is within 1 mile of former military training ground",
-            },
-            {
-              disclosure: "Window Security Bars Disclosure",
-              required: true,
-              details:
-                "If property has security bars with safety release mechanisms",
-            },
-            {
-              disclosure: "Methamphetamine Contamination Disclosure",
-              required: true,
-              details: "If property was used for meth production",
-            },
-            {
-              disclosure: "Environmental Hazards Booklet",
-              required: true,
-              details: "Information on common environmental hazards",
-            },
-          ],
-        },
-        {
-          name: "San Francisco Specific Disclosures",
-          items: [
-            {
-              disclosure: "3R Report",
-              required: true,
-              details:
-                "Report of Residential Building Record showing permit history",
-            },
-            {
-              disclosure: "Seismic Hazard Disclosure",
-              required: true,
-              details: "Geologic/liquefaction zones and retrofit requirements",
-            },
-            {
-              disclosure: "Energy and Water Conservation Compliance",
-              required: true,
-              details: "Property meets water/energy conservation ordinances",
-            },
-            {
-              disclosure: "Underground Storage Tank Disclosure",
-              required: true,
-              details: "If property has or had underground storage tanks",
-            },
-            {
-              disclosure: "Soft-Story Retrofit Compliance",
-              required: true,
-              details: "For buildings with 5+ units requiring seismic upgrades",
-            },
-            {
-              disclosure: "San Francisco Right of First Refusal",
-              required: true,
-              details: "For multi-unit buildings",
-            },
-            {
-              disclosure: "Vacant Unit Disclosure",
-              required: true,
-              details:
-                "If multi-unit building has vacant units and restrictions",
-            },
-          ],
-        },
-        {
-          name: "Property-Specific Disclosures",
-          items: [
-            {
-              disclosure: "Homeowners Association Documents",
-              required: true,
-              details: "For condos/TICs: CC&Rs, bylaws, financials, minutes",
-            },
-            {
-              disclosure: "Condominium Disclosures",
-              required: true,
-              details: "Special assessments, defect litigation, reserves",
-            },
-            {
-              disclosure: "Pest Control Inspection Report",
-              required: false,
-              details: "Not legally required but customary in SF",
-            },
-            {
-              disclosure: "Rent Control Status",
-              required: true,
-              details:
-                "For multi-unit buildings, current rents, tenancy details",
-            },
-            {
-              disclosure: "Smoke/Carbon Monoxide Detector Compliance",
-              required: true,
-              details: "Statement of compliance with detector requirements",
-            },
-            {
-              disclosure: "Water Heater Bracing Compliance",
-              required: true,
-              details: "Statement of compliance with seismic bracing",
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
-    id: "q23",
-    category: "legal",
-    question: "What are the rent control laws in San Francisco?",
-    answer:
-      "San Francisco has extensive rent control regulations administered by the San Francisco Rent Board. Rent control applies to most buildings constructed before June 1979, covering approximately 70% of the city's rental units. For these properties, annual rent increases are limited to 60% of the Consumer Price Index (CPI), which typically ranges from 1-3% annually. The city also has strict just cause eviction protections, meaning landlords can only evict tenants for specific reasons outlined in the ordinance, such as non-payment of rent, breach of lease terms, owner move-in, or Ellis Act withdrawals. Newer buildings (post-June 1979) are exempt from rent control but still subject to just cause eviction requirements under state law AB 1482, which also caps annual rent increases at 5% plus CPI (not exceeding 10%). Single-family homes and condos are generally exempt from local rent control unless they were built before 1979 and had tenants prior to 1996. When purchasing a multi-unit building in San Francisco, it's crucial to understand the rent control status of each unit, current tenant rights, and their impact on property operations and value.",
-    artifactType: "table",
-    artifactData: {
-      title: "San Francisco Rent Control Overview",
-      columns: [
-        "Aspect",
-        "Pre-1979 Buildings",
-        "Post-1979 Buildings",
-        "Single-Family/Condos",
-        "Notes",
-      ],
-      rows: [
-        [
-          "Rent Increase Limits",
-          "60% of CPI (~1-3% annually)",
-          "5% + CPI (max 10%) under AB 1482",
-          "Generally exempt*, see notes",
-          "*Unless pre-1979 with tenant before 1996",
-        ],
-        [
-          "Just Cause Eviction",
-          "Required",
-          "Required under AB 1482",
-          "Required under AB 1482",
-          "SF has stricter protections than state law",
-        ],
-        [
-          "Owner Move-In",
-          "Allowed with restrictions",
-          "Allowed with restrictions",
-          "Allowed with restrictions",
-          "Requires principal residence for 36+ months",
-        ],
-        [
-          "Ellis Act Eviction",
-          "Allowed with restrictions",
-          "Allowed with restrictions",
-          "Allowed with restrictions",
-          "5-year withdrawal from rental market",
-        ],
-        [
-          "Buyout Agreements",
-          "Regulated, must register",
-          "Regulated, must register",
-          "Regulated, must register",
-          "Minimum $9,500 relocation payment",
-        ],
-        [
-          "Pass-through Costs",
-          "Limited categories only",
-          "Not regulated",
-          "Not regulated",
-          "Capital improvements, utilities, bonds",
-        ],
-        [
-          "Relocation Payments",
-          "Required for no-fault evictions",
-          "Required under AB 1482",
-          "Required under AB 1482",
-          "$7,500+ per tenant, higher for seniors/disabled",
-        ],
-        [
-          "Vacancy Control",
-          "None - can reset rent",
-          "None - can reset rent",
-          "None - can reset rent",
-          "New tenants can be charged market rate",
-        ],
-        [
-          "Condo Conversion",
-          "Heavily restricted",
-          "Less restricted",
-          "N/A",
-          "Annual lottery system with limited permits",
-        ],
-      ],
-    },
-  },
-  {
-    id: "q24",
-    category: "legal",
-    question: "What permits do I need for home renovations in San Francisco?",
-    answer:
-      "San Francisco has one of the most comprehensive permitting processes in the country, administered by the Department of Building Inspection (DBI). Most home renovation projects require permits, though the specific requirements depend on the project scope. For kitchen and bathroom remodels, permits are required when changing the layout, moving plumbing/electrical, or altering walls, but not for simple cosmetic updates like replacing cabinets or countertops in the same configuration. Structural changes, including removing walls, adding rooms, or altering the building envelope always require permits. Electrical and plumbing modifications generally need permits, though simple replacements of fixtures in the same location may be exempt. For historically significant buildings or properties in historic districts, additional review by the Historic Preservation Commission may be required. The permitting pathway varies based on project complexity—minor alterations can often use an over-the-counter process, while major renovations require plan review, which can take 6-12+ months. Working with professionals familiar with San Francisco's permitting process is highly recommended to navigate these complex requirements.",
-    artifactType: "table",
-    artifactData: {
-      title: "San Francisco Home Renovation Permit Requirements",
-      columns: [
-        "Project Type",
-        "Permit Required",
-        "Process Type",
-        "Timeline",
-        "Special Requirements",
-        "Estimated Fees",
-      ],
-      rows: [
-        ["Kitchen Remodel (cosmetic only)", "No", "N/A", "N/A", "None", "$0"],
-        [
-          "Kitchen Remodel (layout changes)",
-          "Yes",
-          "Over-the-counter possible",
-          "1-4 weeks",
-          "Plumbing/electrical permits",
-          "$600-1,200",
-        ],
-        ["Bathroom Remodel (cosmetic)", "No", "N/A", "N/A", "None", "$0"],
-        [
-          "Bathroom Remodel (layout changes)",
-          "Yes",
-          "Over-the-counter possible",
-          "1-4 weeks",
-          "Plumbing/electrical permits",
-          "$600-1,000",
-        ],
-        [
-          "Interior Wall Removal (non-load bearing)",
-          "Yes",
-          "Over-the-counter possible",
-          "1-4 weeks",
-          "Plans required",
-          "$500-800",
-        ],
-        [
-          "Interior Wall Removal (load bearing)",
-          "Yes",
-          "Plan review",
-          "2-6 months",
-          "Structural engineering required",
-          "$1,200-2,500",
-        ],
-        [
-          "Room Addition",
-          "Yes",
-          "Plan review",
-          "6-12+ months",
-          "Neighborhood notification",
-          "$3,000-10,000+",
-        ],
-        [
-          "Window Replacement (same size)",
-          "Yes",
-          "Over-the-counter",
-          "1-2 weeks",
-          "Energy compliance",
-          "$500-800",
-        ],
-        [
-          "Window Replacement (size change)",
-          "Yes",
-          "Plan review",
-          "2-6 months",
-          "Façade alteration review",
-          "$800-1,500",
-        ],
-        [
-          "Deck Addition/Replacement",
-          "Yes",
-          "Plan review",
-          "2-6 months",
-          "Structural plans required",
-          "$1,000-2,500",
-        ],
-        [
-          "Roof Replacement",
-          "Yes",
-          "Over-the-counter",
-          "1-2 weeks",
-          "Fire rating compliance",
-          "$500-800",
-        ],
-        [
-          "ADU Addition",
-          "Yes",
-          "Plan review",
-          "6-12+ months",
-          "Special ADU program review",
-          "$6,000-15,000+",
-        ],
-        [
-          "Foundation Work",
-          "Yes",
-          "Plan review",
-          "3-8 months",
-          "Structural engineering required",
-          "$2,000-5,000+",
-        ],
-        [
-          "Electrical Panel Upgrade",
-          "Yes",
-          "Over-the-counter",
-          "1-3 weeks",
-          "Electrical permits",
-          "$400-700",
-        ],
-        [
-          "Solar Panel Installation",
-          "Yes",
-          "Priority processing",
-          "2-8 weeks",
-          "Structural verification",
-          "$600-1,000",
-        ],
-      ],
-    },
-  },
-
-  // Miscellaneous
-  {
-    id: "q25",
-    category: "misc",
-    question: "How do property taxes work in San Francisco?",
-    answer:
-      "Property taxes in San Francisco consist of several components. The base tax rate is set at 1% of the assessed value, as mandated by California's Proposition 13. Additional voter-approved bonds and special assessments add approximately 0.2-0.4%, bringing the effective tax rate to about 1.2-1.4%. Under Proposition 13, assessed value is established at purchase price and can only increase by a maximum of 2% annually, regardless of market appreciation, until the property changes ownership. This creates significant disparities, with newer homeowners often paying substantially higher taxes than long-term owners of similar properties. San Francisco provides several property tax exemptions, including the Homeowner's Exemption ($7,000 reduction in assessed value), exemptions for disabled veterans, and property tax postponement for seniors and disabled persons. Properties may also be reassessed upon significant improvements or additions, but normal maintenance and repairs don't trigger reassessment. Property tax bills are issued annually with payments due in two installments (December 10 and April 10). New homeowners should budget for supplemental tax bills that adjust taxes between the previous owner's assessment and the new purchase price.",
+      "The San Francisco housing inventory has experienced significant fluctuations over the past few years. Currently, inventory is up approximately 15-20% compared to last year, providing more options for buyers than we've seen in recent years. This increase follows the pandemic-related migration patterns and subsequent return-to-office policies. Single-family home inventory remains relatively tight, especially in desirable neighborhoods, while the condominium market has seen more substantial inventory growth. Active listings typically stay on the market for an average of 28 days, up from the 14-18 days we saw during the highly competitive 2021 market. Seasonally, inventory tends to peak in late summer/early fall and reaches its lowest point during winter holidays. The higher-end luxury market ($3M+) currently has proportionally more inventory than the mid-market segment. These inventory changes have helped create a more balanced market compared to the extreme seller's market conditions of previous years, giving buyers more time to make decisions and slightly improved negotiating leverage.",
     artifactType: "chart",
     artifactData: {
-      type: "pie",
-      title: "San Francisco Property Tax Breakdown for $1.5M Home",
-      data: [
-        { category: "Base Tax Rate (1%)", value: 15000, percentage: 78.9 },
+      type: "line",
+      title: "San Francisco Housing Inventory Trends (2020-2024)",
+      xAxis: "Quarter",
+      yAxis: "Active Listings",
+      dataSets: [
         {
-          category: "SF Unified School District Bonds",
-          value: 1650,
-          percentage: 8.7,
+          name: "Single-Family Homes",
+          data: [
+            { quarter: "Q1 2020", listings: 580 },
+            { quarter: "Q2 2020", listings: 780 },
+            { quarter: "Q3 2020", listings: 950 },
+            { quarter: "Q4 2020", listings: 640 },
+            { quarter: "Q1 2021", listings: 520 },
+            { quarter: "Q2 2021", listings: 610 },
+            { quarter: "Q3 2021", listings: 680 },
+            { quarter: "Q4 2021", listings: 490 },
+            { quarter: "Q1 2022", listings: 410 },
+            { quarter: "Q2 2022", listings: 560 },
+            { quarter: "Q3 2022", listings: 620 },
+            { quarter: "Q4 2022", listings: 480 },
+            { quarter: "Q1 2023", listings: 430 },
+            { quarter: "Q2 2023", listings: 580 },
+            { quarter: "Q3 2023", listings: 640 },
+            { quarter: "Q4 2023", listings: 510 },
+            { quarter: "Q1 2024", listings: 490 },
+            { quarter: "Q2 2024", listings: 650 },
+          ],
         },
-        { category: "SF Community College Bonds", value: 525, percentage: 2.8 },
-        { category: "City College Parcel Tax", value: 99, percentage: 0.5 },
-        { category: "Teacher Support Parcel Tax", value: 320, percentage: 1.7 },
-        { category: "SFUSD Facilities Tax", value: 290, percentage: 1.5 },
-        { category: "City Services Parcel Tax", value: 395, percentage: 2.1 },
-        { category: "Bay Restoration Authority", value: 12, percentage: 0.1 },
         {
-          category: "SF General Obligation Bonds",
-          value: 709,
-          percentage: 3.7,
+          name: "Condominiums",
+          data: [
+            { quarter: "Q1 2020", listings: 740 },
+            { quarter: "Q2 2020", listings: 1250 },
+            { quarter: "Q3 2020", listings: 1480 },
+            { quarter: "Q4 2020", listings: 1100 },
+            { quarter: "Q1 2021", listings: 890 },
+            { quarter: "Q2 2021", listings: 760 },
+            { quarter: "Q3 2021", listings: 680 },
+            { quarter: "Q4 2021", listings: 620 },
+            { quarter: "Q1 2022", listings: 580 },
+            { quarter: "Q2 2022", listings: 720 },
+            { quarter: "Q3 2022", listings: 850 },
+            { quarter: "Q4 2022", listings: 730 },
+            { quarter: "Q1 2023", listings: 690 },
+            { quarter: "Q2 2023", listings: 880 },
+            { quarter: "Q3 2023", listings: 940 },
+            { quarter: "Q4 2023", listings: 760 },
+            { quarter: "Q1 2024", listings: 820 },
+            { quarter: "Q2 2024", listings: 990 },
+          ],
         },
       ],
-      total: 19000,
-      effectiveRate: 1.27,
     },
   },
   {
-    id: "q26",
-    category: "misc",
-    question: "How does climate change impact real estate in San Francisco?",
+    id: "q32",
+    category: "market",
+    question: "Is it a buyer's or seller's market in San Francisco right now?",
     answer:
-      "Climate change is increasingly influencing San Francisco's real estate market in several ways. Sea level rise presents the most direct physical risk, with projections showing potential inundation of low-lying areas like Mission Bay, parts of the Financial District, and the Embarcadero by 2050-2080. Properties in these areas may face increased flood insurance requirements and potential value impacts in the coming decades. Wildfire smoke from regional fires has become a more frequent issue, driving interest in homes with advanced air filtration systems and creating seasonal air quality concerns that impact outdoor amenity values. Drought conditions have pushed the city to adopt stricter water conservation requirements for properties, while prompting homeowners to invest in drought-resistant landscaping and water-efficient fixtures. Energy resilience has gained importance due to potential power shutoffs during high fire danger periods, increasing the value of solar installations with battery backup systems. The city's Climate Action Plan includes increasingly stringent building efficiency standards, potentially requiring future retrofits for older properties. While these factors haven't dramatically altered current market values, they're beginning to influence buyer preferences and long-term investment considerations.",
-    artifactType: "map",
+      "The San Francisco real estate market is currently transitioning from a strong seller's market toward more balanced conditions, though it varies by neighborhood and price point. The market is most accurately described as a 'moderate seller's market' with signs of increasing balance. Homes are selling in an average of 28 days (up from 14-18 days in 2021), and approximately 22% of listings are experiencing price reductions, compared to just 8-10% in 2021. The average sale-to-list price ratio has decreased to 98.5%, down from the 110%+ we saw at the market peak. Inventory has increased by approximately 15-20% year-over-year, giving buyers more options. However, well-priced properties in desirable neighborhoods still attract multiple offers, particularly single-family homes under $2 million. The condominium market is closer to balanced conditions, with more generous buyer contingencies becoming acceptable again. Higher-end luxury properties ($3M+) are experiencing longer market times and more price negotiability. This shifting dynamic gives well-prepared buyers better negotiating power than in recent years, while sellers of desirable properties in prime locations can still expect strong results if they price strategically.",
+    artifactType: "chart",
     artifactData: {
-      title: "Climate Risk Factors for San Francisco Real Estate",
-      centerLat: 37.7749,
-      centerLng: -122.4194,
-      zoom: 12,
-      layers: [
+      type: "gauge",
+      title: "Current San Francisco Real Estate Market Balance",
+      min: 0,
+      max: 10,
+      value: 6.5,
+      markers: [
+        { value: 0, label: "Extreme Buyer's Market" },
+        { value: 2.5, label: "Buyer's Market" },
+        { value: 5, label: "Balanced Market" },
+        { value: 7.5, label: "Seller's Market" },
+        { value: 10, label: "Extreme Seller's Market" },
+      ],
+      segments: [
+        { min: 0, max: 3, color: "blue" },
+        { min: 3, max: 7, color: "green" },
+        { min: 7, max: 10, color: "red" },
+      ],
+      indicators: [
         {
-          name: "Sea Level Rise Risk Zones",
-          description: "Areas potentially impacted by sea level rise by 2070",
-          color: "#1E88E5",
-          opacity: 0.6,
-          areas: [
-            { area: "Mission Bay", riskLevel: "High", projectedYear: 2050 },
-            { area: "Embarcadero", riskLevel: "High", projectedYear: 2060 },
-            { area: "Treasure Island", riskLevel: "High", projectedYear: 2050 },
-            {
-              area: "Marina District (parts)",
-              riskLevel: "Moderate",
-              projectedYear: 2070,
-            },
-            { area: "Mission Creek", riskLevel: "High", projectedYear: 2050 },
-            {
-              area: "Hunters Point",
-              riskLevel: "Moderate",
-              projectedYear: 2070,
-            },
-          ],
+          name: "Days on Market",
+          value: 28,
+          trend: "Increasing",
+          favorsBuyers: true,
         },
         {
-          name: "Liquefaction Risk Zones",
-          description: "Areas with higher earthquake liquefaction risk",
-          color: "#FFA000",
-          opacity: 0.5,
-          areas: [
-            {
-              area: "Marina District",
-              riskLevel: "Very High",
-              notes: "Built on fill",
-            },
-            {
-              area: "Financial District",
-              riskLevel: "High",
-              notes: "Partially on fill",
-            },
-            {
-              area: "Mission District",
-              riskLevel: "Moderate to High",
-              notes: "Former marsh",
-            },
-            { area: "SOMA", riskLevel: "High", notes: "Built on fill" },
-            {
-              area: "Treasure Island",
-              riskLevel: "Very High",
-              notes: "Artificial island",
-            },
-          ],
+          name: "Sale-to-List Ratio",
+          value: "98.5%",
+          trend: "Decreasing",
+          favorsBuyers: true,
         },
         {
-          name: "Wildfire Smoke Impact",
-          description: "Areas with historical wildfire smoke concentration",
-          color: "#FF5252",
-          opacity: 0.3,
-          areas: [
-            { area: "Mission", riskLevel: "Moderate", notes: "Valley effect" },
-            { area: "SOMA", riskLevel: "Moderate", notes: "Low elevation" },
-            {
-              area: "Twin Peaks",
-              riskLevel: "Lower",
-              notes: "Higher elevation",
-            },
-            { area: "Richmond", riskLevel: "Lower", notes: "Ocean breeze" },
-            { area: "Sunset", riskLevel: "Lower", notes: "Ocean breeze" },
-          ],
+          name: "Price Reductions",
+          value: "22% of listings",
+          trend: "Increasing",
+          favorsBuyers: true,
         },
         {
-          name: "Urban Heat Island Effect",
-          description:
-            "Areas with higher temperature increases during heat events",
-          color: "#D32F2F",
-          opacity: 0.4,
-          areas: [
-            { area: "Downtown", riskLevel: "High", notes: "Concrete density" },
-            { area: "Mission", riskLevel: "High", notes: "Less tree cover" },
-            { area: "Bayview", riskLevel: "High", notes: "Industrial areas" },
-            {
-              area: "Golden Gate Park Adjacent",
-              riskLevel: "Low",
-              notes: "Green space cooling",
-            },
-            {
-              area: "Presidio Adjacent",
-              riskLevel: "Low",
-              notes: "Green space cooling",
-            },
-          ],
+          name: "Inventory Levels",
+          value: "15-20% Higher YoY",
+          trend: "Increasing",
+          favorsBuyers: true,
+        },
+        {
+          name: "Multiple Offers",
+          value: "32% of properties",
+          trend: "Decreasing",
+          favorsBuyers: true,
         },
       ],
     },
   },
   {
-    id: "q27",
-    category: "misc",
-    question: "How can I estimate utility costs for a home?",
-    answer:
-      "Estimating utility costs for San Francisco homes involves considering several factors unique to the city. PG&E provides electricity and gas, with tiered rate structures that increase with usage. Average monthly utility costs for a typical 2-bedroom home range from $150-$300, varying by home size, efficiency, and usage patterns. San Francisco's mild climate reduces heating and cooling costs compared to other regions, but the city's older housing stock often lacks proper insulation. Homes in foggy western neighborhoods (Sunset/Richmond) typically have higher heating costs, while sunny eastern neighborhoods see lower heating needs. Water/sewer costs through SFPUC average $100-$200 monthly for a typical household, with drought surcharges possible during water restrictions. Trash/recycling services from Recology cost approximately $40-$70 monthly. Internet service ranges from $50-$120 depending on provider and speed. When evaluating a potential home, review the seller's utility disclosure or request recent utility bills. Consider the home's energy efficiency features, presence of single-pane windows, insulation quality, and heating system type. For long-term planning, factor in San Francisco's Climate Action Plan which may require energy retrofits for older properties in coming years.",
-    artifactType: "calculator",
-    artifactData: {
-      title: "San Francisco Monthly Utility Cost Estimator",
-      inputs: [
-        {
-          name: "homeSize",
-          label: "Home Size",
-          type: "select",
-          options: [
-            { value: "small", label: "Small (Under 1,000 sq ft)" },
-            { value: "medium", label: "Medium (1,000-2,000 sq ft)" },
-            { value: "large", label: "Large (Over 2,000 sq ft)" },
-          ],
-        },
-        {
-          name: "occupants",
-          label: "Number of Occupants",
-          type: "number",
-          min: 1,
-          max: 10,
-        },
-        {
-          name: "heatingSystem",
-          label: "Heating System",
-          type: "select",
-          options: [
-            { value: "gasForced", label: "Gas Forced Air" },
-            { value: "gasWall", label: "Gas Wall Heater" },
-            { value: "electric", label: "Electric" },
-            { value: "heatPump", label: "Heat Pump" },
-            { value: "none", label: "None/Minimal" },
-          ],
-        },
-        {
-          name: "neighborhood",
-          label: "Neighborhood",
-          type: "select",
-          options: [
-            { value: "foggy", label: "Foggy (Sunset, Richmond, Parkside)" },
-            {
-              value: "moderate",
-              label: "Moderate (Castro, Noe Valley, Bernal)",
-            },
-            { value: "sunny", label: "Sunny (Mission, Potrero, Bayview)" },
-          ],
-        },
-        {
-          name: "insulation",
-          label: "Insulation Quality",
-          type: "select",
-          options: [
-            { value: "poor", label: "Poor (Pre-1950s, unimproved)" },
-            { value: "average", label: "Average (Partially updated)" },
-            { value: "good", label: "Good (Recently renovated/New)" },
-          ],
-        },
-        {
-          name: "windows",
-          label: "Window Type",
-          type: "select",
-          options: [
-            { value: "single", label: "Single-Pane" },
-            { value: "double", label: "Double-Pane" },
-            { value: "efficient", label: "Energy Efficient" },
-          ],
-        },
-      ],
-      calculations: {
-        electricity: {
-          base: {
-            small: 65,
-            medium: 85,
-            large: 115,
-          },
-          occupantFactor: 10,
-          heatingFactor: {
-            gasForced: 0,
-            gasWall: 0,
-            electric: 75,
-            heatPump: 45,
-            none: 0,
-          },
-          neighborhoodFactor: {
-            foggy: 1.1,
-            moderate: 1.0,
-            sunny: 0.9,
-          },
-          insulationFactor: {
-            poor: 1.3,
-            average: 1.0,
-            good: 0.8,
-          },
-          windowsFactor: {
-            single: 1.2,
-            double: 1.0,
-            efficient: 0.9,
-          },
-        },
-        gas: {
-          base: {
-            small: 35,
-            medium: 55,
-            large: 85,
-          },
-          occupantFactor: 8,
-          heatingFactor: {
-            gasForced: 60,
-            gasWall: 45,
-            electric: 0,
-            heatPump: 0,
-            none: 0,
-          },
-          neighborhoodFactor: {
-            foggy: 1.4,
-            moderate: 1.0,
-            sunny: 0.7,
-          },
-          insulationFactor: {
-            poor: 1.4,
-            average: 1.0,
-            good: 0.8,
-          },
-          windowsFactor: {
-            single: 1.3,
-            double: 1.0,
-            efficient: 0.9,
-          },
-        },
-        water: {
-          base: 85,
-          occupantFactor: 25,
-        },
-        sewer: {
-          base: 65,
-          occupantFactor: 20,
-        },
-        trash: {
-          small: 45,
-          medium: 55,
-          large: 65,
-        },
-        internet: 80,
-      },
-    },
-  },
-  {
-    id: "q28",
-    category: "misc",
+    id: "q33",
+    category: "market",
     question:
-      "What's the average cost of homeowners insurance in San Francisco?",
+      "How long do homes typically stay on the market in San Francisco?",
     answer:
-      "Homeowners insurance in San Francisco averages $1,800-$2,500 annually for a typical single-family home and $900-$1,400 for condominiums, though costs vary significantly based on several factors. Location within the city affects rates, with homes in areas like Seacliff and Marina District seeing higher premiums due to increased earthquake and flooding risks. The property's age and construction type significantly impact costs, with newer homes benefiting from modern building codes and fire-resistant materials, while Victorian and Edwardian homes often have higher rates due to older electrical systems and wood construction. Coverage limits are typically based on replacement cost rather than market value (which can be substantially higher in SF), with most insurers recommending coverage of $350-$550 per square foot for rebuilding. Deductibles range from $1,000-$2,500 for standard coverage, with separate earthquake insurance requiring higher deductibles (typically 10-15% of dwelling coverage). Most standard policies exclude earthquake coverage, which must be purchased separately through the California Earthquake Authority or private insurers at an additional premium of $2,000-$5,000+ annually. Flood insurance is required in FEMA-designated flood zones and recommended for properties in potential sea-level rise areas.",
+      "Currently, homes in San Francisco stay on the market for an average of 28 days, though this varies significantly by property type, neighborhood, price point, and property condition. Single-family homes in high-demand neighborhoods like Noe Valley and West Portal typically move faster, averaging 15-22 days on market, while condominiums generally take longer at 30-40 days. Properties in the luxury segment ($3M+) have the longest average days on market at 45-60 days. Well-priced, move-in ready properties continue to sell quickly, sometimes with competitive offers within the first week, while properties needing work or those initially priced above market value can linger for 60+ days. This represents a significant shift from the 2021 peak market, when the city-wide average was just 14-18 days. The current timing allows buyers more opportunity to carefully consider decisions and conduct due diligence. Seasonal variations also affect market time, with spring (April-June) and fall (September-October) typically seeing faster sales, while the winter holiday season (November-January) experiences longer market times. Properly priced properties remain the key factor; homes priced within 3-5% of market value typically sell much faster than those requiring subsequent price adjustments.",
     artifactType: "chart",
     artifactData: {
       type: "bar",
-      title: "Average Annual Insurance Costs by Property Type and Neighborhood",
+      title: "Average Days on Market by Property Type and Neighborhood (2024)",
       xAxis: "Neighborhood",
-      yAxis: "Annual Premium ($)",
+      yAxis: "Days on Market",
       dataSets: [
         {
-          name: "Victorian/Edwardian (Pre-1925)",
+          name: "Single-Family Homes",
           data: [
-            { neighborhood: "Pacific Heights", premium: 2800 },
-            { neighborhood: "Noe Valley", premium: 2600 },
-            { neighborhood: "Marina", premium: 3200 },
-            { neighborhood: "Sunset", premium: 2400 },
-            { neighborhood: "Bernal Heights", premium: 2500 },
+            { neighborhood: "Noe Valley", days: 17 },
+            { neighborhood: "West Portal", days: 19 },
+            { neighborhood: "Bernal Heights", days: 22 },
+            { neighborhood: "Richmond", days: 25 },
+            { neighborhood: "Sunset", days: 24 },
+            { neighborhood: "Pacific Heights", days: 38 },
+            { neighborhood: "Bayview", days: 32 },
           ],
         },
         {
-          name: "Mid-Century (1925-1970)",
+          name: "Condominiums",
           data: [
-            { neighborhood: "Pacific Heights", premium: 2500 },
-            { neighborhood: "Noe Valley", premium: 2300 },
-            { neighborhood: "Marina", premium: 2900 },
-            { neighborhood: "Sunset", premium: 2100 },
-            { neighborhood: "Bernal Heights", premium: 2200 },
+            { neighborhood: "Noe Valley", days: 26 },
+            { neighborhood: "West Portal", days: 31 },
+            { neighborhood: "Bernal Heights", days: 29 },
+            { neighborhood: "Richmond", days: 34 },
+            { neighborhood: "Sunset", days: 35 },
+            { neighborhood: "Pacific Heights", days: 42 },
+            { neighborhood: "Bayview", days: 39 },
           ],
         },
         {
-          name: "Modern (Post-1970)",
+          name: "Luxury Properties ($3M+)",
           data: [
-            { neighborhood: "Pacific Heights", premium: 2100 },
-            { neighborhood: "Noe Valley", premium: 1900 },
-            { neighborhood: "Marina", premium: 2600 },
-            { neighborhood: "Sunset", premium: 1800 },
-            { neighborhood: "Bernal Heights", premium: 1900 },
-          ],
-        },
-        {
-          name: "Condominium",
-          data: [
-            { neighborhood: "Pacific Heights", premium: 1300 },
-            { neighborhood: "Noe Valley", premium: 1200 },
-            { neighborhood: "Marina", premium: 1400 },
-            { neighborhood: "Sunset", premium: 1000 },
-            { neighborhood: "Bernal Heights", premium: 1100 },
+            { neighborhood: "Noe Valley", days: 48 },
+            { neighborhood: "West Portal", days: 53 },
+            { neighborhood: "Bernal Heights", days: 59 },
+            { neighborhood: "Richmond", days: 62 },
+            { neighborhood: "Sunset", days: 56 },
+            { neighborhood: "Pacific Heights", days: 45 },
+            { neighborhood: "Bayview", days: 68 },
           ],
         },
       ],
-      additionalData: {
-        earthquakeCoverage: {
-          title: "Additional Annual Earthquake Insurance Premiums",
-          singleFamily: {
-            low: 2000,
-            average: 3500,
-            high: 5500,
-          },
-          condo: {
-            low: 800,
-            average: 1500,
-            high: 2500,
-          },
-          factors: [
-            "Year built (pre/post-1980 building codes)",
-            "Construction type (wood frame vs. masonry)",
-            "Foundation type (raised vs. slab)",
-            "Retrofitting improvements",
-            "Soil type (liquefaction risk)",
+      annotations: [
+        { text: "City Average: 28 days", yValue: 28, type: "line" },
+        { text: "2021 Peak Market Average: 16 days", yValue: 16, type: "line" },
+      ],
+    },
+  },
+  {
+    id: "q34",
+    category: "pricing",
+    question: "What's the average cost of a home in San Francisco?",
+    answer:
+      "The average cost of a home in San Francisco currently stands at approximately $1.65 million, though this figure varies substantially based on property type, neighborhood, and specific features. Single-family homes average $1.95 million, while condominiums average $1.25 million. Median prices, which better reflect typical purchase prices by eliminating extreme high-end sales, are approximately $1.52 million overall. Neighborhood variations are dramatic, with Pacific Heights and Presidio Heights single-family homes averaging well above $5 million, while more affordable areas like the Outer Sunset and Bayview offer single-family homes in the $1.2-1.4 million range. Entry-level condos in areas like Tenderloin or SoMa can start around $650,000-$850,000. Property condition significantly impacts pricing, with fully renovated homes commanding 15-25% premiums over similar properties needing updates. The price per square foot averages $1,050 citywide but ranges from $750-850 in outlying areas to $1,500+ in prime neighborhoods. High-rise view condos in prestige buildings can exceed $2,000 per square foot. Homes with parking, outdoor space, and updated systems typically command significant premiums in this space-constrained market.",
+    artifactType: "chart",
+    artifactData: {
+      type: "bar",
+      title: "Average Home Prices by Neighborhood and Property Type (2024)",
+      xAxis: "Neighborhood",
+      yAxis: "Price ($)",
+      dataSets: [
+        {
+          name: "Single-Family Homes",
+          data: [
+            { neighborhood: "Pacific Heights", price: 5850000 },
+            { neighborhood: "Noe Valley", price: 2850000 },
+            { neighborhood: "Cole Valley", price: 2650000 },
+            { neighborhood: "Marina", price: 3750000 },
+            { neighborhood: "Richmond", price: 1950000 },
+            { neighborhood: "Sunset", price: 1650000 },
+            { neighborhood: "Bernal Heights", price: 1850000 },
+            { neighborhood: "Bayview", price: 1150000 },
           ],
+        },
+        {
+          name: "Condominiums",
+          data: [
+            { neighborhood: "Pacific Heights", price: 2450000 },
+            { neighborhood: "Noe Valley", price: 1650000 },
+            { neighborhood: "Cole Valley", price: 1450000 },
+            { neighborhood: "Marina", price: 1850000 },
+            { neighborhood: "Richmond", price: 1150000 },
+            { neighborhood: "Sunset", price: 950000 },
+            { neighborhood: "Bernal Heights", price: 1250000 },
+            { neighborhood: "Bayview", price: 750000 },
+          ],
+        },
+      ],
+      annotations: [
+        {
+          text: "City Average (All Properties): $1.65M",
+          yValue: 1650000,
+          type: "line",
+        },
+        { text: "Median Price: $1.52M", yValue: 1520000, type: "line" },
+      ],
+      additionalStats: {
+        pricePerSquareFoot: {
+          citywide: 1050,
+          range: {
+            low: { area: "Outer Neighborhoods", value: 750 },
+            high: { area: "Prime Districts", value: 1500 },
+          },
+          luxuryHighRise: 2000,
         },
       },
     },
   },
   {
-    id: "q29",
-    category: "market",
-    question:
-      "How does the tech industry affect San Francisco's housing market?",
+    id: "q35",
+    category: "pricing",
+    question: "What are the most affordable neighborhoods in San Francisco?",
     answer:
-      "The tech industry has fundamentally transformed San Francisco's housing market over the past two decades. The influx of high-income tech workers has significantly driven price appreciation, with median home values increasing approximately 160% since 2010—substantially outpacing the national average of 70%. Neighborhoods close to tech shuttle routes to Silicon Valley or near SOMA/Mid-Market tech offices have seen particularly strong appreciation. The industry's compensation structure, which often includes substantial equity components, has created waves of home-buying after major IPOs or acquisition events, though this effect has moderated in recent years. The pandemic accelerated changes with the rise of remote work, creating a temporary exodus in 2020-2021 that briefly cooled the market, particularly for condominiums. However, the market recovered as hybrid work models emerged, with many tech workers returning but seeking larger homes with dedicated office space. The city has responded with policy interventions including increased inclusionary housing requirements for new developments and office linkage fees to fund affordable housing. Looking forward, the housing market remains sensitive to tech industry trends, including layoff cycles, venture capital funding availability, and evolving remote work policies at major employers.",
+      "The most affordable neighborhoods in San Francisco are primarily located in the southern and southeastern areas of the city. Bayview-Hunters Point offers the most accessible price points, with single-family homes averaging $950,000-$1.15 million. Excelsior and Visitacion Valley present affordable options with median home prices around $1.15-1.25 million. Outer Mission and Crocker-Amazon feature more spacious properties in the $1.2-1.3 million range. Oceanview and Ingleside offer relatively affordable homes with improving amenities at $1.25-1.35 million. For those seeking condominiums, Tenderloin provides entry-level units starting around $650,000, though buyers should carefully research specific blocks due to urban challenges. Outer Sunset and Outer Richmond, while increasingly popular, still offer relative value with homes averaging $1.4-1.6 million. Many of these affordable neighborhoods are experiencing revitalization with new businesses, improved transit connections, and community investment. First-time buyers should also explore adjacent cities like Daly City and South San Francisco, where median prices can be 15-25% lower than similar properties within San Francisco city limits. When comparing affordability, buyers should consider both purchase price and ongoing HOA fees, which can significantly impact monthly housing costs.",
+    artifactType: "map",
+    artifactData: {
+      title: "Most Affordable Neighborhoods in San Francisco",
+      centerLat: 37.7449,
+      centerLng: -122.4194,
+      zoom: 12,
+      markers: [
+        {
+          name: "Bayview-Hunters Point",
+          lat: 37.7299,
+          lng: -122.3839,
+          medianPrice: 1050000,
+          pricePerSqFt: 720,
+          affordabilityRank: 1,
+        },
+        {
+          name: "Excelsior",
+          lat: 37.7246,
+          lng: -122.4222,
+          medianPrice: 1180000,
+          pricePerSqFt: 780,
+          affordabilityRank: 2,
+        },
+        {
+          name: "Visitacion Valley",
+          lat: 37.7144,
+          lng: -122.409,
+          medianPrice: 1200000,
+          pricePerSqFt: 790,
+          affordabilityRank: 3,
+        },
+        {
+          name: "Outer Mission",
+          lat: 37.724,
+          lng: -122.44,
+          medianPrice: 1250000,
+          pricePerSqFt: 820,
+          affordabilityRank: 4,
+        },
+        {
+          name: "Crocker-Amazon",
+          lat: 37.7138,
+          lng: -122.437,
+          medianPrice: 1280000,
+          pricePerSqFt: 830,
+          affordabilityRank: 5,
+        },
+        {
+          name: "Oceanview",
+          lat: 37.7189,
+          lng: -122.4612,
+          medianPrice: 1290000,
+          pricePerSqFt: 840,
+          affordabilityRank: 6,
+        },
+        {
+          name: "Ingleside",
+          lat: 37.7245,
+          lng: -122.4567,
+          medianPrice: 1310000,
+          pricePerSqFt: 860,
+          affordabilityRank: 7,
+        },
+        {
+          name: "Tenderloin (Condos)",
+          lat: 37.7841,
+          lng: -122.4143,
+          medianPrice: 650000,
+          pricePerSqFt: 880,
+          affordabilityRank: "1 (Condos)",
+        },
+        {
+          name: "Outer Sunset",
+          lat: 37.7553,
+          lng: -122.4941,
+          medianPrice: 1450000,
+          pricePerSqFt: 950,
+          affordabilityRank: 8,
+        },
+        {
+          name: "Outer Richmond",
+          lat: 37.7786,
+          lng: -122.4892,
+          medianPrice: 1520000,
+          pricePerSqFt: 970,
+          affordabilityRank: 9,
+        },
+      ],
+      heatmap: true,
+      legend: {
+        title: "Median Home Prices",
+        gradient: [
+          { color: "#06d6a0", label: "Most Affordable ($650k-$1.1M)" },
+          { color: "#118ab2", label: "Moderately Affordable ($1.1M-$1.3M)" },
+          { color: "#073b4c", label: "Relatively Affordable ($1.3M-$1.6M)" },
+        ],
+      },
+      cityComparison: [
+        { city: "Daly City", medianPrice: 1150000, discount: "22%" },
+        { city: "South San Francisco", medianPrice: 1280000, discount: "15%" },
+      ],
+    },
+  },
+  {
+    id: "q36",
+    category: "pricing",
+    question:
+      "How do San Francisco home prices compare to other Bay Area cities?",
+    answer:
+      "San Francisco remains among the most expensive real estate markets in the Bay Area with a median home price of approximately $1.52 million, though several Peninsula and South Bay communities now match or exceed this price point. Nearby cities offer varying levels of relative value. Oakland provides significant savings at a median price of $905,000 (40% lower) while still offering urban amenities and convenient commute options. Berkeley commands premium prices ($1.35 million median) due to its cultural amenities and prestigious university. South San Francisco and Daly City offer 15-25% discounts compared to similar San Francisco properties while providing proximity to the city. Moving south along the Peninsula, prices increase substantially in exclusive communities like Atherton (median $7.9 million), Palo Alto ($3.65 million), and Los Altos ($3.85 million), which all substantially exceed San Francisco's averages. The North Bay presents more affordable options with Novato ($1.15 million) and Vallejo ($600,000) offering significant savings but longer commutes. East Bay communities like Fremont ($1.45 million) and Pleasanton ($1.7 million) balance good schools and amenities with somewhat more attainable prices. These regional price variations reflect differing commute times, school quality, lot sizes, and community amenities, with San Francisco commanding premiums for its urban lifestyle, employment opportunities, and limited housing supply.",
     artifactType: "chart",
     artifactData: {
-      type: "multi",
-      title: "Tech Industry's Impact on San Francisco Housing Market",
-      charts: [
-        {
-          type: "line",
-          title: "Median Home Price vs. Tech Employment (2010-2025)",
-          xAxis: "Year",
-          yAxis: {
-            left: "Median Home Price ($)",
-            right: "Tech Jobs (thousands)",
+      type: "bar",
+      title: "Median Home Prices Across Bay Area Cities (2024)",
+      xAxis: "City",
+      yAxis: "Median Price ($)",
+      data: [
+        { city: "Atherton", price: 7900000, region: "Peninsula" },
+        { city: "Los Altos", price: 3850000, region: "South Bay" },
+        { city: "Palo Alto", price: 3650000, region: "Peninsula" },
+        { city: "Hillsborough", price: 5200000, region: "Peninsula" },
+        { city: "Menlo Park", price: 2950000, region: "Peninsula" },
+        { city: "Tiburon", price: 3350000, region: "North Bay" },
+        { city: "Sausalito", price: 2100000, region: "North Bay" },
+        { city: "San Francisco", price: 1520000, region: "SF" },
+        { city: "Mill Valley", price: 2050000, region: "North Bay" },
+        { city: "Pleasanton", price: 1700000, region: "East Bay" },
+        { city: "Fremont", price: 1450000, region: "East Bay" },
+        { city: "Berkeley", price: 1350000, region: "East Bay" },
+        { city: "South San Francisco", price: 1280000, region: "Peninsula" },
+        { city: "Daly City", price: 1150000, region: "Peninsula" },
+        { city: "Novato", price: 1050000, region: "North Bay" },
+        { city: "Oakland", price: 905000, region: "East Bay" },
+        { city: "Richmond", price: 750000, region: "East Bay" },
+        { city: "Vallejo", price: 600000, region: "North Bay" },
+      ],
+      colorGroups: {
+        Peninsula: "#1E88E5",
+        "South Bay": "#43A047",
+        "East Bay": "#FB8C00",
+        "North Bay": "#8E24AA",
+        SF: "#F4511E",
+      },
+      annotations: [
+        { text: "San Francisco Median: $1.52M", yValue: 1520000, type: "line" },
+      ],
+      additionalStats: {
+        valueComparison: [
+          {
+            metric: "Price Per Square Foot",
+            values: [
+              { city: "San Francisco", value: "$1,050" },
+              { city: "Oakland", value: "$580" },
+              { city: "Palo Alto", value: "$1,430" },
+              { city: "San Jose", value: "$720" },
+            ],
           },
+          {
+            metric: "Lot Size per $1M",
+            values: [
+              { city: "San Francisco", value: "1,800 sq ft" },
+              { city: "Oakland", value: "3,200 sq ft" },
+              { city: "Walnut Creek", value: "5,800 sq ft" },
+              { city: "Novato", value: "8,200 sq ft" },
+            ],
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: "q37",
+    category: "buying",
+    question: "What are the best neighborhoods for first-time buyers?",
+    answer:
+      "For first-time buyers in San Francisco, several neighborhoods offer a balance of relative affordability, good amenities, and potential for appreciation. Bernal Heights has become a popular first-time buyer destination, offering a village-like atmosphere, sunny microclimate, and a mix of housing styles averaging $1.35-1.6 million for smaller homes. The Outer Sunset provides relatively attainable single-family homes ($1.4-1.6 million) with proximity to Ocean Beach, improving dining options, and good transportation. Bayview-Hunters Point offers the city's most accessible single-family home prices ($950,000-1.15 million) with significant revitalization underway, though buyers should research specific blocks. Excelsior provides solid value with its diverse housing stock, multicultural atmosphere, and median prices around $1.15-1.25 million. For condo buyers, neighborhoods like Dogpatch offer newer construction with amenities at more accessible price points ($850,000-1.1 million), while Mission Bay provides modern buildings with HOA amenities. First-time buyers should also consider factors beyond purchase price, including property tax rates, HOA fees for condos, commute times, and future development plans. Many successful first-time purchases involve compromising on size, condition, or proximity to premium neighborhoods, with 'edge' locations bordering more established areas often providing good value and appreciation potential.",
+    artifactType: "table",
+    artifactData: {
+      title: "Best Neighborhoods for First-Time Buyers in San Francisco",
+      columns: [
+        "Neighborhood",
+        "Property Types",
+        "Price Range",
+        "First-Time Buyer Appeal",
+        "Notable Features",
+        "Future Outlook",
+      ],
+      rows: [
+        [
+          "Bernal Heights",
+          "Small SFH, Some Condos",
+          "$1.35M-1.6M",
+          "Village feel, Sunny microclimate",
+          "Parks, Cortland Ave shops, Good transit",
+          "Strong - Established but still growing",
+        ],
+        [
+          "Outer Sunset",
+          "SFH, Some Duplexes",
+          "$1.4M-1.6M",
+          "Beach proximity, Improving amenities",
+          "Ocean Beach, Sunset Blvd, Emerging restaurants",
+          "Positive - Growing popularity",
+        ],
+        [
+          "Bayview-Hunters Point",
+          "SFH, Some New Condos",
+          "$950K-1.15M",
+          "Most affordable SFHs in SF",
+          "Revitalization projects, New developments",
+          "Improving - Long-term appreciation potential",
+        ],
+        [
+          "Excelsior",
+          "SFH, Some Multi-Units",
+          "$1.15M-1.25M",
+          "Diverse community, Solid value",
+          "Cultural diversity, Mission St corridor",
+          "Stable - Gradual improvements",
+        ],
+        [
+          "Portola",
+          "SFH, Some Duplexes",
+          "$1.2M-1.4M",
+          "Under-the-radar value, Family-friendly",
+          "McLaren Park, Good highway access",
+          "Positive - Increasing attention",
+        ],
+        [
+          "Dogpatch",
+          "Condos, Lofts",
+          "$850K-1.1M",
+          "Newer buildings, Urban feel",
+          "Good transit, Waterfront access, Dining",
+          "Strong - Continued development",
+        ],
+        [
+          "Mission Bay",
+          "Condos",
+          "$900K-1.2M",
+          "Modern buildings, Amenities",
+          "Chase Center, Waterfront, Medical campus",
+          "Mixed - Fully built area with good transit",
+        ],
+        [
+          "Inner Richmond",
+          "SFH, Condos",
+          "$1.4M-1.8M",
+          "Central location, Good value",
+          "Park proximity, Dining options, Transit",
+          "Stable - Consistently desirable",
+        ],
+        [
+          "Sunnyside",
+          "SFH",
+          "$1.3M-1.5M",
+          "Quiet streets, BART access",
+          "Glen Park proximity, City College",
+          "Improving - Adjacent to hot neighborhoods",
+        ],
+        [
+          "Visitacion Valley",
+          "SFH",
+          "$1.1M-1.3M",
+          "Entry-level pricing, New developments",
+          "Schlage Lock development, McLaren Park",
+          "Improving - Long-term potential",
+        ],
+      ],
+      firstTimeBuyerTips: [
+        "Consider 'edge' locations bordering more established neighborhoods",
+        "Research future development projects that could affect values",
+        "Factor in additional costs beyond purchase price (HOA, taxes, commute)",
+        "Look for neighborhoods with improving restaurant/retail scenes",
+        "Consider transit developments that might enhance accessibility",
+      ],
+    },
+  },
+  {
+    id: "q38",
+    category: "buying",
+    question: "What should I know about bidding wars in San Francisco?",
+    answer:
+      "Bidding wars remain a feature of the San Francisco market, though they've moderated from the extreme competition of 2021. Currently, approximately 30-35% of well-priced properties receive multiple offers, with the most competitive segments being turnkey single-family homes in desirable neighborhoods priced under $2 million. Successful competitive bidding requires thorough preparation. Financial readiness is crucial—having a strong pre-approval letter from a reputable local lender and proof of funds for your down payment and closing costs. Consider offering a larger earnest money deposit (3-5% vs. the standard 1-3%) to demonstrate commitment. Understand that non-price terms often determine the winning bid. Sellers typically favor clean offers with fewer contingencies, so consider shortening contingency periods (inspection 5-7 days, financing 14-21 days) or waiving contingencies if you're comfortable with the risks. Pre-inspections, where possible, can give you confidence to waive inspection contingencies. Work with an experienced local agent with strong relationships in the brokerage community, as listing agents often favor offers from buyers represented by agents they know and trust. Finally, develop a clear bidding strategy in advance—know your absolute maximum price and which terms you can flex on versus your non-negotiables.",
+    artifactType: "table",
+    artifactData: {
+      title: "San Francisco Bidding War Strategy Guide",
+      sections: [
+        {
+          heading: "Current Competitive Landscape",
           data: [
-            { year: "2010", price: 785000, jobs: 48 },
-            { year: "2011", price: 765000, jobs: 54 },
-            { year: "2012", price: 820000, jobs: 59 },
-            { year: "2013", price: 915000, jobs: 68 },
-            { year: "2014", price: 1075000, jobs: 77 },
-            { year: "2015", price: 1150000, jobs: 86 },
-            { year: "2016", price: 1235000, jobs: 92 },
-            { year: "2017", price: 1380000, jobs: 97 },
-            { year: "2018", price: 1610000, jobs: 103 },
-            { year: "2019", price: 1645000, jobs: 118 },
-            { year: "2020", price: 1625000, jobs: 112 },
-            { year: "2021", price: 1825000, jobs: 105 },
-            { year: "2022", price: 1950000, jobs: 114 },
-            { year: "2023", price: 1850000, jobs: 109 },
-            { year: "2024", price: 2050000, jobs: 116 },
+            {
+              metric: "Properties Receiving Multiple Offers",
+              value: "30-35%",
+              trend: "Down from 70-80% in 2021",
+            },
+            {
+              metric: "Average Number of Offers on Competitive Properties",
+              value: "3-5",
+              trend: "Down from 10-15 in 2021",
+            },
+            {
+              metric:
+                "Typical Winning Bid Over Asking (Competitive Properties)",
+              value: "5-8%",
+              trend: "Down from 15-25% in 2021",
+            },
+            {
+              metric: "Most Competitive Property Types",
+              value: "Single-Family Homes under $2M in prime areas",
+              details: "Especially turnkey condition",
+            },
+            {
+              metric: "Least Competitive Property Types",
+              value:
+                "Condos with high HOA fees, Homes needing significant work",
+              details: "Especially in less central locations",
+            },
           ],
         },
         {
-          type: "bar",
-          title: "Price Growth % by Neighborhood Proximity to Tech (2014-2024)",
-          xAxis: "Neighborhood",
-          yAxis: "10-Year Price Growth (%)",
-          data: [
-            { neighborhood: "Mission Bay (Tech Hub)", growth: 93 },
-            { neighborhood: "Potrero Hill (Tech Adjacent)", growth: 87 },
-            { neighborhood: "Mission (Tech Shuttle)", growth: 82 },
-            { neighborhood: "Noe Valley (Tech Shuttle)", growth: 79 },
-            { neighborhood: "SOMA (Tech Offices)", growth: 76 },
-            { neighborhood: "Bernal Heights (Mix)", growth: 72 },
-            { neighborhood: "Castro (Mix)", growth: 68 },
-            { neighborhood: "Russian Hill (Traditional)", growth: 63 },
-            { neighborhood: "Outer Sunset (Traditional)", growth: 61 },
-            { neighborhood: "Bayview (Traditional)", growth: 57 },
+          heading: "Financial Preparation",
+          items: [
+            {
+              strategy: "Strong Pre-Approval Letter",
+              importance: "Essential",
+              notes: "From reputable local lender",
+            },
+            {
+              strategy: "Proof of Funds Documentation",
+              importance: "Essential",
+              notes: "For down payment and closing costs",
+            },
+            {
+              strategy: "Higher Earnest Money Deposit",
+              importance: "Advantageous",
+              notes: "3-5% vs. standard 1-3%",
+            },
+            {
+              strategy: "Ability to Cover Appraisal Gaps",
+              importance: "Potentially Critical",
+              notes: "Be prepared to pay over appraised value",
+            },
           ],
         },
         {
-          type: "scatter",
-          title: "Major Tech Events and Housing Market Impact",
-          xAxis: "Year",
-          yAxis: "Market Impact",
-          data: [
+          heading: "Offer Terms & Contingencies",
+          items: [
             {
-              year: 2012,
-              event: "Facebook IPO",
-              impact: 8,
-              detail: "Mission/Noe Valley surge",
+              term: "Inspection Contingency",
+              competitive: "Shortened (5-7 days) or Waived*",
+              standard: "10-17 days",
+              risk: "High if waived",
             },
             {
-              year: 2013,
-              event: "Twitter IPO",
-              impact: 7,
-              detail: "Hayes Valley/SOMA surge",
+              term: "Financing Contingency",
+              competitive: "Shortened (14-21 days) or Waived*",
+              standard: "21-30 days",
+              risk: "Moderate if waived",
             },
             {
-              year: 2014,
-              event: "Apple Campus 2",
-              impact: 4,
-              detail: "Southwest SF demand",
+              term: "Appraisal Contingency",
+              competitive: "Waived*",
+              standard: "Included",
+              risk: "Moderate to High",
             },
             {
-              year: 2017,
-              event: "Dropbox IPO",
-              impact: 5,
-              detail: "SOMA condo demand",
+              term: "Close of Escrow",
+              competitive: "21-30 days",
+              standard: "30-45 days",
+              risk: "Low",
             },
             {
-              year: 2019,
-              event: "Uber & Lyft IPOs",
-              impact: 6,
-              detail: "Multi-neighborhood effect",
+              term: "Free Rent Back for Seller",
+              competitive: "Offered if needed",
+              standard: "Not offered",
+              risk: "Low",
             },
-            {
-              year: 2020,
-              event: "Pandemic WFH",
-              impact: 9,
-              detail: "Urban flight, condo decline",
-            },
-            {
-              year: 2021,
-              event: "Coinbase IPO",
-              impact: 5,
-              detail: "Luxury segment boost",
-            },
-            {
-              year: 2021,
-              event: "Airbnb IPO",
-              impact: 4,
-              detail: "Modest effect (post-pandemic)",
-            },
-            {
-              year: 2022,
-              event: "Tech Layoffs Begin",
-              impact: 7,
-              detail: "Market cooling",
-            },
-            {
-              year: 2023,
-              event: "Return to Office",
-              impact: 6,
-              detail: "Condo recovery",
-            },
-            { year: 2023, event: "AI Boom", impact: 5, detail: "SOMA revival" },
           ],
+        },
+        {
+          heading: "Winning Strategies",
+          items: [
+            {
+              strategy: "Pre-Inspections",
+              details:
+                "Conduct inspections before making offer to confidently remove contingencies",
+            },
+            {
+              strategy: "Escalation Clauses",
+              details:
+                "Automatically increase your offer to beat competing bids up to your maximum",
+            },
+            {
+              strategy: "Personal Letter to Seller",
+              details:
+                "Where legally permitted, explain your connection to the property",
+            },
+            {
+              strategy: "Work with Connected Agent",
+              details:
+                "Choose an agent with strong relationships in the brokerage community",
+            },
+            {
+              strategy: "Local Lender",
+              details:
+                "SF listing agents favor local lenders with track records of closing on time",
+            },
+          ],
+          disclaimer:
+            "* Waiving contingencies carries significant risk and should only be done with expert guidance and full understanding of potential consequences.",
         },
       ],
     },
   },
   {
-    id: "q30",
-    category: "investment",
-    question: "What tax benefits are available for homeowners?",
+    id: "q39",
+    category: "neighborhoods",
+    question: "What neighborhoods have the best schools?",
     answer:
-      "Homeowners in San Francisco benefit from several tax advantages at the federal, state, and local levels. The mortgage interest deduction allows itemizing homeowners to deduct interest on mortgages up to $750,000 ($1 million for loans originated before December 16, 2017). This is particularly valuable in San Francisco's high-cost market where many mortgages approach these limits. Property tax deductions are capped at $10,000 annually as part of the state and local tax (SALT) deduction limitation. Capital gains exclusions provide significant benefits when selling, allowing married couples to exclude up to $500,000 ($250,000 for individuals) of profit from taxation if they've lived in the home as their primary residence for at least two of the previous five years. Home office deductions may apply for self-employed individuals who use part of their home exclusively for business. Energy efficiency tax credits are available for qualifying improvements like solar panels, which are increasingly popular in San Francisco. California also offers specific benefits, including property tax reassessment protections under Proposition 13 that limit annual increases to 2% regardless of market appreciation. Additionally, seniors over 55 may transfer their property tax basis to a new home once in their lifetime under certain conditions per Proposition 19, which is especially valuable in California's high property tax environment.",
+      "San Francisco's public schools operate under a lottery system rather than neighborhood-based assignment, so technically children from any neighborhood can attend any school. However, certain neighborhoods have clusters of highly-rated public and private schools that make them particularly attractive to families. The western neighborhoods of Sunset and Richmond have several highly-rated public elementary schools, including Lawton Alternative, Jefferson Elementary, and Alice Fong Yu, the nation's first Chinese immersion public school. Noe Valley and adjacent areas are popular with families, with coveted schools like Alvarado Elementary, Fairmount Elementary, and the highly-rated private schools Children's Day School and Adda Clevenger. West Portal/Forest Hill offers access to the well-regarded West Portal Elementary and the prestigious private K-8 San Francisco Day School. Presidio Heights and the northern neighborhoods provide access to top-tier private schools like Town School for Boys, Hamlin School for Girls, and Stuart Hall. Marina and Pacific Heights contain several strong schools, including Claire Lilienthal and Sherman Elementary. For middle and high schools, Lowell High School (selective admission), Ruth Asawa School of the Arts, and Presidio Middle School are among the city's highest performers. When evaluating neighborhoods for schools, consider both public and private options, the logistics of the SFUSD lottery system, and your specific educational priorities.",
+    artifactType: "map",
+    artifactData: {
+      title: "Top School Neighborhoods in San Francisco",
+      centerLat: 37.7749,
+      centerLng: -122.4194,
+      zoom: 12,
+      markers: [
+        {
+          name: "Sunset District",
+          lat: 37.7509,
+          lng: -122.4856,
+          schools: [
+            { name: "Lawton Alternative", type: "Public K-8", rating: 9 },
+            { name: "Jefferson Elementary", type: "Public K-5", rating: 8 },
+            {
+              name: "Alice Fong Yu",
+              type: "Public K-8 (Chinese Immersion)",
+              rating: 9,
+            },
+          ],
+          notes: "Strong public schools, family-friendly environment",
+        },
+        {
+          name: "Noe Valley/Bernal Heights",
+          lat: 37.742,
+          lng: -122.4255,
+          schools: [
+            { name: "Alvarado Elementary", type: "Public K-5", rating: 8 },
+            {
+              name: "Fairmount Elementary",
+              type: "Public K-5 (Spanish Immersion)",
+              rating: 7,
+            },
+            {
+              name: "Children's Day School",
+              type: "Private PreK-8",
+              rating: 9,
+            },
+            { name: "Adda Clevenger", type: "Private K-8", rating: 8 },
+          ],
+          notes: "Mix of strong public and private options",
+        },
+        {
+          name: "West Portal/Forest Hill",
+          lat: 37.7405,
+          lng: -122.4663,
+          schools: [
+            { name: "West Portal Elementary", type: "Public K-5", rating: 9 },
+            {
+              name: "San Francisco Day School",
+              type: "Private K-8",
+              rating: 10,
+            },
+            {
+              name: "Commodore Sloat Elementary",
+              type: "Public K-5",
+              rating: 8,
+            },
+          ],
+          notes: "Quiet residential area with top schools",
+        },
+        {
+          name: "Presidio Heights",
+          lat: 37.7896,
+          lng: -122.4501,
+          schools: [
+            { name: "Town School for Boys", type: "Private K-8", rating: 10 },
+            {
+              name: "Hamlin School for Girls",
+              type: "Private K-8",
+              rating: 10,
+            },
+            { name: "Stuart Hall", type: "Private K-8", rating: 9 },
+            {
+              name: "San Francisco University High School",
+              type: "Private 9-12",
+              rating: 10,
+            },
+          ],
+          notes: "Concentration of elite private schools",
+        },
+        {
+          name: "Pacific Heights/Marina",
+          lat: 37.7925,
+          lng: -122.4382,
+          schools: [
+            { name: "Claire Lilienthal", type: "Public K-8", rating: 9 },
+            { name: "Sherman Elementary", type: "Public K-5", rating: 8 },
+            { name: "Hamlin School", type: "Private K-8 (Girls)", rating: 10 },
+          ],
+          notes: "Upscale area with strong school options",
+        },
+        {
+          name: "Richmond District",
+          lat: 37.7799,
+          lng: -122.4735,
+          schools: [
+            { name: "Presidio Middle School", type: "Public 6-8", rating: 9 },
+            {
+              name: "George Peabody Elementary",
+              type: "Public K-5",
+              rating: 8,
+            },
+            { name: "Argonne Elementary", type: "Public K-5", rating: 8 },
+          ],
+          notes: "Family-oriented with solid public schools",
+        },
+      ],
+      specialNotes: [
+        "Lowell High School (Selective Public): Citywide competitive admission",
+        "Ruth Asawa School of the Arts: Citywide competitive admission",
+        "SFUSD Lottery System: Families can apply to schools citywide regardless of residence",
+        "Private School Concentration: Northern neighborhoods have highest density of elite private schools",
+      ],
+    },
+  },
+  {
+    id: "q40",
+    category: "neighborhoods",
+    question: "What are the safest neighborhoods in San Francisco?",
+    answer:
+      "Safety in San Francisco, as in most cities, varies by neighborhood and can change block by block. Several areas consistently report lower crime rates and are generally considered the safest in the city. Seacliff, a luxury enclave near the Presidio, has among the lowest crime rates citywide, though its remote location and high prices limit accessibility for most buyers. Presidio Heights, Pacific Heights, and Marina combine safety with central locations and excellent amenities, though home prices typically start above $2 million. West Portal and Forest Hill offer family-friendly environments with low crime rates and a suburban feel while maintaining good transit connections. Noe Valley remains popular for its safety, particularly in its central and southern sections, though property crimes have increased in recent years. Inner and Central Sunset provide a good safety profile with more accessible price points, especially for families. Saint Francis Wood features larger lots and exceptionally low crime rates in a park-like setting. When evaluating neighborhood safety, it's important to distinguish between violent crime (which remains concentrated in specific areas) and property crime (which occurs throughout the city). Most residential areas have low violent crime rates, while property crimes like car break-ins and package theft are more widespread. For the most current safety information, prospective buyers should review recent crime statistics, visit neighborhoods at different times of day, and speak with local residents.",
+    artifactType: "map",
+    artifactData: {
+      title: "Safest Neighborhoods in San Francisco",
+      centerLat: 37.7749,
+      centerLng: -122.4194,
+      zoom: 12,
+      heatmap: true,
+      markers: [
+        {
+          name: "Seacliff",
+          lat: 37.7868,
+          lng: -122.4899,
+          crimeIndex: 12,
+          medianHomePrice: "$4.2M+",
+          notes: "Luxury enclave with lowest crime rates",
+        },
+        {
+          name: "Presidio Heights",
+          lat: 37.7896,
+          lng: -122.4501,
+          crimeIndex: 15,
+          medianHomePrice: "$3.8M+",
+          notes: "Upscale area with excellent safety",
+        },
+        {
+          name: "Pacific Heights",
+          lat: 37.7925,
+          lng: -122.4382,
+          crimeIndex: 18,
+          medianHomePrice: "$2.5M+",
+          notes: "Prestigious neighborhood with low crime",
+        },
+        {
+          name: "St. Francis Wood",
+          lat: 37.7359,
+          lng: -122.4664,
+          crimeIndex: 14,
+          medianHomePrice: "$2.8M+",
+          notes: "Park-like setting with larger lots",
+        },
+        {
+          name: "West Portal",
+          lat: 37.7405,
+          lng: -122.4663,
+          crimeIndex: 20,
+          medianHomePrice: "$1.8M+",
+          notes: "Family-friendly with village atmosphere",
+        },
+        {
+          name: "Forest Hill",
+          lat: 37.7464,
+          lng: -122.4681,
+          crimeIndex: 16,
+          medianHomePrice: "$2.2M+",
+          notes: "Quiet, tree-lined streets with low crime",
+        },
+        {
+          name: "Marina",
+          lat: 37.8015,
+          lng: -122.4351,
+          crimeIndex: 22,
+          medianHomePrice: "$2.3M+",
+          notes: "Popular area with good safety profile",
+        },
+        {
+          name: "Noe Valley",
+          lat: 37.7502,
+          lng: -122.4337,
+          crimeIndex: 24,
+          medianHomePrice: "$2.1M+",
+          notes: "Family-oriented with moderate crime",
+        },
+        {
+          name: "Inner Sunset",
+          lat: 37.7601,
+          lng: -122.4689,
+          crimeIndex: 26,
+          medianHomePrice: "$1.7M+",
+          notes: "Safe area near Golden Gate Park",
+        },
+        {
+          name: "Central Richmond",
+          lat: 37.7786,
+          lng: -122.4738,
+          crimeIndex: 28,
+          medianHomePrice: "$1.6M+",
+          notes: "Quiet residential area with good safety",
+        },
+      ],
+      legend: {
+        title: "Crime Index (Lower is Better)",
+        scale: [
+          { range: "10-20", label: "Very Low Crime", color: "#008000" },
+          { range: "21-30", label: "Low Crime", color: "#90EE90" },
+          { range: "31-50", label: "Moderate Crime", color: "#FFFF00" },
+          { range: "51-70", label: "High Crime", color: "#FFA500" },
+          { range: "71-100", label: "Very High Crime", color: "#FF0000" },
+        ],
+      },
+      safetyNotes: [
+        "Property crime (car break-ins, package theft) occurs throughout the city",
+        "Violent crime is more concentrated in specific areas",
+        "Safety can vary significantly block by block",
+        "Visit neighborhoods at different times of day before making decisions",
+        "Check current crime statistics at www.sanfranciscopolice.org/stats",
+      ],
+    },
+  },
+  {
+    id: "q41",
+    category: "mortgage",
+    question: "What are the typical closing costs in San Francisco?",
+    answer:
+      "Closing costs in San Francisco typically range from 2-5% of the purchase price, which translates to $30,000-$75,000 on a median-priced $1.5 million home. For buyers, major costs include loan-related expenses such as origination fees (0.5-1% of loan amount), discount points (optional, each point costs 1% of loan amount to reduce interest rate), and appraisal fees ($500-$750). Title-related costs include title insurance ($3,000-$7,000 for a $1.5 million property), escrow fees ($2,000-$3,000), and recording fees ($100-$200). Buyers also pay prepaid items such as property taxes (typically 2-6 months in advance), homeowners insurance (12 months upfront), and mortgage interest from closing until the first regular payment. Additional expenses may include home inspection fees ($500-$1,500 depending on inspections needed), HOA transfer fees for condominiums ($300-$700), and natural hazard disclosure reports ($125-$200). Unlike many areas, San Francisco has a transfer tax ($6.80 per $1,000 for properties over $250,000), though it's traditionally paid by the seller. Unique to San Francisco are costs related to the 3R report (Report of Residential Building Record) and potential seismic retrofit certifications. Your lender will provide a Loan Estimate within three days of application detailing expected costs, and a final Closing Disclosure at least three days before closing.",
+    artifactType: "chart",
+    artifactData: {
+      type: "pie",
+      title: "Typical Buyer's Closing Costs for $1.5M San Francisco Home",
+      data: [
+        {
+          category: "Loan Origination Fees",
+          value: 11250,
+          description: "Lender fees (0.75% of loan amount)",
+          percentage: 28.1,
+        },
+        {
+          category: "Title Insurance",
+          value: 5000,
+          description: "Protection against property ownership issues",
+          percentage: 12.5,
+        },
+        {
+          category: "Escrow Fees",
+          value: 2500,
+          description: "Third-party handling of transaction",
+          percentage: 6.3,
+        },
+        {
+          category: "Prepaid Property Taxes",
+          value: 9375,
+          description: "6 months property tax in advance",
+          percentage: 23.4,
+        },
+        {
+          category: "Prepaid Insurance",
+          value: 2500,
+          description: "12 months homeowners insurance",
+          percentage: 6.3,
+        },
+        {
+          category: "Prepaid Interest",
+          value: 2000,
+          description: "Interest from closing until first payment",
+          percentage: 5.0,
+        },
+        {
+          category: "Home Inspection Fees",
+          value: 1200,
+          description: "General, pest, specialized inspections",
+          percentage: 3.0,
+        },
+        {
+          category: "Appraisal Fee",
+          value: 750,
+          description: "Professional property valuation",
+          percentage: 1.9,
+        },
+        {
+          category: "Local Reports & Fees",
+          value: 425,
+          description: "3R Report, hazard disclosures, etc.",
+          percentage: 1.1,
+        },
+        {
+          category: "Recording Fees",
+          value: 150,
+          description: "County recording of documents",
+          percentage: 0.4,
+        },
+        {
+          category: "Miscellaneous Fees",
+          value: 4850,
+          description: "Wire transfers, notary, etc.",
+          percentage: 12.1,
+        },
+      ],
+      total: 40000,
+      sellerCosts: {
+        title: "Typical Seller's Closing Costs",
+        items: [
+          { name: "Real Estate Commission", typical: "5-6% of sale price" },
+          {
+            name: "Transfer Tax",
+            typical: "$6.80 per $1,000 (for properties over $250K)",
+          },
+          {
+            name: "Title Insurance (Owner's Policy)",
+            typical: "$2,500-$5,000",
+          },
+          { name: "Escrow Fees", typical: "Split with buyer ($1,500-$2,500)" },
+          {
+            name: "Prorated Property Taxes",
+            typical: "Varies by closing date",
+          },
+          { name: "HOA Transfer Fees", typical: "$300-$700 for condos" },
+        ],
+      },
+    },
+  },
+  {
+    id: "q42",
+    category: "process",
+    question: "What does the home buying process look like step by step?",
+    answer:
+      "The home buying process in San Francisco typically begins with financial preparation. Assess your finances, check your credit, and get pre-approved for a mortgage to determine your budget. This pre-approval letter will be essential when making offers. Next, clarify your needs versus wants in a property and select an experienced local real estate agent familiar with San Francisco's unique market dynamics. The house hunting phase involves viewing properties both online and in person, with your agent providing guidance on neighborhood characteristics, potential issues, and comparative values. When you find a suitable property, your agent will help prepare a competitive offer based on comparable sales, current market conditions, and the property's condition. In San Francisco, this often involves strategizing on price, contingencies, and terms to make your offer stand out. After acceptance, the escrow period begins, typically lasting 30-45 days. During this time, you'll conduct inspections (general home inspection, pest inspection, and specialized inspections as needed), review disclosures, and secure final mortgage approval. The lender will require an appraisal to verify the property's value. Once all contingencies are removed and financing is secured, you'll conduct a final walkthrough to verify the property's condition. At closing, you'll sign final paperwork, wire your down payment and closing costs, and receive the keys to your new home. Throughout this process, working with experienced professionals familiar with San Francisco's unique market will help navigate challenges specific to the city.",
+    artifactType: "flowchart",
+    artifactData: {
+      title: "San Francisco Home Buying Process",
+      steps: [
+        {
+          id: 1,
+          text: "Financial Preparation",
+          description: "Check credit, assess finances, determine budget",
+        },
+        {
+          id: 2,
+          text: "Mortgage Pre-Approval",
+          description: "Get formal pre-approval from a lender",
+        },
+        {
+          id: 3,
+          text: "Define Requirements",
+          description:
+            "Determine needs vs. wants, neighborhoods, property types",
+        },
+        {
+          id: 4,
+          text: "Select Agent",
+          description: "Find experienced San Francisco agent",
+        },
+        {
+          id: 5,
+          text: "House Hunting",
+          description: "View properties online and in person",
+        },
+        {
+          id: 6,
+          text: "Prepare Offer",
+          description: "Determine price, contingencies, terms",
+        },
+        {
+          id: 7,
+          text: "Offer Acceptance",
+          description: "Negotiate terms, reach agreement",
+        },
+        {
+          id: 8,
+          text: "Open Escrow",
+          description: "Deposit earnest money, typically 3%",
+        },
+        {
+          id: 9,
+          text: "Inspections",
+          description: "General, pest, specialized as needed",
+        },
+        {
+          id: 10,
+          text: "Review Disclosures",
+          description: "Transfer disclosure statement, 3R report, etc.",
+        },
+        {
+          id: 11,
+          text: "Remove Contingencies",
+          description: "Inspection, financing, appraisal contingencies",
+        },
+        {
+          id: 12,
+          text: "Secure Final Loan Approval",
+          description: "Submit final documentation to lender",
+        },
+        {
+          id: 13,
+          text: "Final Walkthrough",
+          description: "Verify property condition before closing",
+        },
+        {
+          id: 14,
+          text: "Close Escrow",
+          description: "Sign documents, transfer funds",
+        },
+        {
+          id: 15,
+          text: "Take Possession",
+          description: "Receive keys to your new home",
+        },
+      ],
+      connections: [
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [4, 5],
+        [5, 6],
+        [6, 7],
+        [7, 8],
+        [8, 9],
+        [9, 10],
+        [10, 11],
+        [11, 12],
+        [12, 13],
+        [13, 14],
+        [14, 15],
+      ],
+      sfSpecifics: [
+        {
+          step: "Prepare Offer",
+          note: "SF often requires competitive bidding strategies",
+        },
+        {
+          step: "Inspections",
+          note: "Older SF housing stock may require specialized inspections",
+        },
+        {
+          step: "Review Disclosures",
+          note: "SF has unique disclosure requirements like 3R reports",
+        },
+        {
+          step: "Remove Contingencies",
+          note: "Competitive SF market often requires shorter contingency periods",
+        },
+      ],
+      timeEstimates: {
+        preApproval: "1-2 weeks",
+        househunting: "1-3 months (typical)",
+        escrowPeriod: "30-45 days",
+        totalProcess: "2-6 months on average",
+      },
+    },
+  },
+  {
+    id: "q43",
+    category: "process",
+    question: "What inspections should I get before buying?",
+    answer:
+      "In San Francisco, several key inspections are recommended before purchasing a home due to the city's unique housing stock and environmental conditions. A general home inspection is the foundation, covering structural elements, major systems (electrical, plumbing, heating), roofing, and visible insulation. Given San Francisco's seismic activity, a specific foundation/structural inspection is often advisable, particularly for homes built before modern earthquake codes were implemented. Pest inspections (termite/dry rot) are crucial in San Francisco's climate, where fog and moisture can contribute to wood damage. For older homes (pre-1978), consider lead paint and asbestos testing, as these materials were commonly used in the city's historic housing. Sewer lateral inspections using video scoping can identify issues with aging clay pipes that are common in older neighborhoods. Chimney inspections are important for Victorian and Edwardian homes, as unreinforced masonry presents seismic risks. Electrical inspections should evaluate knob-and-tube wiring or aluminum wiring in older properties. For hillside properties, drainage and soils inspections can identify potential erosion or stability issues. When purchasing condominiums, have your inspector review HOA documents and evaluate common areas. The timing of inspections is important—in competitive situations, pre-offer inspections may be necessary, while in other cases, they're conducted during the contingency period. Factor in approximately $1,000-$2,500 for a comprehensive inspection package, with costs varying based on property size and specific inspections needed.",
+    artifactType: "checklist",
+    artifactData: {
+      title: "Essential San Francisco Home Inspections Checklist",
+      categories: [
+        {
+          name: "Standard Inspections",
+          items: [
+            {
+              item: "General Home Inspection",
+              cost: "$500-$750",
+              importance: "Essential",
+              sfSpecific: "Focus on seismic vulnerabilities, drainage issues",
+            },
+            {
+              item: "Pest Inspection (Termite/Dry Rot)",
+              cost: "$250-$400",
+              importance: "Essential",
+              sfSpecific: "Fog belt moisture issues increase importance",
+            },
+            {
+              item: "Sewer Lateral Video Inspection",
+              cost: "$300-$500",
+              importance: "Highly Recommended",
+              sfSpecific: "Aging clay pipes common in older neighborhoods",
+            },
+            {
+              item: "Roof Inspection",
+              cost: "$200-$500",
+              importance: "Recommended",
+              sfSpecific: "Flat roofs common in SF require special attention",
+            },
+          ],
+        },
+        {
+          name: "Structural & Seismic",
+          items: [
+            {
+              item: "Foundation/Structural Inspection",
+              cost: "$500-$800",
+              importance: "Highly Recommended",
+              sfSpecific: "Seismic activity makes this crucial",
+            },
+            {
+              item: "Drainage & Soils (Hillside Properties)",
+              cost: "$500-$750",
+              importance: "Situational",
+              sfSpecific: "Critical for properties on slopes",
+            },
+            {
+              item: "Seismic Retrofit Assessment",
+              cost: "$300-$500",
+              importance: "Recommended",
+              sfSpecific: "Evaluate earthquake preparedness",
+            },
+            {
+              item: "Retaining Wall Inspection",
+              cost: "$400-$600",
+              importance: "Situational",
+              sfSpecific: "Important for hillside properties",
+            },
+          ],
+        },
+        {
+          name: "Environmental & Health",
+          items: [
+            {
+              item: "Lead Paint Testing",
+              cost: "$300-$500",
+              importance: "Recommended for pre-1978",
+              sfSpecific: "Common in Victorian/Edwardian homes",
+            },
+            {
+              item: "Asbestos Testing",
+              cost: "$400-$800",
+              importance: "Recommended for pre-1980",
+              sfSpecific: "Often found in older heating systems, insulation",
+            },
+            {
+              item: "Mold Inspection",
+              cost: "$300-$600",
+              importance: "Situational",
+              sfSpecific: "Fog belt areas have higher risk",
+            },
+            {
+              item: "Radon Testing",
+              cost: "$150-$300",
+              importance: "Optional",
+              sfSpecific: "Less common issue in SF than other regions",
+            },
+          ],
+        },
+        {
+          name: "Systems & Utilities",
+          items: [
+            {
+              item: "Electrical System Inspection",
+              cost: "$200-$400",
+              importance: "Highly Recommended",
+              sfSpecific: "Check for knob-and-tube wiring in older homes",
+            },
+            {
+              item: "HVAC System Inspection",
+              cost: "$200-$400",
+              importance: "Recommended",
+              sfSpecific: "Many older homes lack central heating",
+            },
+            {
+              item: "Chimney Inspection",
+              cost: "$250-$500",
+              importance: "Situational",
+              sfSpecific: "Unreinforced masonry chimneys are seismic risks",
+            },
+            {
+              item: "Water Pressure/Plumbing",
+              cost: "$200-$350",
+              importance: "Recommended",
+              sfSpecific: "Hillside homes may have pressure issues",
+            },
+          ],
+        },
+        {
+          name: "Condominium Specific",
+          items: [
+            {
+              item: "HOA Document Review",
+              cost: "$350-$600",
+              importance: "Essential for Condos",
+              sfSpecific: "Review reserves, litigation, special assessments",
+            },
+            {
+              item: "Common Area Inspection",
+              cost: "Included in general",
+              importance: "Essential for Condos",
+              sfSpecific: "Evaluate building envelope, foundation",
+            },
+            {
+              item: "Shared Systems Evaluation",
+              cost: "Varies",
+              importance: "Essential for Condos",
+              sfSpecific: "Boilers, elevators, garage, roof",
+            },
+            {
+              item: "Noise Transmission Testing",
+              cost: "$300-$500",
+              importance: "Optional",
+              sfSpecific: "Valuable for converted buildings",
+            },
+          ],
+        },
+      ],
+      inspectionTiming: [
+        {
+          scenario: "Competitive Market/Multiple Offers",
+          approach: "Pre-Offer Inspections",
+          pros: "Allows non-contingent offers",
+          cons: "Upfront cost with no guarantee of accepted offer",
+        },
+        {
+          scenario: "Standard Process",
+          approach: "Post-Acceptance (Contingency Period)",
+          pros: "Only pay for inspections on accepted offer",
+          cons: "Less competitive in multiple offer situations",
+        },
+        {
+          scenario: "New Construction",
+          approach: "Pre-Closing Walkthrough + 11-Month Warranty Inspection",
+          pros: "Builder warranty coverage",
+          cons: "May miss issues behind finished surfaces",
+        },
+      ],
+      inspectorTips: [
+        "Choose inspectors familiar with San Francisco's unique housing stock",
+        "Attend inspections in person to ask questions and understand findings",
+        "Prioritize inspections based on property age, type, and location",
+        "Budget $1,000-$2,500 for comprehensive inspection package",
+        "Use inspection findings for negotiation and future maintenance planning",
+      ],
+    },
+  },
+  {
+    id: "q44",
+    category: "process",
+    question: "Should I get a home inspection?",
+    answer:
+      "Yes, getting a home inspection is strongly recommended when buying in San Francisco, regardless of the property's age or apparent condition. The city's unique housing stock—with many homes built before modern building codes were established—presents specific challenges that make professional inspection particularly important. A thorough home inspection will evaluate the property's structural integrity, foundation, roof, electrical and plumbing systems, heating, insulation, and visible signs of water damage or pest infestation. In San Francisco, special attention should be paid to seismic considerations, foundation issues (especially on hillside properties), drainage problems, aging infrastructure, and outdated electrical systems like knob-and-tube wiring. While the competitive market sometimes pressures buyers to waive inspection contingencies, it's rarely advisable to skip the inspection entirely. If necessary to remain competitive, consider conducting a pre-offer inspection or shortened inspection contingency period rather than forgoing this crucial step. Even newer properties can have issues—sometimes significant ones—that aren't visible to the untrained eye. The cost of a comprehensive inspection ($500-750 for most San Francisco homes) is minimal compared to the potential expense of undiscovered problems. Beyond identifying immediate repair needs, an inspection provides valuable information about future maintenance requirements and can serve as a negotiation tool if significant issues are discovered. When selecting an inspector, look for someone with specific experience with San Francisco properties and their common challenges.",
     artifactType: "table",
     artifactData: {
-      title: "Homeowner Tax Benefits Comparison",
+      title: "Home Inspection Decision Guide for San Francisco Buyers",
       columns: [
-        "Tax Benefit",
-        "Federal",
-        "California",
-        "Example for $1.5M San Francisco Home",
+        "Consideration",
+        "With Professional Inspection",
+        "Without Professional Inspection",
+        "San Francisco Specifics",
       ],
       rows: [
         [
-          "Mortgage Interest Deduction",
-          "Yes - on loans up to $750K",
-          "Yes - follows federal",
-          "~$24,000/year tax deduction (new loan at 5.5%)",
+          "Identifying Hidden Issues",
+          "Professional evaluation of structural, mechanical, electrical, and plumbing systems",
+          "Reliance on visible conditions and seller disclosures only",
+          "SF's older housing stock often has hidden issues like knob-and-tube wiring, foundation settling, and seismic vulnerabilities",
         ],
         [
-          "Property Tax Deduction",
-          "Yes - limited to $10K SALT cap",
-          "Yes - no limit",
-          "$10,000 maximum federal deduction",
+          "Cost",
+          "$500-$750 for standard inspection; Additional specialized inspections $200-$500 each",
+          "$0 upfront savings",
+          "SF inspections typically more expensive due to complexity of older structures",
         ],
         [
-          "Capital Gains Exclusion",
-          "$500K married/$250K single",
-          "Follows federal",
-          "Up to $500K tax-free profit when selling",
+          "Risk Level",
+          "Significantly reduced risk of unexpected major repairs",
+          "High risk of undiscovered issues leading to costly repairs",
+          "Hillside homes, Victorian/Edwardian architecture, and seismic factors increase risks",
         ],
         [
-          "Property Tax Increase Limit",
-          "N/A",
-          "Yes - 2% max annual increase",
-          "~$7,500 annual savings vs. market rate reassessment",
+          "Competitive Offers",
+          "May make offer less competitive in multiple-bid situations",
+          "Can strengthen offer in competitive situations",
+          "SF's competitive market sometimes incentivizes waiving contingencies",
         ],
         [
-          "Prop 19 Tax Basis Transfer",
-          "N/A",
-          "Yes - for 55+ homeowners",
-          "Potential $10,000+ annual savings when downsizing",
+          "Negotiating Power",
+          "Provides documented issues for repair requests or price adjustments",
+          "No formal basis for requesting repairs or price adjustments",
+          "Documentation is crucial for negotiations in SF's high-value market",
         ],
         [
-          "Home Office Deduction",
-          "Yes - if self-employed",
-          "Yes - follows federal",
-          "$2,000-5,000 for qualifying home businesses",
+          "Future Planning",
+          "Creates checklist of maintenance items and timeline for future repairs",
+          "No professional guidance on maintenance priorities",
+          "Understanding maintenance needs crucial for budgeting in high-cost SF repair market",
         ],
         [
-          "Energy Efficiency Credits",
-          "Yes - up to 30% for solar",
-          "Yes - additional rebates",
-          "$6,000-9,000 for typical solar installation",
+          "Peace of Mind",
+          "Professional confirmation of property condition",
+          "Uncertainty about true condition of major systems",
+          "High investment values in SF make peace of mind particularly valuable",
         ],
-        [
-          "Mortgage Credit Certificate",
-          "Yes - for first-time buyers",
-          "Yes - administered by CALHFA",
-          "Tax credit of 15-20% of mortgage interest",
-        ],
-        [
-          "Homeowner's Exemption",
-          "N/A",
-          "Yes - $7,000 reduction in assessed value",
-          "~$70-100 annual property tax reduction",
-        ],
-        [
-          "Seismic Retrofit Exclusion",
-          "N/A",
-          "Yes - improvements not reassessed",
-          "No added property tax for earthquake upgrades",
-        ],
+      ],
+      strategiesForCompetitiveMarkets: [
+        {
+          strategy: "Pre-Offer Inspection",
+          description: "Conduct inspection before making offer",
+          pros: "Allows non-contingent offer while still getting professional assessment",
+          cons: "Cost with no guarantee of accepted offer; Limited time to arrange",
+        },
+        {
+          strategy: "Shortened Contingency",
+          description:
+            "Request 3-5 day inspection period instead of standard 7-10",
+          pros: "More competitive than standard contingency while maintaining protection",
+          cons: "Rushed timeline for inspections and decisions",
+        },
+        {
+          strategy: "Information-Only Inspection",
+          description: "Include inspection but waive right to request repairs",
+          pros: "Knowledge about property condition without impacting competitiveness",
+          cons: "No negotiating leverage if issues discovered",
+        },
+        {
+          strategy: "Pass-Through Inspection",
+          description:
+            "Review seller's inspection reports instead of ordering new ones",
+          pros: "Cost savings; Faster process",
+          cons: "Less control over inspector selection and scope",
+        },
       ],
     },
   },
@@ -2341,6 +2070,8 @@ export const questionsByCategory = {
   property: questionsData.filter((q) => q.category === "property"),
   legal: questionsData.filter((q) => q.category === "legal"),
   misc: questionsData.filter((q) => q.category === "misc"),
+  pricing: questionsData.filter((q) => q.category === "pricing"),
+  buying: questionsData.filter((q) => q.category === "buying"),
 };
 
 // Export recommended questions based on user profile

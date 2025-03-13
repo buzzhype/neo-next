@@ -7,6 +7,7 @@ import { MessageSquare, Star, ChevronUp, ChevronDown } from "lucide-react";
 import LeftPanel from "./left-panel";
 import Core from "./core";
 import Knowledge from "./knowledge";
+import Discover from "./discover";
 
 // Define an interface for a message
 interface Message {
@@ -175,6 +176,7 @@ export default function RealEstatePage() {
           />
         );
       case "discover":
+        return <Discover userProfile={userProfile} />;
       case "reimagine":
       default:
         return (
