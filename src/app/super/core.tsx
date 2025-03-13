@@ -26,6 +26,18 @@ import SFMarketTrends from "./SFMarketTrends";
 // Import *all* your Q&A data
 import { questionsData } from "./questionsData";
 
+// Brand colors
+const BRAND_COLORS = {
+  neutralBlack: "#232226",
+  charcoal: "#3c4659",
+  manatee: "#8a8ba6",
+  horizon: "#5988a6",
+  blush: "#d9848b",
+  // Horizon variants
+  horizonLight: "#daeaf3", // horizon-100
+  horizonDark: "#4a7a97", // horizon-600
+};
+
 // Example neighborhoods for the Command Palette
 const sampleNeighborhoods = [
   { name: "Pacific Heights", description: "Upscale area with panoramic views" },
@@ -34,19 +46,27 @@ const sampleNeighborhoods = [
   { name: "SoMa", description: "Urban district with tech companies" },
 ];
 
-// Example categories
+// Example categories using direct color references
 const questionCategories = [
-  { id: "all", name: "All Topics", color: "bg-blue-100 text-blue-700" },
-  { id: "market", name: "Market Trends", color: "bg-green-100 text-green-700" },
+  {
+    id: "all",
+    name: "All Topics",
+    color: `bg-[${BRAND_COLORS.horizonLight}] text-[${BRAND_COLORS.horizon}]`,
+  },
+  {
+    id: "market",
+    name: "Market Trends",
+    color: "bg-green-100 text-green-700",
+  },
   {
     id: "neighborhoods",
     name: "Neighborhoods",
-    color: "bg-purple-100 text-purple-700",
+    color: `bg-[#e9e9f0] text-[${BRAND_COLORS.manatee}]`,
   },
   {
     id: "firstTimeBuyer",
     name: "First-Time Buyers",
-    color: "bg-pink-100 text-pink-700",
+    color: `bg-[#fbe6e7] text-[${BRAND_COLORS.blush}]`,
   },
 ];
 
@@ -462,7 +482,8 @@ export default function Core() {
             className="fixed top-0 left-0 right-0 h-1 bg-gray-200 z-50"
           >
             <motion.div
-              className="h-full bg-blue-600"
+              className="h-full"
+              style={{ backgroundColor: BRAND_COLORS.horizon }}
               initial={{ width: 0 }}
               animate={{ width: `${demoProgress}%` }}
               transition={{ type: "spring", damping: 30 }}
@@ -476,11 +497,12 @@ export default function Core() {
         onClick={toggleDemo}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className={`fixed top-4 right-4 z-10 px-4 py-2 rounded-lg text-sm font-medium shadow-md flex items-center gap-2 ${
-          isDemoRunning
-            ? "bg-red-500 hover:bg-red-600 text-white"
-            : "bg-gradient-to-r from-blue-600 to-blue-800 text-white hover:from-blue-700 hover:to-blue-900"
-        }`}
+        className="fixed top-4 right-4 z-10 px-4 py-2 rounded-lg text-sm font-medium shadow-md flex items-center gap-2 text-white"
+        style={{
+          background: isDemoRunning
+            ? BRAND_COLORS.blush
+            : `linear-gradient(to right, ${BRAND_COLORS.horizon}, ${BRAND_COLORS.charcoal})`,
+        }}
       >
         {isDemoRunning ? (
           <>
@@ -546,22 +568,6 @@ export default function Core() {
           />
 
           {/* If artifact is open, let user minimize/expand chat */}
-          {showArtifactPanel && (
-            <div className="absolute top-1/2 right-0 transform -translate-y-1/2">
-              <motion.button
-                onClick={toggleChatVisibility}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="p-2 bg-white rounded-l-md shadow-md text-blue-600"
-              >
-                {minimizeChat ? (
-                  <ChevronRight className="w-4 h-4" />
-                ) : (
-                  <ChevronLeft className="w-4 h-4" />
-                )}
-              </motion.button>
-            </div>
-          )}
         </motion.div>
 
         {/* Artifact Panel */}
@@ -577,14 +583,20 @@ export default function Core() {
               }`}
             >
               {/* Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 border-b border-blue-700 flex items-center justify-between">
+              <div
+                className="text-white p-4 border-b flex items-center justify-between"
+                style={{
+                  background: `linear-gradient(to right, ${BRAND_COLORS.horizon}, ${BRAND_COLORS.charcoal})`,
+                  borderBottomColor: BRAND_COLORS.horizonDark,
+                }}
+              >
                 <div className="flex items-center gap-2">
                   {activeArtifact.artifactType === "custom-react" ? (
-                    <LineChartIcon className="w-5 h-5 text-blue-200" />
+                    <LineChartIcon className="w-5 h-5 text-white opacity-70" />
                   ) : (
                     React.createElement(
                       getArtifactIcon(activeArtifact.artifactType),
-                      { className: "w-5 h-5 text-blue-200" },
+                      { className: "w-5 h-5 text-white opacity-70" },
                     )
                   )}
                   <div>
@@ -593,7 +605,7 @@ export default function Core() {
                         activeArtifact.artifactType.charAt(0).toUpperCase() +
                           activeArtifact.artifactType.slice(1)}
                     </h3>
-                    <p className="text-xs text-blue-200">
+                    <p className="text-xs text-white opacity-70">
                       Interactive visualization
                     </p>
                   </div>
@@ -601,7 +613,7 @@ export default function Core() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={toggleArtifactFullScreen}
-                    className="p-1.5 hover:bg-blue-700/50 rounded-full transition-colors"
+                    className="p-1.5 hover:bg-white/10 rounded-full transition-colors"
                     title={
                       artifactFullScreen ? "Exit fullscreen" : "Fullscreen"
                     }
@@ -614,14 +626,14 @@ export default function Core() {
                   </button>
                   <button
                     onClick={() => window.open("about:blank", "_blank")}
-                    className="p-1.5 hover:bg-blue-700/50 rounded-full transition-colors"
+                    className="p-1.5 hover:bg-white/10 rounded-full transition-colors"
                     title="Open in new tab"
                   >
                     <ExternalLink className="w-5 h-5 text-white" />
                   </button>
                   <button
                     onClick={closeArtifactPanel}
-                    className="p-1.5 hover:bg-blue-700/50 rounded-full transition-colors"
+                    className="p-1.5 hover:bg-white/10 rounded-full transition-colors"
                     title="Close"
                   >
                     <X className="w-5 h-5 text-white" />
@@ -655,7 +667,8 @@ export default function Core() {
                   </button>
                   <button
                     onClick={closeArtifactPanel}
-                    className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm flex items-center gap-1"
+                    className="px-3 py-1.5 rounded-md text-sm flex items-center gap-1 text-white"
+                    style={{ backgroundColor: BRAND_COLORS.horizon }}
                   >
                     <ArrowLeft className="w-3 h-3" />
                     <span>Back to chat</span>
@@ -677,7 +690,10 @@ export default function Core() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setShowArtifactPanel(true)}
-            className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all z-20"
+            className="fixed bottom-6 right-6 p-4 rounded-full shadow-lg hover:shadow-xl transition-all z-20 text-white"
+            style={{
+              background: `linear-gradient(to right, ${BRAND_COLORS.horizon}, ${BRAND_COLORS.charcoal})`,
+            }}
             title="Show Data"
           >
             <ChevronRight className="w-6 h-6 transform rotate-180" />
