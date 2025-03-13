@@ -14,7 +14,8 @@ import {
 } from "lucide-react";
 
 // Import components
-import LineChart from "./datafacts/LineChart";
+// Instead of directly importing LineChart, we import it as OriginalLineChart
+import OriginalLineChart from "./datafacts/LineChart";
 import BarChart from "./datafacts/BarChart";
 import PieChartComponent from "./datafacts/PieChart";
 import DataTable from "./datafacts/DataTable";
@@ -24,6 +25,21 @@ import PropertyComparison from "./datafacts/PropertyComparison";
 import Calculator from "./datafacts/Calculator";
 import Timeline from "./datafacts/Timeline";
 import MapView from "./datafacts/MapView";
+
+// Define an interface for the LineChart component props
+interface LineChartProps {
+  chartData: any;
+  colors: {
+    line: string;
+    grid: string;
+    tooltip: string;
+    tooltipBorder: string;
+  };
+  messagesEndRef?: React.RefObject<HTMLDivElement>;
+}
+
+// Cast the imported LineChart component to accept our extra props
+const LineChart = OriginalLineChart as React.FC<LineChartProps>;
 
 // Define brand colors for consistent visualization
 const BRAND_COLORS = {
