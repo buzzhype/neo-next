@@ -31,12 +31,12 @@ interface LeftPanelProps {
   setIsHomeSearchMode: (value: boolean) => void;
   selectedAgent: string;
   setSelectedAgent: (value: string) => void;
-  agents: any[];
+  agents: any[]; // Ideally, define a proper type for agents.
   activeView: string; // Current active view
   onViewChange: (view: string) => void; // Function to change view
 }
 
-const LeftPanel = ({
+const LeftPanel: React.FC<LeftPanelProps> = ({
   isCollapsed,
   toggleSidebar,
   isHomeSearchMode,
@@ -46,11 +46,11 @@ const LeftPanel = ({
   agents,
   activeView,
   onViewChange,
-}: LeftPanelProps) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [hoveredItem, setHoveredItem] = useState("");
+}) => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [hoveredItem, setHoveredItem] = useState<string>("");
 
-  // Update navItems to match the actual view IDs
+  // Navigation items with corresponding view IDs
   const navItems = [
     { icon: MessageSquare, label: "Chat", id: "chat" },
     { icon: Library, label: "Knowledge Base", id: "knowledge" },
@@ -91,7 +91,6 @@ const LeftPanel = ({
   // Get agent icon component based on agent ID
   const getAgentIcon = (agentId: string) => {
     const agent = agents.find((a) => a.id === agentId);
-
     switch (agent?.icon) {
       case "brain":
         return Brain;
@@ -106,7 +105,13 @@ const LeftPanel = ({
     }
   };
 
-  // Updated to use onViewChange instead of setActiveTab
+  // Handle agent selection (explicitly typing agentId as string)
+  const selectAgent = (agentId: string) => {
+    setSelectedAgent(agentId);
+    // Add any additional logic for agent selection here if needed.
+  };
+
+  // Updated to use onViewChange for tab selection
   const handleTabSelection = (viewId: string) => {
     onViewChange(viewId);
   };
@@ -121,7 +126,7 @@ const LeftPanel = ({
         transition: "width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1)",
       }}
     >
-      {/* Toggle button - now floating outside the sidebar */}
+      {/* Toggle Sidebar Button */}
       <motion.button
         onClick={toggleSidebar}
         className="absolute -right-3 top-20 w-6 h-12 bg-white border border-gray-200 rounded-full flex items-center justify-center shadow-sm hover:bg-gray-50 z-30"
@@ -232,7 +237,7 @@ const LeftPanel = ({
         ))}
       </nav>
 
-      {/* Recent Chats */}
+      {/* Recent Conversations */}
       <div className="flex-1 overflow-y-auto py-3 px-2">
         <AnimatePresence>
           {!isCollapsed && (
@@ -267,7 +272,6 @@ const LeftPanel = ({
               <div className="space-y-2 px-1">
                 {filteredConversations.map((conversation, index) => {
                   const AgentIcon = getAgentIcon(conversation.agentId);
-
                   return (
                     <motion.button
                       key={conversation.id}
@@ -323,7 +327,6 @@ const LeftPanel = ({
           <div className="w-10 h-10 bg-gradient-to-r from-blue-100 to-blue-200 rounded-full flex items-center justify-center flex-shrink-0 border border-blue-200">
             <User className="w-5 h-5 text-blue-600" />
           </div>
-
           <AnimatePresence>
             {!isCollapsed && (
               <motion.div
@@ -345,7 +348,6 @@ const LeftPanel = ({
               </motion.div>
             )}
           </AnimatePresence>
-
           <AnimatePresence>
             {!isCollapsed && (
               <motion.button
