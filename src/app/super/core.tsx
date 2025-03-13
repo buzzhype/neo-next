@@ -1181,7 +1181,7 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
         onClick={toggleDemo}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed bottom-15 left-18 z-10 px-4 py-2 rounded-lg text-sm font-medium shadow-md flex items-center gap-2 text-white"
+        className="fixed bottom-24 left-21 z-10 px-4 py-2 rounded-lg text-sm font-medium shadow-md flex items-center gap-2 text-white"
         style={{
           background: isDemoRunning
             ? BRAND_COLORS.blush
@@ -1412,7 +1412,7 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0, transition: { delay: 1 } }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-white rounded-xl shadow-lg p-3 flex items-center gap-3 z-20 max-w-md border border-gray-200"
+            className="fixed bottom-24 right-50 transform -translate-x-1/2 bg-white rounded-xl shadow-lg p-3 flex items-center gap-3 z-20 max-w-md border border-gray-200"
           >
             <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
               <Info className="w-4 h-4 text-blue-600" />
