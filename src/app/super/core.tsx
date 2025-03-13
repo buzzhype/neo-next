@@ -50,7 +50,6 @@ const BRAND_COLORS = {
   manatee: "#8a8ba6",
   horizon: "#5988a6",
   blush: "#d9848b",
-  // Horizon variants
   horizonLight: "#daeaf3", // horizon-100
   horizonDark: "#4a7a97", // horizon-600
 };
@@ -160,8 +159,8 @@ const questionCategories = [
 
 /**
  * UserProfile interface to explicitly type user profile objects.
- * The city property is typed as one of the keys of CITY_NAMES,
- * and propertyType is now a union of the allowed property types.
+ * The city property is one of the keys of CITY_NAMES,
+ * and propertyType is one of the allowed property types.
  */
 interface UserProfile {
   name: string;
@@ -180,14 +179,13 @@ interface UserProfile {
 }
 
 /**
- * Return up to six top suggested questions for a chosen category
+ * Return up to six top suggested questions for a chosen category.
  */
 function getSuggestedQuestions(
   category: string = "all",
   userProfile: UserProfile | null = null,
 ): string[] {
   let questions = [];
-
   if (category === "all") {
     questions = questionsData.slice(0, 6);
   } else {
@@ -195,7 +193,6 @@ function getSuggestedQuestions(
       .filter((q) => q.category === category)
       .slice(0, 6);
   }
-
   if (userProfile) {
     return questions.map((q) => {
       let personalized = q.question;
@@ -220,12 +217,11 @@ function getSuggestedQuestions(
       return personalized;
     });
   }
-
   return questions.map((q) => q.question);
 }
 
 /**
- * Extended artifact renderer for "custom-react" artifacts
+ * Extended artifact renderer for "custom-react" artifacts.
  */
 function EnhancedArtifactRenderer({ type, data }: { type: string; data: any }) {
   if (type === "custom-react") {
@@ -238,8 +234,7 @@ function EnhancedArtifactRenderer({ type, data }: { type: string; data: any }) {
 }
 
 /**
- * Interactive demo hook that cycles through every question in questionsData
- * that has artifact data, calling onOpenArtifact(...) for each artifact-based step.
+ * Interactive demo hook that cycles through artifact-based questions.
  */
 function useDemoMode(
   agents: any[],
@@ -270,7 +265,7 @@ function useDemoMode(
     setCurrentStep(0);
     setDemoProgress(0);
     const introMsg = {
-      id: Date.now(),
+      id: Date.now().toString(),
       role: "agent",
       agentId: selectedAgent,
       content: `Welcome to the Interactive Demo! I have ${steps.length} artifact-based questions to show you.`,
@@ -288,7 +283,7 @@ function useDemoMode(
     const timeout = setTimeout(() => {
       const step = steps[currentStep];
       const userMsg = {
-        id: Date.now(),
+        id: Date.now().toString(),
         role: "user",
         content: step.question,
         timestamp: new Date(),
@@ -298,7 +293,7 @@ function useDemoMode(
       setDemoProgress(((currentStep + 0.4) / steps.length) * 100);
       setTimeout(() => {
         const agentMsg = {
-          id: Date.now() + 1,
+          id: (Date.now() + 1).toString(),
           role: "agent",
           agentId: selectedAgent,
           content: step.answer,
@@ -406,8 +401,7 @@ export default function Core({
     const displayBudget = profile.budget
       ? `$${profile.budget.toLocaleString()}`
       : "your budget";
-    // Updated to include multi-family
-    const propertyTypes = {
+    const propertyTypes: Record<UserProfile["propertyType"], string> = {
       condo: "Condo",
       house: "House",
       townhouse: "Townhouse",
@@ -415,9 +409,7 @@ export default function Core({
       "multi-family": "Multi-Family",
     };
     const displayPropertyType =
-      (propertyTypes as Record<string, string>)[profile.propertyType] ||
-      profile.propertyType ||
-      "property";
+      propertyTypes[profile.propertyType] || profile.propertyType || "property";
     const displayBeds = profile.beds || "bedrooms";
     const displayFeatures =
       profile.homeFeatures && profile.homeFeatures.length > 0
@@ -439,7 +431,7 @@ export default function Core({
     const agent = agents.find((a) => a.id === selectedAgent) || agents[0];
     return [
       {
-        id: Date.now(),
+        id: Date.now().toString(),
         role: "agent",
         agentId: selectedAgent,
         content: `
@@ -464,9 +456,7 @@ I'm here to help you find the perfect home that matches these preferences. What 
   const [showSuggestions, setShowSuggestions] = useState(true);
   const [selectedQuestionCategory, setSelectedQuestionCategory] =
     useState("all");
-
   const [showCommandPalette, setShowCommandPalette] = useState(false);
-
   const [activeArtifact, setActiveArtifact] = useState<any>(null);
   const [showArtifactPanel, setShowArtifactPanel] = useState(false);
   const [artifactFullScreen, setArtifactFullScreen] = useState(false);
@@ -523,13 +513,13 @@ I'm here to help you find the perfect home that matches these preferences. What 
     const agent = agents.find((a) => a.id === selectedAgent) || agents[0];
     const newFormattedProfile = formatUserProfile(tempUserProfile);
     const systemMsg = {
-      id: Date.now(),
+      id: Date.now().toString(),
       role: "system",
       content: `Your preferences have been updated`,
       timestamp: new Date(),
     };
     const agentMsg = {
-      id: Date.now() + 1,
+      id: (Date.now() + 1).toString(),
       role: "agent",
       agentId: selectedAgent,
       content: `
@@ -575,13 +565,13 @@ Let's continue finding homes that match these updated criteria. Is there anythin
     const newAgent = agents.find((a) => a.id === agentId);
     if (!newAgent) return;
     const systemMsg = {
-      id: Date.now(),
+      id: Date.now().toString(),
       role: "system",
       content: `You are now chatting with ${newAgent.name}`,
       timestamp: new Date(),
     };
     const agentIntroMsg = {
-      id: Date.now() + 1,
+      id: (Date.now() + 1).toString(),
       role: "agent",
       agentId: agentId,
       content: `
@@ -613,7 +603,7 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
     setIsLoading(true);
     const matched = findMatch(userMessage);
     setTimeout(() => {
-      const newId = Date.now();
+      const newId = Date.now().toString();
       const response: any = {
         id: newId,
         role: "agent",
@@ -667,7 +657,7 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
     e.preventDefault();
     if (!input.trim() || isLoading || isDemoRunning) return;
     const userMsg = {
-      id: Date.now(),
+      id: Date.now().toString(),
       role: "user",
       content: input.trim(),
       timestamp: new Date(),
@@ -681,7 +671,7 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
   const handleSuggestedQuestion = (question: string) => {
     if (!question.trim() || isLoading || isDemoRunning) return;
     const userMsg = {
-      id: Date.now(),
+      id: Date.now().toString(),
       role: "user",
       content: question,
       timestamp: new Date(),
@@ -1058,7 +1048,8 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
         isOpen={showCommandPalette}
         onClose={() => setShowCommandPalette(false)}
         onSelectItem={handleSuggestedQuestion}
-        agents={agents}
+        // Casting agents to 'any' to bypass type mismatch (CommandPalette expects icon as string)
+        agents={agents as any}
         selectedAgent={selectedAgent}
         onSelectAgent={handleSelectAgent}
         questions={questionsData.map((q) => q.question)}
