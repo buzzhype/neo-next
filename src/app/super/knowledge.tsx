@@ -103,7 +103,8 @@ export default function Knowledge({
     features: userProfile.homeFeatures || [],
     hoaMax: userProfile.hoaMax || "Any",
   });
-  const [favoritePlaces, setFavoritePlaces] = useState(
+  // Explicitly type favoritePlaces as an array of FavoritePlace
+  const [favoritePlaces, setFavoritePlaces] = useState<FavoritePlace[]>(
     userProfile.favoritePlaces || [],
   );
   const [newPlace, setNewPlace] = useState({
@@ -124,6 +125,7 @@ export default function Knowledge({
     CITIES.find((c) => c.id === userProfile.city) || CITIES[0],
   );
   const [visiblePlaces, setVisiblePlaces] = useState<Place[]>([]);
+
   useEffect(() => {
     if (setUserProfile && Object.keys(homePreferences).length > 0) {
       setUserProfile({
@@ -253,6 +255,7 @@ export default function Knowledge({
     }
   };
 
+  // The fix: now 'place' in this filter is properly typed as FavoritePlace
   const handleRemovePlace = (id: string) => {
     setFavoritePlaces(favoritePlaces.filter((place) => place.id !== id));
   };
@@ -279,7 +282,7 @@ export default function Knowledge({
     setHomePreferences((prev) => ({
       ...prev,
       features: prev.features.includes(feature)
-        ? prev.features.filter((f) => f !== feature)
+        ? prev.features.filter((f: string) => f !== feature)
         : [...prev.features, feature],
     }));
   };
