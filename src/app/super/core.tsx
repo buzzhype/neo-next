@@ -115,7 +115,7 @@ const HOME_FEATURES = [
   { value: "garage", label: "Garage" },
 ];
 
-// Enhanced question categories with better styling
+// Enhanced question categories with styling
 const questionCategories = [
   {
     id: "all",
@@ -423,7 +423,31 @@ export default function Core({
 
   const formattedProfile = formatUserProfile(userProfile);
 
-  // Changed newestMessageId type to string | null for consistency.
+  // Added missing messages state. IDs are strings.
+  const [messages, setMessages] = useState<any[]>(() => {
+    const agent = agents.find((a) => a.id === selectedAgent) || agents[0];
+    return [
+      {
+        id: Date.now().toString(),
+        role: "agent",
+        agentId: selectedAgent,
+        content: `
+👋 Hello ${formattedProfile.name}! I'm your dedicated ${agent.name} for ${formattedProfile.displayCity}.
+
+📝 **Your Home Search Profile:**
+• Looking for: ${formattedProfile.displayPropertyType} with ${formattedProfile.displayBeds}
+• Budget: ${formattedProfile.displayBudget}
+• Must-have features: ${formattedProfile.displayFeatures}
+
+I'm here to help you find the perfect home that matches these preferences. What would you like to explore first? You can ask about neighborhoods, get property recommendations, or learn about the buying process.
+        `,
+        timestamp: new Date(),
+        isWelcomeMessage: true,
+      },
+    ];
+  });
+
+  // Changed newestMessageId type to string | null.
   const [newestMessageId, setNewestMessageId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState("");
@@ -1089,7 +1113,7 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
               <UserProfileCard />
             </div>
             <ChatSectionWrapper
-              messages={displayMessages}
+              messages={isDemoRunning ? demoMessages : messages}
               agents={agents}
               selectedAgent={selectedAgent}
               newestMessageId={newestMessageId}
