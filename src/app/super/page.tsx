@@ -78,7 +78,7 @@ export default function RealEstatePage() {
   const [userProfile, setUserProfile] = useState(initialUserProfile);
   const [showAgentSelector, setShowAgentSelector] = useState(false);
   const [activeView, setActiveView] = useState("chat"); // Default view is chat
-  const [uploadedFiles, setUploadedFiles] = useState([]); // For knowledge component
+  const [uploadedFiles, setUploadedFiles] = useState<any[]>([]); // For knowledge component
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -89,8 +89,8 @@ export default function RealEstatePage() {
     setShowAgentSelector(!showAgentSelector);
   };
 
-  // Handle agent selection
-  const selectAgent = (agentId) => {
+  // Handle agent selection (agentId is explicitly typed as string)
+  const selectAgent = (agentId: string) => {
     setSelectedAgent(agentId);
     setShowAgentSelector(false);
 
@@ -99,7 +99,7 @@ export default function RealEstatePage() {
     const switchMessage = {
       id: Date.now(),
       role: "system",
-      content: `You are now chatting with ${agent.name}`,
+      content: `You are now chatting with ${agent?.name}`,
       timestamp: new Date(),
     };
 
@@ -107,15 +107,15 @@ export default function RealEstatePage() {
       id: Date.now() + 1,
       role: "agent",
       agentId: agentId,
-      content: `Hello! I'm your ${agent.name}. How can I help you today?`,
+      content: `Hello! I'm your ${agent?.name}. How can I help you today?`,
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, switchMessage, introMessage]);
   };
 
-  // Handle view changes between different components
-  const handleViewChange = (view) => {
+  // Handle view changes between different components (view is typed as string)
+  const handleViewChange = (view: string) => {
     setActiveView(view);
   };
 
@@ -146,7 +146,6 @@ export default function RealEstatePage() {
       case "discover":
       case "reimagine":
       default:
-        // Could render placeholder content for other views
         return (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-500">This feature is coming soon!</p>
