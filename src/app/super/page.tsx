@@ -17,6 +17,23 @@ interface Message {
   timestamp: Date;
 }
 
+// Define an interface for the Core component props
+interface CoreProps {
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  selectedAgent: string;
+  setSelectedAgent: React.Dispatch<React.SetStateAction<string>>;
+  agents: {
+    id: string;
+    name: string;
+    icon: string;
+    description: string;
+    color: string;
+  }[];
+  isHomeSearchMode: boolean;
+  userProfile: any;
+}
+
 // Agent options
 const agentOptions = [
   {
@@ -98,14 +115,13 @@ export default function RealEstatePage() {
     setShowAgentSelector(!showAgentSelector);
   };
 
-  // Handle agent selection (agentId is explicitly typed as string)
+  // Handle agent selection with an explicitly typed parameter
   const selectAgent = (agentId: string) => {
     setSelectedAgent(agentId);
     setShowAgentSelector(false);
 
-    // Add a system message when switching agents.
-    // For system messages, we provide an empty string for agentId.
     const agent = agentOptions.find((a) => a.id === agentId);
+    // For system messages, we use an empty string for agentId.
     const switchMessage: Message = {
       id: Date.now(),
       role: "system",
@@ -125,17 +141,21 @@ export default function RealEstatePage() {
     setMessages((prev) => [...prev, switchMessage, introMessage]);
   };
 
-  // Handle view changes between different components (view is typed as string)
+  // Handle view changes between different components
   const handleViewChange = (view: string) => {
     setActiveView(view);
   };
+
+  // Force the Core component to accept our props.
+  // We first cast Core as unknown then as React.FC<CoreProps>.
+  const CoreComponent = Core as unknown as React.FC<CoreProps>;
 
   // Render the appropriate component based on activeView
   const renderActiveView = () => {
     switch (activeView) {
       case "chat":
         return (
-          <Core
+          <CoreComponent
             messages={messages}
             setMessages={setMessages}
             selectedAgent={selectedAgent}
@@ -167,7 +187,7 @@ export default function RealEstatePage() {
 
   return (
     <div className="h-screen w-full flex overflow-hidden bg-gray-50">
-      {/* Left Sidebar with updated props */}
+      {/* Left Sidebar */}
       <LeftPanel
         isCollapsed={isCollapsed}
         toggleSidebar={toggleSidebar}
@@ -179,10 +199,8 @@ export default function RealEstatePage() {
         activeView={activeView}
         onViewChange={handleViewChange}
       />
-
       {/* Main Content */}
       <div className="flex-1 flex flex-col h-full overflow-hidden">
-        {/* Dynamic content based on activeView */}
         <div className="flex-1 overflow-hidden">{renderActiveView()}</div>
       </div>
     </div>
