@@ -89,7 +89,7 @@ const LeftPanel = ({
   );
 
   // Get agent icon component based on agent ID
-  const getAgentIcon = (agentId) => {
+  const getAgentIcon = (agentId: string) => {
     const agent = agents.find((a) => a.id === agentId);
 
     switch (agent?.icon) {
@@ -107,7 +107,7 @@ const LeftPanel = ({
   };
 
   // Updated to use onViewChange instead of setActiveTab
-  const handleTabSelection = (viewId) => {
+  const handleTabSelection = (viewId: string) => {
     onViewChange(viewId);
   };
 
@@ -215,7 +215,9 @@ const LeftPanel = ({
             onMouseLeave={() => setHoveredItem("")}
           >
             <item.icon
-              className={`w-5 h-5 ${activeView === item.id ? "text-blue-600" : "text-gray-600"}`}
+              className={`w-5 h-5 ${
+                activeView === item.id ? "text-blue-600" : "text-gray-600"
+              }`}
             />
 
             {!isCollapsed && <span className="font-medium">{item.label}</span>}
