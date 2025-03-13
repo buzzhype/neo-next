@@ -447,12 +447,12 @@ export default function Core() {
 
   const chatSectionVariants = {
     normal: {
-      width: showArtifactPanel ? "30%" : "100%",
+      width: showArtifactPanel ? "50%" : "100%",
       opacity: 1,
       x: 0,
     },
     minimized: {
-      width: "30%",
+      width: "50%",
       opacity: 0.8,
       x: 0,
     },
