@@ -67,6 +67,18 @@ import personas, {
   HOA_FEE_OPTIONS,
 } from "./personas.js";
 
+interface SavedHome {
+  id: string;
+  imageUrl: string;
+  address: string;
+  neighborhood: string;
+  price: number;
+  beds: number;
+  baths: number;
+  sqft: number;
+  matched?: string[];
+}
+
 interface KnowledgeProps {
   uploadedFiles: any[];
   setUploadedFiles: (files: any[]) => void;
@@ -112,7 +124,9 @@ export default function Knowledge({
     city: userProfile.city || CITIES[0].id,
     category: "",
   });
-  const [savedHomes, setSavedHomes] = useState(userProfile.savedHomes || []);
+  const [savedHomes, setSavedHomes] = useState<SavedHome[]>(
+    userProfile.savedHomes || [],
+  );
   const [customTags, setCustomTags] = useState<string[]>(
     userProfile.customTags || [],
   );
