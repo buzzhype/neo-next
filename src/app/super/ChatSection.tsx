@@ -343,8 +343,8 @@ export default function ChatSection({
                   <div
                     className={`rounded-lg px-3.5 py-2.5 ${
                       message.role === "user"
-                        ? "bg-blue-600 text-white"
-                        : "bg-white border shadow-sm"
+                        ? "bg-slate-800 text-white"
+                        : "bg-white shadow-sm"
                     }`}
                   >
                     {/* Agent name at the top of agent messages */}
