@@ -74,6 +74,15 @@ interface KnowledgeProps {
   setUserProfile?: (profile: any) => void;
 }
 
+interface FavoritePlace {
+  id: string;
+  name: string;
+  city: string;
+  category: string;
+  lat: number;
+  lng: number;
+}
+
 export default function Knowledge({
   uploadedFiles,
   setUploadedFiles,
