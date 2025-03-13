@@ -113,7 +113,9 @@ export default function Knowledge({
     category: "",
   });
   const [savedHomes, setSavedHomes] = useState(userProfile.savedHomes || []);
-  const [customTags, setCustomTags] = useState(userProfile.customTags || []);
+  const [customTags, setCustomTags] = useState<string[]>(
+    userProfile.customTags || [],
+  );
   const [newTag, setNewTag] = useState("");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [aiInsights, setAiInsights] = useState(SAMPLE_INSIGHTS);
