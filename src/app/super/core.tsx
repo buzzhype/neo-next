@@ -160,7 +160,8 @@ const questionCategories = [
 
 /**
  * UserProfile interface to explicitly type user profile objects.
- * The city property is now typed as one of the keys of CITY_NAMES.
+ * The city property is typed as one of the keys of CITY_NAMES,
+ * and propertyType is now a union of the allowed property types.
  */
 interface UserProfile {
   name: string;
@@ -168,7 +169,7 @@ interface UserProfile {
   purpose: string;
   budget: number;
   city: keyof typeof CITY_NAMES;
-  propertyType: string;
+  propertyType: "condo" | "house" | "townhouse" | "apartment" | "multi-family";
   beds: string;
   baths: string;
   squareFeet: string;
@@ -185,7 +186,6 @@ function getSuggestedQuestions(
   category: string = "all",
   userProfile: UserProfile | null = null,
 ): string[] {
-  // Filter questions by category
   let questions = [];
 
   if (category === "all") {
@@ -196,12 +196,9 @@ function getSuggestedQuestions(
       .slice(0, 6);
   }
 
-  // Personalize questions based on user profile if available
   if (userProfile) {
     return questions.map((q) => {
       let personalized = q.question;
-
-      // Replace placeholders with actual user data
       if (userProfile.city && CITY_NAMES[userProfile.city]) {
         personalized = personalized.replace(
           /\{CITY\}/g,
@@ -220,7 +217,6 @@ function getSuggestedQuestions(
           userProfile.propertyType,
         );
       }
-
       return personalized;
     });
   }
@@ -232,21 +228,18 @@ function getSuggestedQuestions(
  * Extended artifact renderer for "custom-react" artifacts
  */
 function EnhancedArtifactRenderer({ type, data }: { type: string; data: any }) {
-  // If type is "custom-react", e.g. SFMarketTrends
   if (type === "custom-react") {
     if (data.componentType === "SFMarketTrends") {
       return <SFMarketTrends />;
     }
     return null;
   }
-  // Otherwise use the standard artifact logic
   return <ArtifactRenderer type={type} data={data} />;
 }
 
 /**
- * Interactive demo hook that automatically cycles through
- * **every** question in questionsData that has artifact data,
- * calling onOpenArtifact(...) for each artifact-based step.
+ * Interactive demo hook that cycles through every question in questionsData
+ * that has artifact data, calling onOpenArtifact(...) for each artifact-based step.
  */
 function useDemoMode(
   agents: any[],
@@ -259,15 +252,10 @@ function useDemoMode(
   const [isTyping, setIsTyping] = useState(false);
   const [demoProgress, setDemoProgress] = useState(0);
 
-  /**
-   * Identify all questions from questionsData that have
-   * an artifact, i.e. artifactType && artifactData are present.
-   */
   const artifactSteps = questionsData.filter(
     (q) => q.artifactType && q.artifactData,
   );
 
-  // Convert them into "demo steps" with question/answer/artifact
   const steps = artifactSteps.map((q) => ({
     question: q.question,
     answer: q.answer,
@@ -275,15 +263,12 @@ function useDemoMode(
     artifactData: q.artifactData,
   }));
 
-  // Start the demo
   function startDemo() {
     setIsRunning(true);
     setIsTyping(false);
     setDemoMessages([]);
     setCurrentStep(0);
     setDemoProgress(0);
-
-    // Intro message
     const introMsg = {
       id: Date.now(),
       role: "agent",
@@ -294,19 +279,14 @@ function useDemoMode(
     setDemoMessages([introMsg]);
   }
 
-  // Stop the demo
   function stopDemo() {
     setIsRunning(false);
   }
 
-  // Step the demo forward
   useEffect(() => {
     if (!isRunning || isTyping || currentStep >= steps.length) return;
-
-    // Show next question after a short delay
     const timeout = setTimeout(() => {
       const step = steps[currentStep];
-      // Add user question
       const userMsg = {
         id: Date.now(),
         role: "user",
@@ -316,8 +296,6 @@ function useDemoMode(
       setDemoMessages((prev) => [...prev, userMsg]);
       setIsTyping(true);
       setDemoProgress(((currentStep + 0.4) / steps.length) * 100);
-
-      // Wait again, then add agent response w/ artifact
       setTimeout(() => {
         const agentMsg = {
           id: Date.now() + 1,
@@ -328,22 +306,17 @@ function useDemoMode(
           artifactData: step.artifactData,
           timestamp: new Date(),
         };
-
         setDemoMessages((prev) => [...prev, agentMsg]);
-
-        // If there's an artifact, auto-open it
         if (agentMsg.artifactType && agentMsg.artifactData) {
           setTimeout(() => {
-            onOpenArtifact(agentMsg); // callback from parent
+            onOpenArtifact(agentMsg);
           }, 600);
         }
-
         setIsTyping(false);
         setCurrentStep((prev) => prev + 1);
         setDemoProgress(((currentStep + 1) / steps.length) * 100);
       }, 1500);
     }, 3000);
-
     return () => clearTimeout(timeout);
   }, [isRunning, isTyping, currentStep, selectedAgent, steps]);
 
@@ -363,7 +336,6 @@ export default function Core({
 }: {
   userProfile?: UserProfile;
 }) {
-  // Local editable version of user profile
   const [userProfile, setUserProfile] = useState<UserProfile>(
     initialUserProfile || {
       name: "Guest",
@@ -382,12 +354,10 @@ export default function Core({
     },
   );
 
-  // Preference editing state
   const [isEditingPreferences, setIsEditingPreferences] = useState(false);
   const [showPreferenceDetails, setShowPreferenceDetails] = useState(false);
   const [tempUserProfile, setTempUserProfile] = useState({ ...userProfile });
 
-  // Agents with better descriptions and styling
   const [selectedAgent, setSelectedAgent] = useState("firstTimeBuyer");
   const agents = [
     {
@@ -420,9 +390,7 @@ export default function Core({
     },
   ];
 
-  // Format user profile data for display
   const formatUserProfile = (profile: UserProfile | null) => {
-    // Default values if no profile exists
     if (!profile) {
       return {
         name: "Guest",
@@ -433,35 +401,28 @@ export default function Core({
         displayFeatures: "features you need",
       };
     }
-
-    // Format city name
     const displayCity =
       CITY_NAMES[profile.city] || profile.city || "San Francisco";
-
-    // Format budget with commas
     const displayBudget = profile.budget
       ? `$${profile.budget.toLocaleString()}`
       : "your budget";
-
-    // Format property type with better capitalization
+    // Updated to include multi-family
     const propertyTypes = {
       condo: "Condo",
       house: "House",
       townhouse: "Townhouse",
       apartment: "Apartment",
+      "multi-family": "Multi-Family",
     };
     const displayPropertyType =
-      propertyTypes[profile.propertyType] || profile.propertyType || "property";
-
-    // Format beds
+      (propertyTypes as Record<string, string>)[profile.propertyType] ||
+      profile.propertyType ||
+      "property";
     const displayBeds = profile.beds || "bedrooms";
-
-    // Format features as a readable list
     const displayFeatures =
       profile.homeFeatures && profile.homeFeatures.length > 0
         ? profile.homeFeatures.join(", ")
         : "features you need";
-
     return {
       name: profile.name || "Guest",
       displayCity,
@@ -472,15 +433,10 @@ export default function Core({
     };
   };
 
-  // Get formatted profile data
   const formattedProfile = formatUserProfile(userProfile);
 
-  // Normal chat messages with personalized first message
   const [messages, setMessages] = useState<any[]>(() => {
-    // Get the current agent
     const agent = agents.find((a) => a.id === selectedAgent) || agents[0];
-
-    // Create personalized welcome message - redesigned to be more engaging
     return [
       {
         id: Date.now(),
@@ -495,7 +451,7 @@ export default function Core({
 • Must-have features: ${formattedProfile.displayFeatures}
 
 I'm here to help you find the perfect home that matches these preferences. What would you like to explore first? You can ask about neighborhoods, get property recommendations, or learn about the buying process.
-      `,
+        `,
         timestamp: new Date(),
         isWelcomeMessage: true,
       },
@@ -505,24 +461,19 @@ I'm here to help you find the perfect home that matches these preferences. What 
   const [newestMessageId, setNewestMessageId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(true); // Always show suggestions by default
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const [selectedQuestionCategory, setSelectedQuestionCategory] =
     useState("all");
 
-  // Command palette
   const [showCommandPalette, setShowCommandPalette] = useState(false);
 
-  // Artifact panel
   const [activeArtifact, setActiveArtifact] = useState<any>(null);
   const [showArtifactPanel, setShowArtifactPanel] = useState(false);
   const [artifactFullScreen, setArtifactFullScreen] = useState(false);
   const [minimizeChat, setMinimizeChat] = useState(false);
 
-  // Ref for chat auto-scroll - Fixed type definition to match what ChatSection expects
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // The interactive demo
-  // Pass a callback so the demo can auto-show artifacts as they appear
   const {
     demoMessages,
     isRunning: isDemoRunning,
@@ -536,16 +487,13 @@ I'm here to help you find the perfect home that matches these preferences. What 
     setMinimizeChat(true);
   });
 
-  // The array of messages: normal or from the demo
   const displayMessages = isDemoRunning ? demoMessages : messages;
 
-  // Build personalized suggestions for the user
   const suggestedQuestions = getSuggestedQuestions(
     selectedQuestionCategory,
     userProfile,
   );
 
-  // Handle temp profile changes
   const handleTempProfileChange = (field: string, value: any) => {
     setTempUserProfile((prev: any) => ({
       ...prev,
@@ -553,7 +501,6 @@ I'm here to help you find the perfect home that matches these preferences. What 
     }));
   };
 
-  // Handle feature toggle in temp profile
   const toggleFeature = (feature: string) => {
     setTempUserProfile((prev: any) => {
       const currentFeatures = [...(prev.homeFeatures || [])];
@@ -571,26 +518,16 @@ I'm here to help you find the perfect home that matches these preferences. What 
     });
   };
 
-  // Save profile changes and update messages
   const saveProfileChanges = () => {
-    // Update the user profile with temp changes
     setUserProfile(tempUserProfile);
-
-    // Get the current agent
     const agent = agents.find((a) => a.id === selectedAgent) || agents[0];
-
-    // Calculate the formatted profile with new values
     const newFormattedProfile = formatUserProfile(tempUserProfile);
-
-    // Add a system message about the updated preferences
     const systemMsg = {
       id: Date.now(),
       role: "system",
       content: `Your preferences have been updated`,
       timestamp: new Date(),
     };
-
-    // Add a personalized message about the new preferences
     const agentMsg = {
       id: Date.now() + 1,
       role: "agent",
@@ -607,19 +544,16 @@ Let's continue finding homes that match these updated criteria. Is there anythin
       `,
       timestamp: new Date(),
     };
-
     setMessages((prev) => [...prev, systemMsg, agentMsg]);
     setNewestMessageId(agentMsg.id);
     setIsEditingPreferences(false);
   };
 
-  // Cancel editing
   const cancelEditing = () => {
     setTempUserProfile({ ...userProfile });
     setIsEditingPreferences(false);
   };
 
-  // Command+K detection
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       const isMac = navigator.platform.toUpperCase().includes("MAC");
@@ -635,25 +569,17 @@ Let's continue finding homes that match these updated criteria. Is there anythin
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Function to switch agents while maintaining context
   const handleSelectAgent = (agentId: string) => {
     if (agentId === selectedAgent) return;
-
     setSelectedAgent(agentId);
-
-    // Find the new agent details
     const newAgent = agents.find((a) => a.id === agentId);
     if (!newAgent) return;
-
-    // Add a system message indicating agent switch
     const systemMsg = {
       id: Date.now(),
       role: "system",
       content: `You are now chatting with ${newAgent.name}`,
       timestamp: new Date(),
     };
-
-    // Add a personalized intro from the new agent - improved design
     const agentIntroMsg = {
       id: Date.now() + 1,
       role: "agent",
@@ -672,12 +598,10 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
       `,
       timestamp: new Date(),
     };
-
     setMessages((prev) => [...prev, systemMsg, agentIntroMsg]);
     setNewestMessageId(agentIntroMsg.id);
   };
 
-  // Basic Q&A logic with personalization
   function findMatch(userMsg: string) {
     const normalized = userMsg.toLowerCase().trim();
     return questionsData.find((q) =>
@@ -688,7 +612,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
   function simulateResponse(userMessage: string) {
     setIsLoading(true);
     const matched = findMatch(userMessage);
-
     setTimeout(() => {
       const newId = Date.now();
       const response: any = {
@@ -698,13 +621,9 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
         content: "",
         timestamp: new Date(),
       };
-
       if (matched) {
-        // Personalize the answer with user profile data
         let personalizedAnswer = matched.answer;
-
         if (userProfile) {
-          // Replace placeholders with user data
           if (userProfile.city && CITY_NAMES[userProfile.city]) {
             personalizedAnswer = personalizedAnswer.replace(
               /\{CITY\}/g,
@@ -724,13 +643,10 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
             );
           }
         }
-
         response.content = personalizedAnswer;
-
         if (matched.artifactType && matched.artifactData) {
           response.artifactType = matched.artifactType;
           response.artifactData = matched.artifactData;
-          // Show the artifact automatically
           setTimeout(() => {
             setActiveArtifact(response);
             setShowArtifactPanel(true);
@@ -740,7 +656,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
       } else {
         response.content = `I don't have a specific answer for "${userMessage}". Would you like to know more about ${formattedProfile.displayCity} neighborhoods, mortgage options, or the buying process?`;
       }
-
       setMessages((prev) => [...prev, response]);
       setNewestMessageId(newId);
       setIsLoading(false);
@@ -748,11 +663,9 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
     }, 1500);
   }
 
-  // Handling user input
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading || isDemoRunning) return;
-
     const userMsg = {
       id: Date.now(),
       role: "user",
@@ -762,11 +675,9 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setShowSuggestions(false);
-
     simulateResponse(userMsg.content);
   };
 
-  // Handling a suggested question
   const handleSuggestedQuestion = (question: string) => {
     if (!question.trim() || isLoading || isDemoRunning) return;
     const userMsg = {
@@ -777,42 +688,35 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
     };
     setMessages((prev) => [...prev, userMsg]);
     setShowSuggestions(false);
-
     simulateResponse(question);
   };
 
-  // User clicked the artifact chip in a bubble
   const handleArtifactView = (msg: any) => {
     setActiveArtifact(msg);
     setShowArtifactPanel(true);
     setMinimizeChat(true);
   };
 
-  // Fullscreen toggle
   const toggleArtifactFullScreen = () => {
     setArtifactFullScreen(!artifactFullScreen);
     setMinimizeChat(true);
   };
 
-  // Minimize or restore chat
   const toggleChatVisibility = () => {
     setMinimizeChat(!minimizeChat);
   };
 
-  // Close artifact
   const closeArtifactPanel = () => {
     setShowArtifactPanel(false);
     setArtifactFullScreen(false);
     setMinimizeChat(false);
   };
 
-  // Start or stop demo
   const toggleDemo = () => {
     if (isDemoRunning) stopDemo();
     else startDemo();
   };
 
-  // Panel animations
   const artifactPanelVariants = {
     hidden: { x: "100%" },
     visible: {
@@ -844,7 +748,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
     },
   };
 
-  // User profile card with edit functionality
   const UserProfileCard = () => (
     <motion.div
       className="bg-white rounded-xl shadow-sm mb-4 border border-gray-100 overflow-hidden"
@@ -855,7 +758,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
       }}
     >
       <div className="p-4">
-        {/* Header with toggle */}
         <div className="flex items-center justify-between gap-3 mb-2">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
@@ -919,8 +821,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
             )}
           </div>
         </div>
-
-        {/* Summary cards - always visible */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
           <div className="bg-blue-50 p-2 rounded-lg flex items-center gap-2">
             <MapPin className="w-4 h-4 text-blue-600" />
@@ -947,8 +847,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
             </span>
           </div>
         </div>
-
-        {/* Expanded details - visible when showPreferenceDetails is true */}
         <AnimatePresence>
           {showPreferenceDetails && (
             <motion.div
@@ -959,11 +857,9 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
               className="overflow-hidden"
             >
               <div className="border-t mt-4 pt-4">
-                {/* Editing mode */}
                 {isEditingPreferences ? (
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* Property Type */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Property Type
@@ -985,8 +881,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
                           ))}
                         </select>
                       </div>
-
-                      {/* Bedrooms */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Bedrooms
@@ -1005,8 +899,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
                           ))}
                         </select>
                       </div>
-
-                      {/* Budget */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           Budget
@@ -1028,8 +920,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
                           ))}
                         </select>
                       </div>
-
-                      {/* City */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                           City
@@ -1049,8 +939,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
                         </select>
                       </div>
                     </div>
-
-                    {/* Home Features */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Must-Have Features
@@ -1079,7 +967,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
                         ))}
                       </div>
                     </div>
-
                     <div className="pt-3 flex justify-end gap-2">
                       <button
                         onClick={cancelEditing}
@@ -1097,9 +984,7 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
                     </div>
                   </div>
                 ) : (
-                  /* View mode */
                   <div className="space-y-4">
-                    {/* Home Features */}
                     <div>
                       <h4 className="text-sm font-medium text-gray-700 mb-2">
                         Must-Have Features
@@ -1120,7 +1005,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
                         })}
                       </div>
                     </div>
-
                     <div>
                       <h4 className="text-sm font-medium text-gray-700 mb-2">
                         Additional Details
@@ -1146,7 +1030,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
                         </div>
                       </div>
                     </div>
-
                     <div className="pt-2 flex justify-end">
                       <button
                         onClick={() => {
@@ -1171,7 +1054,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
 
   return (
     <div className="h-screen w-full flex overflow-hidden bg-gray-50 relative">
-      {/* Command Palette */}
       <CommandPalette
         isOpen={showCommandPalette}
         onClose={() => setShowCommandPalette(false)}
@@ -1182,8 +1064,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
         questions={questionsData.map((q) => q.question)}
         neighborhoods={sampleNeighborhoods}
       />
-
-      {/* Demo progress bar */}
       <AnimatePresence>
         {isDemoRunning && (
           <motion.div
@@ -1202,8 +1082,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Demo Button */}
       <motion.button
         onClick={toggleDemo}
         whileHover={{ scale: 1.05 }}
@@ -1227,10 +1105,7 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
           </>
         )}
       </motion.button>
-
-      {/* Layout */}
       <div className="flex-1 flex h-full w-full overflow-hidden">
-        {/* Chat Section */}
         <motion.div
           initial="normal"
           animate={
@@ -1244,13 +1119,10 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className="h-full flex flex-col relative overflow-hidden"
         >
-          {/* Main chat UI */}
           <div className="flex-1 overflow-hidden">
-            {/* User profile card at the top */}
             <div className="px-4 pt-4">
               <UserProfileCard />
             </div>
-
             <ChatSectionWrapper
               messages={displayMessages}
               agents={agents}
@@ -1269,7 +1141,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
               isDemoRunning={isDemoRunning}
             />
           </div>
-
           <ChatInteraction
             input={input}
             onInputChange={setInput}
@@ -1282,8 +1153,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
             onSelectAgent={handleSelectAgent}
             onOpenCommandPalette={() => setShowCommandPalette(true)}
           />
-
-          {/* If artifact is open, let user minimize/expand chat */}
           {showArtifactPanel && (
             <button
               onClick={toggleChatVisibility}
@@ -1298,8 +1167,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
             </button>
           )}
         </motion.div>
-
-        {/* Artifact Panel */}
         <AnimatePresence>
           {showArtifactPanel && activeArtifact && (
             <motion.div
@@ -1311,7 +1178,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
                 artifactFullScreen ? "fixed inset-0" : "flex-1"
               }`}
             >
-              {/* Header */}
               <div
                 className="text-white p-4 border-b flex items-center justify-between"
                 style={{
@@ -1325,7 +1191,9 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
                   ) : (
                     React.createElement(
                       getArtifactIcon(activeArtifact.artifactType),
-                      { className: "w-5 h-5 text-white opacity-70" },
+                      {
+                        className: "w-5 h-5 text-white opacity-70",
+                      },
                     )
                   )}
                   <div>
@@ -1369,8 +1237,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
                   </button>
                 </div>
               </div>
-
-              {/* Body */}
               <div className="flex-1 overflow-auto">
                 <div className="p-4 h-full">
                   <EnhancedArtifactRenderer
@@ -1380,8 +1246,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
                   />
                 </div>
               </div>
-
-              {/* Footer */}
               <div className="p-3 border-t border-gray-200 bg-gray-50 flex justify-between items-center">
                 <div className="text-xs text-gray-500 flex items-center gap-1.5">
                   <Info className="w-3 h-3" />
@@ -1410,8 +1274,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
           )}
         </AnimatePresence>
       </div>
-
-      {/* If artifact is closed but we still have an activeArtifact, show a floating button */}
       <AnimatePresence>
         {activeArtifact && !showArtifactPanel && (
           <motion.button
@@ -1431,8 +1293,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
           </motion.button>
         )}
       </AnimatePresence>
-
-      {/* First-time helper tooltip */}
       <AnimatePresence>
         {!isDemoRunning && messages.length <= 2 && !showCommandPalette && (
           <motion.div
@@ -1459,7 +1319,6 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
                   'button[aria-label="Edit preferences"]',
                 );
                 if (elem) {
-                  // Add a flashing animation
                   elem.classList.add("animate-pulse");
                   setTimeout(
                     () => elem.classList.remove("animate-pulse"),
