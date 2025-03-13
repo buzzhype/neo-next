@@ -1,3 +1,4 @@
+/* globals.css */
 @import "tailwindcss";
 
 :root {
@@ -119,4 +120,130 @@ textarea:focus {
     border-color: var(--horizon);
     outline: none;
     box-shadow: 0 0 0 2px rgba(89, 136, 166, 0.2);
+}
+
+/* EXPLICIT OVERRIDES TO CATCH ALL CASES */
+
+/* Blue background variants */
+.bg-blue-50 {
+    background-color: #f0f5f8 !important;
+}
+.bg-blue-100 {
+    background-color: #daeaf3 !important;
+}
+.bg-blue-200 {
+    background-color: #b5d5e6 !important;
+}
+.bg-blue-300 {
+    background-color: #8ebfd9 !important;
+}
+.bg-blue-400 {
+    background-color: #70a8c0 !important;
+}
+.bg-blue-500 {
+    background-color: #5988a6 !important;
+}
+.bg-blue-600 {
+    background-color: #4a7a97 !important;
+}
+.bg-blue-700 {
+    background-color: #3c6379 !important;
+}
+.bg-blue-800 {
+    background-color: #304d5c !important;
+}
+.bg-blue-900 {
+    background-color: #263b47 !important;
+}
+
+/* Blue text variants */
+.text-blue-50 {
+    color: #f0f5f8 !important;
+}
+.text-blue-100 {
+    color: #daeaf3 !important;
+}
+.text-blue-200 {
+    color: #b5d5e6 !important;
+}
+.text-blue-300 {
+    color: #8ebfd9 !important;
+}
+.text-blue-400 {
+    color: #70a8c0 !important;
+}
+.text-blue-500 {
+    color: #5988a6 !important;
+}
+.text-blue-600 {
+    color: #4a7a97 !important;
+}
+.text-blue-700 {
+    color: #3c6379 !important;
+}
+.text-blue-800 {
+    color: #304d5c !important;
+}
+.text-blue-900 {
+    color: #263b47 !important;
+}
+
+/* Blue border variants */
+.border-blue-50 {
+    border-color: #f0f5f8 !important;
+}
+.border-blue-100 {
+    border-color: #daeaf3 !important;
+}
+.border-blue-200 {
+    border-color: #b5d5e6 !important;
+}
+.border-blue-300 {
+    border-color: #8ebfd9 !important;
+}
+.border-blue-400 {
+    border-color: #70a8c0 !important;
+}
+.border-blue-500 {
+    border-color: #5988a6 !important;
+}
+.border-blue-600 {
+    border-color: #4a7a97 !important;
+}
+.border-blue-700 {
+    border-color: #3c6379 !important;
+}
+.border-blue-800 {
+    border-color: #304d5c !important;
+}
+.border-blue-900 {
+    border-color: #263b47 !important;
+}
+
+/* Indigo overrides */
+.bg-indigo-700 {
+    background-color: #3c4659 !important;
+} /* charcoal */
+.text-indigo-700 {
+    color: #3c4659 !important;
+} /* charcoal */
+.border-indigo-700 {
+    border-color: #3c4659 !important;
+} /* charcoal */
+
+/* Most common gradient combinations */
+.from-blue-600.to-indigo-700 {
+    background-image: linear-gradient(to right, #4a7a97, #3c4659) !important;
+}
+
+.from-blue-600.to-blue-700 {
+    background-image: linear-gradient(to right, #4a7a97, #3c6379) !important;
+}
+
+/* For chart components */
+:root {
+    --chart-primary: #5988a6; /* horizon */
+    --chart-secondary: #3c4659; /* charcoal */
+    --chart-accent: #d9848b; /* blush */
+    --chart-neutral: #8a8ba6; /* manatee */
 }

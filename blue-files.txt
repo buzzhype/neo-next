@@ -1,0 +1,1 @@
+./src/app/super/SFMarketTrends.tsx

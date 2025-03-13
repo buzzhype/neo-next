@@ -13,17 +13,67 @@ import {
   Clock,
 } from "lucide-react";
 
-// Replace these with your real chart/table components or stubs
+// Import components
 import LineChart from "./datafacts/LineChart";
 import BarChart from "./datafacts/BarChart";
 import PieChartComponent from "./datafacts/PieChart";
 import DataTable from "./datafacts/DataTable";
 import FlowChart from "./datafacts/FlowChart";
-import Checklist from "./datafacts/Checklist"; // We'll include a matching Checklist.js below
+import Checklist from "./datafacts/Checklist";
 import PropertyComparison from "./datafacts/PropertyComparison";
 import Calculator from "./datafacts/Calculator";
 import Timeline from "./datafacts/Timeline";
 import MapView from "./datafacts/MapView";
+
+// Define brand colors for consistent visualization
+const BRAND_COLORS = {
+  neutralBlack: "#232226",
+  charcoal: "#3c4659",
+  manatee: "#8a8ba6",
+  horizon: "#5988a6",
+  blush: "#d9848b",
+};
+
+// Chart color palettes derived from brand colors
+const CHART_COLORS = {
+  // Main color scheme
+  primary: BRAND_COLORS.horizon,
+  secondary: BRAND_COLORS.charcoal,
+  accent: BRAND_COLORS.blush,
+  neutral: BRAND_COLORS.manatee,
+
+  // For sequential data visualizations
+  sequential: [
+    BRAND_COLORS.horizon,
+    "#70a8c0", // horizon lighter
+    "#4a7a97", // horizon darker
+    BRAND_COLORS.charcoal,
+    BRAND_COLORS.manatee,
+  ],
+
+  // For categorical data visualizations
+  categorical: [
+    BRAND_COLORS.horizon,
+    BRAND_COLORS.blush,
+    BRAND_COLORS.charcoal,
+    BRAND_COLORS.manatee,
+    "#70a8c0", // horizon lighter
+    "#c45f67", // blush darker
+  ],
+
+  // For specific chart components
+  line: BRAND_COLORS.horizon,
+  bar: BRAND_COLORS.charcoal,
+  area: `${BRAND_COLORS.horizon}80`, // With transparency
+  grid: "#e2e8f0",
+  tooltip: "#ffffff",
+  tooltipBorder: BRAND_COLORS.horizon,
+
+  // For maps
+  mapPrimary: BRAND_COLORS.horizon,
+  mapSecondary: BRAND_COLORS.charcoal,
+  mapHighlight: BRAND_COLORS.blush,
+};
 
 /**
  * Returns a Lucide icon component for the artifact type.
@@ -75,11 +125,32 @@ export default function ArtifactRenderer({
        * - "comparison"
        */
       if (data.type === "line") {
-        return <LineChart chartData={data} />; // Changed data={data} to chartData={data}
+        return (
+          <LineChart
+            chartData={data}
+            colors={{
+              line: CHART_COLORS.line,
+              grid: CHART_COLORS.grid,
+              tooltip: CHART_COLORS.tooltip,
+              tooltipBorder: CHART_COLORS.tooltipBorder,
+            }}
+          />
+        );
       } else if (data.type === "bar") {
-        return <BarChart data={data} />;
+        return (
+          <BarChart
+            data={data}
+            colors={{
+              bars: CHART_COLORS.categorical,
+              grid: CHART_COLORS.grid,
+              tooltip: CHART_COLORS.tooltip,
+            }}
+          />
+        );
       } else if (data.type === "pie") {
-        return <PieChartComponent data={data} />;
+        return (
+          <PieChartComponent data={data} colors={CHART_COLORS.categorical} />
+        );
       } else if (data.type === "multi") {
         // Example: multiple sub-charts
         return (
@@ -96,32 +167,112 @@ export default function ArtifactRenderer({
         );
       } else if (data.type === "comparison") {
         // If you have a "comparison" chart type
-        return <PropertyComparison data={data} />;
+        return (
+          <PropertyComparison
+            data={data}
+            colors={{
+              primary: CHART_COLORS.primary,
+              secondary: CHART_COLORS.secondary,
+              accent: CHART_COLORS.accent,
+            }}
+          />
+        );
       }
       return null;
 
     case "table":
-      return <DataTable data={data} />;
+      return (
+        <DataTable
+          data={data}
+          colors={{
+            header: BRAND_COLORS.charcoal,
+            headerText: "#ffffff",
+            alternateRow: "#f8fafc",
+            hover: `${BRAND_COLORS.horizon}10`,
+            border: "#e2e8f0",
+          }}
+        />
+      );
 
     case "map":
-      return <MapView data={data} />;
+      return (
+        <MapView
+          data={data}
+          colors={{
+            marker: CHART_COLORS.mapPrimary,
+            selected: CHART_COLORS.mapHighlight,
+            route: CHART_COLORS.mapSecondary,
+          }}
+        />
+      );
 
     case "flowchart":
-      return <FlowChart data={data} />;
+      return (
+        <FlowChart
+          data={data}
+          colors={{
+            nodes: [
+              BRAND_COLORS.horizon,
+              BRAND_COLORS.charcoal,
+              BRAND_COLORS.manatee,
+            ],
+            edges: BRAND_COLORS.manatee,
+            selected: BRAND_COLORS.blush,
+          }}
+        />
+      );
 
     case "checklist":
-      // This is line 111 from your snippet
-      return <Checklist data={data} />;
+      return (
+        <Checklist
+          data={data}
+          colors={{
+            checked: BRAND_COLORS.horizon,
+            unchecked: BRAND_COLORS.manatee,
+            hover: `${BRAND_COLORS.horizon}20`,
+          }}
+        />
+      );
 
     case "comparison":
-      // E.g. a property or item comparison
-      return <PropertyComparison data={data} />;
+      return (
+        <PropertyComparison
+          data={data}
+          colors={{
+            primary: CHART_COLORS.primary,
+            secondary: CHART_COLORS.secondary,
+            highlight: CHART_COLORS.accent,
+            neutral: CHART_COLORS.neutral,
+          }}
+        />
+      );
 
     case "calculator":
-      return <Calculator data={data} />;
+      return (
+        <Calculator
+          data={data}
+          colors={{
+            button: BRAND_COLORS.horizon,
+            buttonHover: "#4a7a97", // darker horizon
+            display: BRAND_COLORS.charcoal,
+            operator: BRAND_COLORS.blush,
+            equals: BRAND_COLORS.charcoal,
+          }}
+        />
+      );
 
     case "timeline":
-      return <Timeline data={data} />;
+      return (
+        <Timeline
+          data={data}
+          colors={{
+            line: BRAND_COLORS.manatee,
+            milestone: BRAND_COLORS.horizon,
+            currentPoint: BRAND_COLORS.blush,
+            text: BRAND_COLORS.charcoal,
+          }}
+        />
+      );
 
     default:
       // If we get an unknown artifact type
