@@ -159,9 +159,31 @@ const questionCategories = [
 ];
 
 /**
+ * UserProfile interface to explicitly type user profile objects.
+ */
+interface UserProfile {
+  name: string;
+  experience: string;
+  purpose: string;
+  budget: number;
+  city: string;
+  propertyType: string;
+  beds: string;
+  baths: string;
+  squareFeet: string;
+  homeFeatures: string[];
+  customTags: string[];
+  favoritePlaces: any[];
+  savedHomes: any[];
+}
+
+/**
  * Return up to six top suggested questions for a chosen category
  */
-function getSuggestedQuestions(category = "all", userProfile = null) {
+function getSuggestedQuestions(
+  category: string = "all",
+  userProfile: UserProfile | null = null,
+): string[] {
   // Filter questions by category
   let questions = [];
 
@@ -335,9 +357,13 @@ function useDemoMode(
 }
 
 // Main Core component with enhanced user profile integration and editing
-export default function Core({ userProfile: initialUserProfile }) {
+export default function Core({
+  userProfile: initialUserProfile,
+}: {
+  userProfile?: UserProfile;
+}) {
   // Local editable version of user profile
-  const [userProfile, setUserProfile] = useState(
+  const [userProfile, setUserProfile] = useState<UserProfile>(
     initialUserProfile || {
       name: "Guest",
       experience: "first-time",
@@ -394,7 +420,7 @@ export default function Core({ userProfile: initialUserProfile }) {
   ];
 
   // Format user profile data for display
-  const formatUserProfile = (profile) => {
+  const formatUserProfile = (profile: UserProfile | null) => {
     // Default values if no profile exists
     if (!profile) {
       return {
@@ -519,21 +545,21 @@ I'm here to help you find the perfect home that matches these preferences. What 
   );
 
   // Handle temp profile changes
-  const handleTempProfileChange = (field, value) => {
-    setTempUserProfile((prev) => ({
+  const handleTempProfileChange = (field: string, value: any) => {
+    setTempUserProfile((prev: any) => ({
       ...prev,
       [field]: value,
     }));
   };
 
   // Handle feature toggle in temp profile
-  const toggleFeature = (feature) => {
-    setTempUserProfile((prev) => {
+  const toggleFeature = (feature: string) => {
+    setTempUserProfile((prev: any) => {
       const currentFeatures = [...(prev.homeFeatures || [])];
       if (currentFeatures.includes(feature)) {
         return {
           ...prev,
-          homeFeatures: currentFeatures.filter((f) => f !== feature),
+          homeFeatures: currentFeatures.filter((f: string) => f !== feature),
         };
       } else {
         return {
