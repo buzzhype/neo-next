@@ -6,6 +6,8 @@ import {
   X,
   ChevronRight,
   ChevronLeft,
+  ChevronDown,
+  ChevronUp,
   LineChart as LineChartIcon,
   MessageSquare,
   Info,
@@ -14,6 +16,21 @@ import {
   ExternalLink,
   RefreshCw,
   ArrowLeft,
+  User,
+  Home,
+  Building,
+  DollarSign,
+  Map,
+  MapPin,
+  Coffee,
+  Zap,
+  Calendar,
+  Edit2,
+  Check,
+  MoreHorizontal,
+  Settings,
+  Save,
+  Sliders,
 } from "lucide-react";
 
 import ChatSection from "./ChatSection";
@@ -44,41 +61,148 @@ const sampleNeighborhoods = [
   { name: "Mission District", description: "Vibrant, culturally diverse" },
   { name: "Marina District", description: "Scenic waterfront" },
   { name: "SoMa", description: "Urban district with tech companies" },
+  { name: "Nob Hill", description: "Historic neighborhood with luxury hotels" },
+  { name: "Hayes Valley", description: "Trendy shopping and dining district" },
 ];
 
-// Example categories using direct color references
+// City names mapping for display
+const CITY_NAMES = {
+  sf: "San Francisco",
+  nyc: "New York City",
+  la: "Los Angeles",
+  chi: "Chicago",
+  mia: "Miami",
+  sea: "Seattle",
+  bos: "Boston",
+  den: "Denver",
+};
+
+// Property types for dropdown
+const PROPERTY_TYPES = [
+  { value: "condo", label: "Condo" },
+  { value: "house", label: "House" },
+  { value: "townhouse", label: "Townhouse" },
+  { value: "apartment", label: "Apartment" },
+  { value: "multi-family", label: "Multi-Family" },
+];
+
+// Beds options
+const BEDS_OPTIONS = [
+  { value: "1+", label: "1+ Bed" },
+  { value: "2+", label: "2+ Beds" },
+  { value: "3+", label: "3+ Beds" },
+  { value: "4+", label: "4+ Beds" },
+];
+
+// Budget ranges
+const BUDGET_RANGES = [
+  { value: 500000, label: "$500,000" },
+  { value: 750000, label: "$750,000" },
+  { value: 850000, label: "$850,000" },
+  { value: 1000000, label: "$1,000,000" },
+  { value: 1500000, label: "$1,500,000" },
+  { value: 2000000, label: "$2,000,000" },
+  { value: 3000000, label: "$3,000,000" },
+];
+
+// Home features
+const HOME_FEATURES = [
+  { value: "parking", label: "Parking" },
+  { value: "outdoor", label: "Outdoor Space" },
+  { value: "updated", label: "Updated/Renovated" },
+  { value: "view", label: "Great Views" },
+  { value: "hardwood", label: "Hardwood Floors" },
+  { value: "central-ac", label: "Central AC" },
+  { value: "fireplace", label: "Fireplace" },
+  { value: "pool", label: "Pool" },
+  { value: "garage", label: "Garage" },
+];
+
+// Enhanced question categories with better styling
 const questionCategories = [
   {
     id: "all",
     name: "All Topics",
-    color: `bg-[${BRAND_COLORS.horizonLight}] text-[${BRAND_COLORS.horizon}]`,
+    color: "bg-blue-50 text-blue-600",
+    icon: Info,
   },
   {
     id: "market",
     name: "Market Trends",
-    color: "bg-green-100 text-green-700",
+    color: "bg-green-50 text-green-600",
+    icon: LineChartIcon,
   },
   {
     id: "neighborhoods",
     name: "Neighborhoods",
-    color: `bg-[#e9e9f0] text-[${BRAND_COLORS.manatee}]`,
+    color: "bg-purple-50 text-purple-600",
+    icon: MapPin,
   },
   {
     id: "firstTimeBuyer",
     name: "First-Time Buyers",
-    color: `bg-[#fbe6e7] text-[${BRAND_COLORS.blush}]`,
+    color: "bg-orange-50 text-orange-600",
+    icon: Home,
+  },
+  {
+    id: "investment",
+    name: "Investment",
+    color: "bg-indigo-50 text-indigo-600",
+    icon: DollarSign,
+  },
+  {
+    id: "timeline",
+    name: "Buying Timeline",
+    color: "bg-red-50 text-red-600",
+    icon: Calendar,
   },
 ];
 
 /**
  * Return up to six top suggested questions for a chosen category
  */
-function getSuggestedQuestions(category = "all") {
+function getSuggestedQuestions(category = "all", userProfile = null) {
+  // Filter questions by category
+  let questions = [];
+
   if (category === "all") {
-    return questionsData.slice(0, 6).map((q) => q.question);
+    questions = questionsData.slice(0, 6);
+  } else {
+    questions = questionsData
+      .filter((q) => q.category === category)
+      .slice(0, 6);
   }
-  const filtered = questionsData.filter((q) => q.category === category);
-  return filtered.slice(0, 6).map((q) => q.question);
+
+  // Personalize questions based on user profile if available
+  if (userProfile) {
+    return questions.map((q) => {
+      let personalized = q.question;
+
+      // Replace placeholders with actual user data
+      if (userProfile.city && CITY_NAMES[userProfile.city]) {
+        personalized = personalized.replace(
+          /\{CITY\}/g,
+          CITY_NAMES[userProfile.city],
+        );
+      }
+      if (userProfile.budget) {
+        personalized = personalized.replace(
+          /\{BUDGET\}/g,
+          `$${userProfile.budget.toLocaleString()}`,
+        );
+      }
+      if (userProfile.propertyType) {
+        personalized = personalized.replace(
+          /\{PROPERTY_TYPE\}/g,
+          userProfile.propertyType,
+        );
+      }
+
+      return personalized;
+    });
+  }
+
+  return questions.map((q) => q.question);
 }
 
 /**
@@ -210,39 +334,151 @@ function useDemoMode(
   };
 }
 
-export default function Core() {
-  // Agents
+// Main Core component with enhanced user profile integration and editing
+export default function Core({ userProfile: initialUserProfile }) {
+  // Local editable version of user profile
+  const [userProfile, setUserProfile] = useState(
+    initialUserProfile || {
+      name: "Guest",
+      experience: "first-time",
+      purpose: "primary",
+      budget: 850000,
+      city: "sf",
+      propertyType: "condo",
+      beds: "2+",
+      baths: "1+",
+      squareFeet: "750-1500 sq ft",
+      homeFeatures: ["parking", "outdoor", "updated"],
+      customTags: [],
+      favoritePlaces: [],
+      savedHomes: [],
+    },
+  );
+
+  // Preference editing state
+  const [isEditingPreferences, setIsEditingPreferences] = useState(false);
+  const [showPreferenceDetails, setShowPreferenceDetails] = useState(false);
+  const [tempUserProfile, setTempUserProfile] = useState({ ...userProfile });
+
+  // Agents with better descriptions and styling
   const [selectedAgent, setSelectedAgent] = useState("firstTimeBuyer");
   const agents = [
     {
       id: "firstTimeBuyer",
       name: "First-Time Buyer Guide",
-      icon: "brain",
+      icon: Home,
       description: "Helps new buyers navigate the market",
+      color: "bg-gradient-to-r from-blue-600 to-blue-500",
     },
     {
       id: "neighborhoodExpert",
       name: "Neighborhood Expert",
-      icon: "building",
+      icon: Building,
       description: "Deep knowledge of local districts",
+      color: "bg-gradient-to-r from-purple-600 to-purple-500",
+    },
+    {
+      id: "investmentAnalyst",
+      name: "Investment Analyst",
+      icon: DollarSign,
+      description: "Maximizes ROI and investment potential",
+      color: "bg-gradient-to-r from-green-600 to-green-500",
+    },
+    {
+      id: "luxurySpecialist",
+      name: "Luxury Specialist",
+      icon: Sparkles,
+      description: "Focuses on premium properties",
+      color: "bg-gradient-to-r from-amber-600 to-amber-500",
     },
   ];
 
-  // Normal chat messages
-  const [messages, setMessages] = useState<any[]>([
-    {
-      id: 123,
-      role: "agent",
-      agentId: "firstTimeBuyer",
-      content:
-        "Hi! I'm your SF real estate assistant. Ask about market trends, neighborhoods, or anything else!",
-      timestamp: new Date(Date.now() - 60000),
-    },
-  ]);
+  // Format user profile data for display
+  const formatUserProfile = (profile) => {
+    // Default values if no profile exists
+    if (!profile) {
+      return {
+        name: "Guest",
+        displayCity: "San Francisco",
+        displayBudget: "your budget",
+        displayPropertyType: "property",
+        displayBeds: "bedrooms",
+        displayFeatures: "features you need",
+      };
+    }
+
+    // Format city name
+    const displayCity =
+      CITY_NAMES[profile.city] || profile.city || "San Francisco";
+
+    // Format budget with commas
+    const displayBudget = profile.budget
+      ? `$${profile.budget.toLocaleString()}`
+      : "your budget";
+
+    // Format property type with better capitalization
+    const propertyTypes = {
+      condo: "Condo",
+      house: "House",
+      townhouse: "Townhouse",
+      apartment: "Apartment",
+    };
+    const displayPropertyType =
+      propertyTypes[profile.propertyType] || profile.propertyType || "property";
+
+    // Format beds
+    const displayBeds = profile.beds || "bedrooms";
+
+    // Format features as a readable list
+    const displayFeatures =
+      profile.homeFeatures && profile.homeFeatures.length > 0
+        ? profile.homeFeatures.join(", ")
+        : "features you need";
+
+    return {
+      name: profile.name || "Guest",
+      displayCity,
+      displayBudget,
+      displayPropertyType,
+      displayBeds,
+      displayFeatures,
+    };
+  };
+
+  // Get formatted profile data
+  const formattedProfile = formatUserProfile(userProfile);
+
+  // Normal chat messages with personalized first message
+  const [messages, setMessages] = useState<any[]>(() => {
+    // Get the current agent
+    const agent = agents.find((a) => a.id === selectedAgent) || agents[0];
+
+    // Create personalized welcome message - redesigned to be more engaging
+    return [
+      {
+        id: Date.now(),
+        role: "agent",
+        agentId: selectedAgent,
+        content: `
+👋 Hello ${formattedProfile.name}! I'm your dedicated ${agent.name} for ${formattedProfile.displayCity}.
+
+📝 **Your Home Search Profile:**
+• Looking for: ${formattedProfile.displayPropertyType} with ${formattedProfile.displayBeds}
+• Budget: ${formattedProfile.displayBudget}
+• Must-have features: ${formattedProfile.displayFeatures}
+
+I'm here to help you find the perfect home that matches these preferences. What would you like to explore first? You can ask about neighborhoods, get property recommendations, or learn about the buying process.
+      `,
+        timestamp: new Date(),
+        isWelcomeMessage: true,
+      },
+    ];
+  });
+
   const [newestMessageId, setNewestMessageId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState("");
-  const [showSuggestions, setShowSuggestions] = useState(true);
+  const [showSuggestions, setShowSuggestions] = useState(true); // Always show suggestions by default
   const [selectedQuestionCategory, setSelectedQuestionCategory] =
     useState("all");
 
@@ -276,8 +512,85 @@ export default function Core() {
   // The array of messages: normal or from the demo
   const displayMessages = isDemoRunning ? demoMessages : messages;
 
-  // Build suggestions for the user
-  const suggestedQuestions = getSuggestedQuestions(selectedQuestionCategory);
+  // Build personalized suggestions for the user
+  const suggestedQuestions = getSuggestedQuestions(
+    selectedQuestionCategory,
+    userProfile,
+  );
+
+  // Handle temp profile changes
+  const handleTempProfileChange = (field, value) => {
+    setTempUserProfile((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  // Handle feature toggle in temp profile
+  const toggleFeature = (feature) => {
+    setTempUserProfile((prev) => {
+      const currentFeatures = [...(prev.homeFeatures || [])];
+      if (currentFeatures.includes(feature)) {
+        return {
+          ...prev,
+          homeFeatures: currentFeatures.filter((f) => f !== feature),
+        };
+      } else {
+        return {
+          ...prev,
+          homeFeatures: [...currentFeatures, feature],
+        };
+      }
+    });
+  };
+
+  // Save profile changes and update messages
+  const saveProfileChanges = () => {
+    // Update the user profile with temp changes
+    setUserProfile(tempUserProfile);
+
+    // Get the current agent
+    const agent = agents.find((a) => a.id === selectedAgent) || agents[0];
+
+    // Calculate the formatted profile with new values
+    const newFormattedProfile = formatUserProfile(tempUserProfile);
+
+    // Add a system message about the updated preferences
+    const systemMsg = {
+      id: Date.now(),
+      role: "system",
+      content: `Your preferences have been updated`,
+      timestamp: new Date(),
+    };
+
+    // Add a personalized message about the new preferences
+    const agentMsg = {
+      id: Date.now() + 1,
+      role: "agent",
+      agentId: selectedAgent,
+      content: `
+I've updated your home search preferences! 📝
+
+**Your New Profile:**
+• Looking for: ${newFormattedProfile.displayPropertyType} with ${newFormattedProfile.displayBeds}
+• Budget: ${newFormattedProfile.displayBudget}
+• Must-have features: ${newFormattedProfile.displayFeatures}
+
+Let's continue finding homes that match these updated criteria. Is there anything specific about these new preferences you'd like to explore?
+      `,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, systemMsg, agentMsg]);
+    setNewestMessageId(agentMsg.id);
+    setIsEditingPreferences(false);
+  };
+
+  // Cancel editing
+  const cancelEditing = () => {
+    setTempUserProfile({ ...userProfile });
+    setIsEditingPreferences(false);
+  };
 
   // Command+K detection
   useEffect(() => {
@@ -295,7 +608,49 @@ export default function Core() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Basic Q&A logic
+  // Function to switch agents while maintaining context
+  const handleSelectAgent = (agentId: string) => {
+    if (agentId === selectedAgent) return;
+
+    setSelectedAgent(agentId);
+
+    // Find the new agent details
+    const newAgent = agents.find((a) => a.id === agentId);
+    if (!newAgent) return;
+
+    // Add a system message indicating agent switch
+    const systemMsg = {
+      id: Date.now(),
+      role: "system",
+      content: `You are now chatting with ${newAgent.name}`,
+      timestamp: new Date(),
+    };
+
+    // Add a personalized intro from the new agent - improved design
+    const agentIntroMsg = {
+      id: Date.now() + 1,
+      role: "agent",
+      agentId: agentId,
+      content: `
+✨ **Agent Switch: ${newAgent.name}** ✨
+
+Hi ${formattedProfile.name}! I'll be your ${newAgent.name} now.
+
+I've reviewed your profile:
+• ${formattedProfile.displayPropertyType} in ${formattedProfile.displayCity}
+• Budget of ${formattedProfile.displayBudget}
+• Essential features: ${formattedProfile.displayFeatures}
+
+My specialty is ${newAgent.description.toLowerCase()}. How can I help with your home search today?
+      `,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, systemMsg, agentIntroMsg]);
+    setNewestMessageId(agentIntroMsg.id);
+  };
+
+  // Basic Q&A logic with personalization
   function findMatch(userMsg: string) {
     const normalized = userMsg.toLowerCase().trim();
     return questionsData.find((q) =>
@@ -318,7 +673,33 @@ export default function Core() {
       };
 
       if (matched) {
-        response.content = matched.answer;
+        // Personalize the answer with user profile data
+        let personalizedAnswer = matched.answer;
+
+        if (userProfile) {
+          // Replace placeholders with user data
+          if (userProfile.city && CITY_NAMES[userProfile.city]) {
+            personalizedAnswer = personalizedAnswer.replace(
+              /\{CITY\}/g,
+              CITY_NAMES[userProfile.city],
+            );
+          }
+          if (userProfile.budget) {
+            personalizedAnswer = personalizedAnswer.replace(
+              /\{BUDGET\}/g,
+              `$${userProfile.budget.toLocaleString()}`,
+            );
+          }
+          if (userProfile.name) {
+            personalizedAnswer = personalizedAnswer.replace(
+              /\{NAME\}/g,
+              userProfile.name,
+            );
+          }
+        }
+
+        response.content = personalizedAnswer;
+
         if (matched.artifactType && matched.artifactData) {
           response.artifactType = matched.artifactType;
           response.artifactData = matched.artifactData;
@@ -330,7 +711,7 @@ export default function Core() {
           }, 800);
         }
       } else {
-        response.content = `No direct match for "${userMessage}". Maybe try something about mortgages or local neighborhoods.`;
+        response.content = `I don't have a specific answer for "${userMessage}". Would you like to know more about ${formattedProfile.displayCity} neighborhoods, mortgage options, or the buying process?`;
       }
 
       setMessages((prev) => [...prev, response]);
@@ -371,28 +752,6 @@ export default function Core() {
     setShowSuggestions(false);
 
     simulateResponse(question);
-  };
-
-  // Switching agent
-  const handleSelectAgent = (agentId: string) => {
-    setSelectedAgent(agentId);
-    const agent = agents.find((a) => a.id === agentId);
-    if (!agent) return;
-
-    const sysMsg = {
-      id: Date.now(),
-      role: "system",
-      content: `You are now chatting with ${agent.name}`,
-      timestamp: new Date(),
-    };
-    const greetMsg = {
-      id: Date.now() + 1,
-      role: "agent",
-      agentId,
-      content: `Hello! I'm your ${agent.name}. How can I help?`,
-      timestamp: new Date(),
-    };
-    setMessages((prev) => [...prev, sysMsg, greetMsg]);
   };
 
   // User clicked the artifact chip in a bubble
@@ -458,6 +817,331 @@ export default function Core() {
     },
   };
 
+  // User profile card with edit functionality
+  const UserProfileCard = () => (
+    <motion.div
+      className="bg-white rounded-xl shadow-sm mb-4 border border-gray-100 overflow-hidden"
+      initial={{ height: "auto" }}
+      animate={{
+        height: showPreferenceDetails ? "auto" : "auto",
+        transition: { duration: 0.3 },
+      }}
+    >
+      <div className="p-4">
+        {/* Header with toggle */}
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+              <User className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900">
+                Your Search Profile
+              </h3>
+              <p className="text-xs text-gray-600">
+                Agent recommendations based on these criteria
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                if (isEditingPreferences) return;
+                setShowPreferenceDetails(!showPreferenceDetails);
+              }}
+              className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+              aria-label={
+                showPreferenceDetails ? "Collapse details" : "Expand details"
+              }
+            >
+              {showPreferenceDetails ? (
+                <ChevronUp className="w-5 h-5 text-gray-600" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-gray-600" />
+              )}
+            </button>
+            {!isEditingPreferences ? (
+              <button
+                onClick={() => {
+                  setIsEditingPreferences(true);
+                  setShowPreferenceDetails(true);
+                  setTempUserProfile({ ...userProfile });
+                }}
+                className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Edit preferences"
+              >
+                <Edit2 className="w-5 h-5 text-gray-600" />
+              </button>
+            ) : (
+              <div className="flex gap-1">
+                <button
+                  onClick={saveProfileChanges}
+                  className="p-1.5 hover:bg-green-100 text-green-600 rounded-full transition-colors"
+                  aria-label="Save changes"
+                >
+                  <Check className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={cancelEditing}
+                  className="p-1.5 hover:bg-red-100 text-red-600 rounded-full transition-colors"
+                  aria-label="Cancel editing"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Summary cards - always visible */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
+          <div className="bg-blue-50 p-2 rounded-lg flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-blue-600" />
+            <span className="text-sm truncate font-medium">
+              {formattedProfile.displayCity}
+            </span>
+          </div>
+          <div className="bg-green-50 p-2 rounded-lg flex items-center gap-2">
+            <DollarSign className="w-4 h-4 text-green-600" />
+            <span className="text-sm truncate font-medium">
+              {formattedProfile.displayBudget}
+            </span>
+          </div>
+          <div className="bg-purple-50 p-2 rounded-lg flex items-center gap-2">
+            <Home className="w-4 h-4 text-purple-600" />
+            <span className="text-sm truncate font-medium">
+              {formattedProfile.displayPropertyType}
+            </span>
+          </div>
+          <div className="bg-amber-50 p-2 rounded-lg flex items-center gap-2">
+            <Sliders className="w-4 h-4 text-amber-600" />
+            <span className="text-sm truncate font-medium">
+              {formattedProfile.displayBeds}
+            </span>
+          </div>
+        </div>
+
+        {/* Expanded details - visible when showPreferenceDetails is true */}
+        <AnimatePresence>
+          {showPreferenceDetails && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <div className="border-t mt-4 pt-4">
+                {/* Editing mode */}
+                {isEditingPreferences ? (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Property Type */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Property Type
+                        </label>
+                        <select
+                          value={tempUserProfile.propertyType || ""}
+                          onChange={(e) =>
+                            handleTempProfileChange(
+                              "propertyType",
+                              e.target.value,
+                            )
+                          }
+                          className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        >
+                          {PROPERTY_TYPES.map((type) => (
+                            <option key={type.value} value={type.value}>
+                              {type.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Bedrooms */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Bedrooms
+                        </label>
+                        <select
+                          value={tempUserProfile.beds || ""}
+                          onChange={(e) =>
+                            handleTempProfileChange("beds", e.target.value)
+                          }
+                          className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        >
+                          {BEDS_OPTIONS.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Budget */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Budget
+                        </label>
+                        <select
+                          value={tempUserProfile.budget || ""}
+                          onChange={(e) =>
+                            handleTempProfileChange(
+                              "budget",
+                              parseInt(e.target.value),
+                            )
+                          }
+                          className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        >
+                          {BUDGET_RANGES.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* City */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          City
+                        </label>
+                        <select
+                          value={tempUserProfile.city || ""}
+                          onChange={(e) =>
+                            handleTempProfileChange("city", e.target.value)
+                          }
+                          className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        >
+                          {Object.entries(CITY_NAMES).map(([code, name]) => (
+                            <option key={code} value={code}>
+                              {name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Home Features */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Must-Have Features
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {HOME_FEATURES.map((feature) => (
+                          <button
+                            key={feature.value}
+                            type="button"
+                            onClick={() => toggleFeature(feature.value)}
+                            className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                              tempUserProfile.homeFeatures?.includes(
+                                feature.value,
+                              )
+                                ? "bg-blue-100 text-blue-700 border-blue-200 border"
+                                : "bg-gray-100 text-gray-700 border-gray-200 border"
+                            }`}
+                          >
+                            {tempUserProfile.homeFeatures?.includes(
+                              feature.value,
+                            ) && (
+                              <Check className="w-3 h-3 inline-block mr-1" />
+                            )}
+                            {feature.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-3 flex justify-end gap-2">
+                      <button
+                        onClick={cancelEditing}
+                        className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={saveProfileChanges}
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                      >
+                        <Save className="w-4 h-4" />
+                        Update Preferences
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* View mode */
+                  <div className="space-y-4">
+                    {/* Home Features */}
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">
+                        Must-Have Features
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {userProfile.homeFeatures?.map((feature) => {
+                          const featureData = HOME_FEATURES.find(
+                            (f) => f.value === feature,
+                          );
+                          return (
+                            <div
+                              key={feature}
+                              className="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-full text-sm text-gray-700"
+                            >
+                              {featureData?.label || feature}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="text-sm font-medium text-gray-700 mb-2">
+                        Additional Details
+                      </h4>
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="flex items-center gap-1 text-gray-600">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>
+                            Experience:{" "}
+                            {userProfile.experience === "first-time"
+                              ? "First-time buyer"
+                              : "Experienced"}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 text-gray-600">
+                          <Home className="w-3.5 h-3.5" />
+                          <span>
+                            Purpose:{" "}
+                            {userProfile.purpose === "primary"
+                              ? "Primary residence"
+                              : "Investment"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 flex justify-end">
+                      <button
+                        onClick={() => {
+                          setIsEditingPreferences(true);
+                          setTempUserProfile({ ...userProfile });
+                        }}
+                        className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-1 text-sm"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                        Edit Preferences
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+
   return (
     <div className="h-screen w-full flex overflow-hidden bg-gray-50 relative">
       {/* Command Palette */}
@@ -497,7 +1181,7 @@ export default function Core() {
         onClick={toggleDemo}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed top-4 right-4 z-10 px-4 py-2 rounded-lg text-sm font-medium shadow-md flex items-center gap-2 text-white"
+        className="fixed bottom-15 left-18 z-10 px-4 py-2 rounded-lg text-sm font-medium shadow-md flex items-center gap-2 text-white"
         style={{
           background: isDemoRunning
             ? BRAND_COLORS.blush
@@ -535,6 +1219,11 @@ export default function Core() {
         >
           {/* Main chat UI */}
           <div className="flex-1 overflow-hidden">
+            {/* User profile card at the top */}
+            <div className="px-4 pt-4">
+              <UserProfileCard />
+            </div>
+
             <ChatSectionWrapper
               messages={displayMessages}
               agents={agents}
@@ -568,6 +1257,19 @@ export default function Core() {
           />
 
           {/* If artifact is open, let user minimize/expand chat */}
+          {showArtifactPanel && (
+            <button
+              onClick={toggleChatVisibility}
+              className="absolute top-1/2 right-0 transform -translate-y-1/2 p-1.5 bg-white rounded-l-md shadow-md z-10"
+              title={minimizeChat ? "Expand chat" : "Minimize chat"}
+            >
+              {minimizeChat ? (
+                <ChevronLeft className="w-4 h-4 text-gray-600" />
+              ) : (
+                <ChevronRight className="w-4 h-4 text-gray-600" />
+              )}
+            </button>
+          )}
         </motion.div>
 
         {/* Artifact Panel */}
@@ -656,7 +1358,9 @@ export default function Core() {
               <div className="p-3 border-t border-gray-200 bg-gray-50 flex justify-between items-center">
                 <div className="text-xs text-gray-500 flex items-center gap-1.5">
                   <Info className="w-3 h-3" />
-                  <span>Sample data from SF real estate listings</span>
+                  <span>
+                    Data relevant to {formattedProfile.displayCity} real estate
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
@@ -698,6 +1402,49 @@ export default function Core() {
           >
             <ChevronRight className="w-6 h-6 transform rotate-180" />
           </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* First-time helper tooltip */}
+      <AnimatePresence>
+        {!isDemoRunning && messages.length <= 2 && !showCommandPalette && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0, transition: { delay: 1 } }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-white rounded-xl shadow-lg p-3 flex items-center gap-3 z-20 max-w-md border border-gray-200"
+          >
+            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+              <Info className="w-4 h-4 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-800">
+                Customize Your Profile
+              </p>
+              <p className="text-xs text-gray-600 mt-0.5">
+                Click the edit button at the top to update your home search
+                preferences
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                const elem = document.querySelector(
+                  'button[aria-label="Edit preferences"]',
+                );
+                if (elem) {
+                  // Add a flashing animation
+                  elem.classList.add("animate-pulse");
+                  setTimeout(
+                    () => elem.classList.remove("animate-pulse"),
+                    2000,
+                  );
+                }
+              }}
+              className="absolute -top-2 -right-2 w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center"
+            >
+              <X className="w-3 h-3 text-gray-600" />
+            </button>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
