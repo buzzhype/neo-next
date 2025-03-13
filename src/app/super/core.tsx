@@ -160,13 +160,14 @@ const questionCategories = [
 
 /**
  * UserProfile interface to explicitly type user profile objects.
+ * The city property is now typed as one of the keys of CITY_NAMES.
  */
 interface UserProfile {
   name: string;
   experience: string;
   purpose: string;
   budget: number;
-  city: string;
+  city: keyof typeof CITY_NAMES;
   propertyType: string;
   beds: string;
   baths: string;
