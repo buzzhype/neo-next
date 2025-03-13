@@ -8,6 +8,15 @@ import LeftPanel from "./left-panel";
 import Core from "./core";
 import Knowledge from "./knowledge";
 
+// Define an interface for a message
+interface Message {
+  id: number;
+  role: string;
+  agentId: string;
+  content: string;
+  timestamp: Date;
+}
+
 // Agent options
 const agentOptions = [
   {
@@ -41,7 +50,7 @@ const agentOptions = [
 ];
 
 // Initial messages
-const initialMessages = [
+const initialMessages: Message[] = [
   {
     id: 1,
     role: "agent",
@@ -74,7 +83,7 @@ export default function RealEstatePage() {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isHomeSearchMode, setIsHomeSearchMode] = useState(true);
   const [selectedAgent, setSelectedAgent] = useState("firstTimeBuyer");
-  const [messages, setMessages] = useState(initialMessages);
+  const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [userProfile, setUserProfile] = useState(initialUserProfile);
   const [showAgentSelector, setShowAgentSelector] = useState(false);
   const [activeView, setActiveView] = useState("chat"); // Default view is chat
@@ -94,16 +103,18 @@ export default function RealEstatePage() {
     setSelectedAgent(agentId);
     setShowAgentSelector(false);
 
-    // Add a system message when switching agents
+    // Add a system message when switching agents.
+    // For system messages, we provide an empty string for agentId.
     const agent = agentOptions.find((a) => a.id === agentId);
-    const switchMessage = {
+    const switchMessage: Message = {
       id: Date.now(),
       role: "system",
+      agentId: "",
       content: `You are now chatting with ${agent?.name}`,
       timestamp: new Date(),
     };
 
-    const introMessage = {
+    const introMessage: Message = {
       id: Date.now() + 1,
       role: "agent",
       agentId: agentId,
