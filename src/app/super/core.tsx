@@ -238,7 +238,7 @@ interface UserProfile {
   baths: string;
   squareFeet: string;
   homeFeatures: string[];
-  specializations: string[]; // Multiple specializations
+  specializations: string[];
   customTags: string[];
   favoritePlaces: any[];
   savedHomes: any[];
@@ -280,7 +280,6 @@ function getSuggestedQuestions(
           userProfile.propertyType,
         );
       }
-      // Replace any {NAME} with "Thomas"
       personalized = personalized.replace(/\{NAME\}/g, "Thomas");
       return personalized;
     });
@@ -326,7 +325,6 @@ function useDemoMode(
     artifactData: q.artifactData,
   }));
 
-  // Use the first specialization as the agent for demo messages
   const primarySpecialization =
     (selectedSpecializations || [])[0] || "firstTimeBuyer";
 
@@ -394,7 +392,6 @@ function useDemoMode(
     demoProgress,
     startDemo,
     stopDemo,
-    // Make showSuggestions available to the demo mode
     showSuggestions: isRunning && !isTyping && currentStep > 0,
   };
 }
@@ -430,7 +427,6 @@ export default function Core({
   const [showProfileCard, setShowProfileCard] = useState(true);
   const [showProfileTooltip, setShowProfileTooltip] = useState(true);
 
-  // The messages state. IDs are strings.
   const [messages, setMessages] = useState<any[]>(() => {
     const specializationInfo = (userProfile.specializations || [])
       .map((id) => {
@@ -1229,7 +1225,6 @@ Would you like to see some properties that match these criteria now, or do you h
               city: userProfile.city,
               budget: userProfile.budget,
               propertyType: userProfile.propertyType,
-              homeFeatures: userProfile.homeFeatures,
               specializations: userProfile.specializations,
             }}
             specializations={formattedProfile.displaySpecializations}
