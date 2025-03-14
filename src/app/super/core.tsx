@@ -382,6 +382,8 @@ function useDemoMode(
         setIsTyping(false);
         setCurrentStep((prev) => prev + 1);
         setDemoProgress(((currentStep + 1) / steps.length) * 100);
+        // Always show suggestions after each demo message
+        setShowSuggestions(true);
       }, 1500);
     }, 3000);
     return () => clearTimeout(timeout);
@@ -394,6 +396,8 @@ function useDemoMode(
     demoProgress,
     startDemo,
     stopDemo,
+    // Make showSuggestions available to the demo mode
+    showSuggestions: isRunning && !isTyping && currentStep > 0,
   };
 }
 
@@ -645,11 +649,20 @@ Would you like to see some properties that match these criteria now, or do you h
     setIsEditingPreferences(false);
   };
 
+  // Function to update specializations
+  const updateSpecializations = (specializations: string[]) => {
+    setUserProfile((prev) => ({
+      ...prev,
+      specializations: specializations,
+    }));
+  };
+
   const cancelEditing = () => {
     setTempUserProfile({ ...userProfile });
     setIsEditingPreferences(false);
   };
 
+  // Handle keyboard shortcuts
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       const isMac = navigator.platform.toUpperCase().includes("MAC");
@@ -664,6 +677,48 @@ Would you like to see some properties that match these criteria now, or do you h
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
+
+  // Ensure suggestions appear after new agent messages
+  useEffect(() => {
+    // If the newest message is from the agent and not a system message, show suggestions
+    if (newestMessageId) {
+      const newestMessage = displayMessages.find(
+        (m) => m.id === newestMessageId,
+      );
+      if (newestMessage && newestMessage.role === "agent") {
+        setShowSuggestions(true);
+      }
+    }
+  }, [newestMessageId, displayMessages]);
+
+  // Save user profile to localStorage whenever it changes
+  useEffect(() => {
+    if (userProfile) {
+      localStorage.setItem("userProfile", JSON.stringify(userProfile));
+    }
+  }, [userProfile]);
+
+  // Load user profile from localStorage on initial load
+  useEffect(() => {
+    const savedProfile = localStorage.getItem("userProfile");
+    if (savedProfile) {
+      try {
+        const parsedProfile = JSON.parse(savedProfile);
+        setUserProfile(parsedProfile);
+      } catch (error) {
+        console.error("Error parsing saved user profile:", error);
+      }
+    }
+  }, []);
+
+  // Auto-scroll to bottom and show suggestions when new messages appear
+  useEffect(() => {
+    if (messages.length > 0 && !isLoading) {
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, [messages, isLoading]);
 
   function findMatch(userMsg: string) {
     const normalized = userMsg.toLowerCase().trim();
@@ -761,7 +816,14 @@ Would you like to see some properties that match these criteria now, or do you h
       setMessages((prev) => [...prev, response]);
       setNewestMessageId(newId);
       setIsLoading(false);
-      setShowSuggestions(true);
+
+      // Explicitly ensure suggestions are shown after response
+      // Use a small timeout to ensure DOM updates first
+      setTimeout(() => {
+        setShowSuggestions(true);
+        // Scroll to bottom to ensure suggestions are visible
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     }, 1500);
   }
 
@@ -789,7 +851,12 @@ Would you like to see some properties that match these criteria now, or do you h
       timestamp: new Date(),
     };
     setMessages((prev) => [...prev, userMsg]);
+    // Hide suggestions during loading but will show after response
     setShowSuggestions(false);
+    // Scroll to the bottom immediately after adding the message
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
     simulateResponse(question);
   };
 
@@ -856,6 +923,7 @@ Would you like to see some properties that match these criteria now, or do you h
   };
 
   // Preference editing modal
+  // PreferenceEditModal Component for core.tsx
   const PreferenceEditModal = () => {
     if (!isEditingPreferences) return null;
 
@@ -880,28 +948,74 @@ Would you like to see some properties that match these criteria now, or do you h
           </div>
 
           <div className="p-5 space-y-5">
-            {/* Specializations selection */}
+            {/* Specializations selection - Updated to match ChatInteraction.tsx */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Your Real Estate Specialists
+                Real Estate Expertise Selection
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-1 gap-3 mb-4">
                 {SPECIALIZATIONS.map((spec) => (
-                  <button
+                  <div
                     key={spec.id}
-                    type="button"
-                    onClick={() => toggleSpecialization(spec.id)}
-                    className={`px-3 py-1.5 rounded-full text-sm transition-colors flex items-center gap-1.5 ${
+                    className={`p-4 rounded-lg flex items-start gap-3 transition-colors ${
                       (tempUserProfile.specializations || []).includes(spec.id)
-                        ? `${spec.color.replace("gradient-to-r", "gradient-to-br")} text-white`
-                        : "bg-gray-100 text-gray-700 border-gray-200 border"
+                        ? "bg-blue-50 border border-blue-200"
+                        : "border border-gray-200 hover:bg-gray-50"
                     }`}
                   >
-                    {React.createElement(spec.icon, {
-                      className: "w-3.5 h-3.5",
-                    })}
-                    <span>{spec.name}</span>
-                  </button>
+                    <div
+                      className={`p-2 rounded-lg text-white flex-shrink-0 ${
+                        spec.id === "firstTimeBuyer"
+                          ? "bg-blue-500"
+                          : spec.id === "familyFocused"
+                            ? "bg-teal-500"
+                            : spec.id === "investmentAnalyst"
+                              ? "bg-green-500"
+                              : spec.id === "downsizingSpecialist"
+                                ? "bg-indigo-500"
+                                : spec.id === "vacationProperty"
+                                  ? "bg-red-500"
+                                  : spec.id === "sustainabilityExpert"
+                                    ? "bg-emerald-500"
+                                    : "bg-purple-500"
+                      }`}
+                    >
+                      {React.createElement(spec.icon, {
+                        className: "w-5 h-5",
+                      })}
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium">{spec.name}</div>
+                      <p className="text-sm text-gray-600 mt-1">
+                        {spec.description}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => toggleSpecialization(spec.id)}
+                      className={`p-2 rounded-md flex-shrink-0 ${
+                        (tempUserProfile.specializations || []).includes(
+                          spec.id,
+                        )
+                          ? "bg-blue-500 text-white hover:bg-blue-600"
+                          : "border border-blue-500 text-blue-500 hover:bg-blue-50"
+                      } transition-colors`}
+                      aria-label={
+                        (tempUserProfile.specializations || []).includes(
+                          spec.id,
+                        )
+                          ? "Remove this expertise"
+                          : "Add this expertise"
+                      }
+                    >
+                      {(tempUserProfile.specializations || []).includes(
+                        spec.id,
+                      ) ? (
+                        <Check className="w-5 h-5" />
+                      ) : (
+                        <PlusCircle className="w-5 h-5" />
+                      )}
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -1120,13 +1234,16 @@ Would you like to see some properties that match these criteria now, or do you h
               isDemoTyping={isDemoTyping}
               onArtifactView={handleArtifactView}
               messagesEndRef={messagesEndRef}
-              showSuggestions={showSuggestions}
+              showSuggestions={isLoading ? false : showSuggestions}
               selectedQuestionCategory={selectedQuestionCategory}
               onCategorySelect={setSelectedQuestionCategory}
               suggestedQuestions={suggestedQuestions}
               onSuggestedQuestion={handleSuggestedQuestion}
               questionCategories={questionCategories}
               isDemoRunning={isDemoRunning}
+              forceShowSuggestions={
+                messages.length > 0 && !isLoading && !showCommandPalette
+              }
             />
           </div>
 
@@ -1149,12 +1266,14 @@ Would you like to see some properties that match these criteria now, or do you h
               propertyType: userProfile.propertyType,
               beds: userProfile.beds,
               homeFeatures: userProfile.homeFeatures,
+              specializations: userProfile.specializations,
             }}
             specializations={formattedProfile.displaySpecializations}
             onEditProfile={() => {
               setIsEditingPreferences(true);
               setTempUserProfile({ ...userProfile });
             }}
+            updateSpecializations={updateSpecializations}
             toggleDemo={toggleDemo}
           />
           {showArtifactPanel && (
@@ -1296,38 +1415,6 @@ Would you like to see some properties that match these criteria now, or do you h
             <ChevronRight className="w-6 h-6 transform rotate-180" />
           </motion.button>
         )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {!isDemoRunning &&
-          messages.length <= 2 &&
-          !showCommandPalette &&
-          showProfileTooltip && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0, transition: { delay: 1 } }}
-              exit={{ opacity: 0, y: 20 }}
-              className="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-white rounded-xl shadow-lg p-3 flex items-center gap-3 z-20 max-w-md border border-gray-200"
-            >
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-                <Info className="w-4 h-4 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-800">
-                  Customize Your Profile
-                </p>
-                <p className="text-xs text-gray-600 mt-0.5">
-                  Click the edit button at the top to update your home search
-                  preferences
-                </p>
-              </div>
-              <button
-                onClick={() => setShowProfileTooltip(false)}
-                className="absolute -top-2 -right-2 w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center"
-              >
-                <X className="w-3 h-3 text-gray-600" />
-              </button>
-            </motion.div>
-          )}
       </AnimatePresence>
     </div>
   );
