@@ -24,13 +24,19 @@ interface ChatSectionWrapperProps {
 
 // Create a wrapper component that correctly handles the forceShowSuggestions prop
 export default function ChatSectionWrapper(props: ChatSectionWrapperProps) {
-  const { showSuggestions, forceShowSuggestions, ...otherProps } = props;
-
-  // Combine forceShowSuggestions with showSuggestions
+  const {
+    showSuggestions,
+    forceShowSuggestions,
+    isDemoTyping = false,
+    ...otherProps
+  } = props;
   const actuallyShowSuggestions = forceShowSuggestions || showSuggestions;
 
-  // Pass the modified props to ChatSection
   return (
-    <ChatSection {...otherProps} showSuggestions={actuallyShowSuggestions} />
+    <ChatSection
+      {...otherProps}
+      isDemoTyping={isDemoTyping}
+      showSuggestions={actuallyShowSuggestions}
+    />
   );
 }
