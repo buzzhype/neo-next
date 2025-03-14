@@ -1143,14 +1143,19 @@ Would you like to see some properties that match these criteria now, or do you h
             agents={[]} // Empty array to disable agent switching
             onSelectAgent={() => {}} // Empty function to disable agent switching
             onOpenCommandPalette={() => setShowCommandPalette(true)}
-            userProfile={userProfile}
+            userProfile={{
+              city: userProfile.city,
+              budget: userProfile.budget,
+              propertyType: userProfile.propertyType,
+              beds: userProfile.beds,
+              homeFeatures: userProfile.homeFeatures,
+            }}
             specializations={formattedProfile.displaySpecializations}
             onEditProfile={() => {
               setIsEditingPreferences(true);
               setTempUserProfile({ ...userProfile });
             }}
             toggleDemo={toggleDemo}
-            isDemoRunning={isDemoRunning}
           />
           {showArtifactPanel && (
             <button

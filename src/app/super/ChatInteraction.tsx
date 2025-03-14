@@ -65,13 +65,23 @@ interface ChatInteractionProps {
   onSelectAgent: (agentId: string) => void;
 
   // User profile
-  userProfile?: any;
-  specializations?: any[];
+  userProfile?: {
+    city?: string;
+    budget?: number;
+    propertyType?: string;
+    beds?: string;
+    homeFeatures?: string[];
+  };
+  specializations?: Array<{
+    id: string;
+    name: string;
+    color: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }>;
   onEditProfile?: () => void;
 
   // Demo
   toggleDemo?: () => void;
-  isDemoRunning?: boolean;
 
   // Command Palette
   onOpenCommandPalette: () => void;
@@ -199,18 +209,16 @@ const ChatInteraction: React.FC<ChatInteractionProps> = ({
                         </div>
                         <span className="text-xs font-medium text-gray-900">
                           {userProfile.city
-                            ? (typeof userProfile.city === "string" &&
-                                {
-                                  sf: "San Francisco",
-                                  nyc: "New York City",
-                                  la: "Los Angeles",
-                                  chi: "Chicago",
-                                  mia: "Miami",
-                                  sea: "Seattle",
-                                  bos: "Boston",
-                                  den: "Denver",
-                                }[userProfile.city]) ||
-                              userProfile.city
+                            ? {
+                                sf: "San Francisco",
+                                nyc: "New York City",
+                                la: "Los Angeles",
+                                chi: "Chicago",
+                                mia: "Miami",
+                                sea: "Seattle",
+                                bos: "Boston",
+                                den: "Denver",
+                              }[userProfile.city as string] || userProfile.city
                             : "Any"}
                         </span>
                       </div>
