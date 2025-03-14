@@ -28,6 +28,7 @@ export default function ChatSectionWrapper(props: ChatSectionWrapperProps) {
     showSuggestions,
     forceShowSuggestions,
     isDemoTyping = false,
+    isDemoRunning = false,
     ...otherProps
   } = props;
   const actuallyShowSuggestions = forceShowSuggestions || showSuggestions;
@@ -36,6 +37,7 @@ export default function ChatSectionWrapper(props: ChatSectionWrapperProps) {
     <ChatSection
       {...otherProps}
       isDemoTyping={isDemoTyping}
+      isDemoRunning={isDemoRunning}
       showSuggestions={actuallyShowSuggestions}
     />
   );
