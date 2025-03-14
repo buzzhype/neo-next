@@ -11,6 +11,14 @@ import {
   Star,
   DollarSign,
   Building,
+  MapPin,
+  Sparkles,
+  X,
+  Filter,
+  User,
+  Sliders,
+  Edit2,
+  Info,
 } from "lucide-react";
 
 /**
@@ -56,6 +64,15 @@ interface ChatInteractionProps {
   }>;
   onSelectAgent: (agentId: string) => void;
 
+  // User profile
+  userProfile?: any;
+  specializations?: any[];
+  onEditProfile?: () => void;
+
+  // Demo
+  toggleDemo?: () => void;
+  isDemoRunning?: boolean;
+
   // Command Palette
   onOpenCommandPalette: () => void;
 }
@@ -71,32 +88,27 @@ const ChatInteraction: React.FC<ChatInteractionProps> = ({
   agents,
   onSelectAgent,
   onOpenCommandPalette,
+  userProfile,
+  specializations,
+  onEditProfile,
+  toggleDemo,
 }) => {
-  const [showPersonaPicker, setShowPersonaPicker] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
 
-  // Currently selected agent
-  const currentAgent =
-    agents.find((agent) => agent.id === selectedAgent) || agents[0];
-
-  // Convert the agent's icon string to an actual Lucide component
-  const AgentIcon = getAgentIcon(currentAgent?.icon || "brain");
-
-  // Animation variants for the persona dropdown
-  const personaVariants = {
-    hidden: { opacity: 0, y: 10 },
+  // Animation variants for the filter panel
+  const filterPanelVariants = {
+    hidden: { opacity: 0, height: 0 },
     visible: {
       opacity: 1,
-      y: 0,
+      height: "auto",
       transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
+        duration: 0.3,
       },
     },
     exit: {
       opacity: 0,
-      y: 10,
+      height: 0,
       transition: {
         duration: 0.2,
       },
@@ -105,94 +117,189 @@ const ChatInteraction: React.FC<ChatInteractionProps> = ({
 
   return (
     <div className="border-t border-gray-200 bg-white">
-      {/* Persona/Agent Picker */}
-      <div className="px-4 pt-3">
-        <div className="relative">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => setShowPersonaPicker(!showPersonaPicker)}
-            className="flex items-center justify-between w-full px-4 py-2.5 text-sm bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-lg hover:from-gray-100 hover:to-gray-200 transition-colors shadow-sm"
+      {/* Filters & Specialists Panel (expandable) */}
+      <div className="px-4 pt-2">
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-1.5 py-1.5 px-3 text-xs bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
           >
-            <div className="flex items-center gap-2">
-              {/* Agent avatar */}
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-inner">
-                <AgentIcon className="w-3.5 h-3.5 text-white" />
-              </div>
-              <span className="font-medium text-gray-800">
-                {currentAgent?.name || "AI Assistant"}
-              </span>
-            </div>
-            {showPersonaPicker ? (
-              <ChevronUp className="w-4 h-4 text-gray-500" />
+            <Filter className="w-3.5 h-3.5 text-gray-600" />
+            <span className="text-gray-700 font-medium">
+              Filters & Specialists
+            </span>
+            {showFilters ? (
+              <ChevronUp className="w-3.5 h-3.5 text-gray-600" />
             ) : (
-              <ChevronDown className="w-4 h-4 text-gray-500" />
+              <ChevronDown className="w-3.5 h-3.5 text-gray-600" />
             )}
-          </motion.button>
+          </button>
 
-          {/* Dropdown for selecting an agent/persona */}
-          <AnimatePresence>
-            {showPersonaPicker && (
-              <motion.div
-                variants={personaVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                className="absolute left-0 right-0 z-10 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden"
+          <div className="flex items-center gap-2">
+            {toggleDemo && (
+              <button
+                onClick={toggleDemo}
+                className="py-1.5 px-3 rounded-full text-xs font-medium flex items-center gap-1.5 text-white"
+                style={{
+                  background: isDemoRunning
+                    ? "#d9848b" // BRAND_COLORS.blush
+                    : "linear-gradient(to right, #5988a6, #3c4659)", // BRAND_COLORS.horizon, BRAND_COLORS.charcoal
+                }}
               >
-                <div className="max-h-64 overflow-y-auto">
-                  {agents.map((agent, index) => {
-                    const Icon = getAgentIcon(agent.icon);
-                    const isSelected = agent.id === selectedAgent;
-                    return (
-                      <motion.button
-                        key={agent.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        onClick={() => {
-                          onSelectAgent(agent.id);
-                          setShowPersonaPicker(false);
-                        }}
-                        className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-gray-50 transition-colors text-left ${
-                          isSelected ? "bg-blue-50" : ""
-                        }`}
-                      >
-                        <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                            isSelected
-                              ? "bg-gradient-to-br from-blue-500 to-blue-700 shadow-inner"
-                              : "bg-gradient-to-br from-gray-100 to-gray-300"
-                          }`}
-                        >
-                          <Icon
-                            className={`w-4 h-4 ${
-                              isSelected ? "text-white" : "text-gray-600"
-                            }`}
-                          />
-                        </div>
-                        <div>
-                          <p
-                            className={`font-medium ${
-                              isSelected ? "text-blue-600" : "text-gray-700"
-                            }`}
-                          >
-                            {agent.name}
-                          </p>
-                          {agent.description && (
-                            <p className="text-xs text-gray-500">
-                              {agent.description}
-                            </p>
-                          )}
-                        </div>
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </motion.div>
+                {isDemoRunning ? (
+                  <>
+                    <X className="w-3.5 h-3.5" />
+                    Stop Demo
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Interactive Demo
+                  </>
+                )}
+              </button>
             )}
-          </AnimatePresence>
+
+            {onEditProfile && (
+              <button
+                onClick={onEditProfile}
+                className="flex items-center gap-1.5 py-1.5 px-3 text-xs bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-full transition-colors"
+              >
+                <Edit2 className="w-3.5 h-3.5" />
+                <span>Edit Profile</span>
+              </button>
+            )}
+          </div>
         </div>
+
+        {/* Expandable filter panel */}
+        <AnimatePresence>
+          {showFilters && (
+            <motion.div
+              variants={filterPanelVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="overflow-hidden mt-3 mb-1"
+            >
+              {/* Search Criteria Section */}
+              <div className="mb-3">
+                <h3 className="text-xs font-medium text-gray-500 uppercase mb-2">
+                  Search Criteria
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {userProfile && (
+                    <>
+                      <div className="flex items-center justify-between py-1.5 px-3 bg-blue-50 rounded-lg">
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 text-blue-600" />
+                          <span className="text-xs text-gray-700">
+                            Location
+                          </span>
+                        </div>
+                        <span className="text-xs font-medium text-gray-900">
+                          {userProfile.city
+                            ? (typeof userProfile.city === "string" &&
+                                {
+                                  sf: "San Francisco",
+                                  nyc: "New York City",
+                                  la: "Los Angeles",
+                                  chi: "Chicago",
+                                  mia: "Miami",
+                                  sea: "Seattle",
+                                  bos: "Boston",
+                                  den: "Denver",
+                                }[userProfile.city]) ||
+                              userProfile.city
+                            : "Any"}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between py-1.5 px-3 bg-green-50 rounded-lg">
+                        <div className="flex items-center gap-1.5">
+                          <DollarSign className="w-3.5 h-3.5 text-green-600" />
+                          <span className="text-xs text-gray-700">Budget</span>
+                        </div>
+                        <span className="text-xs font-medium text-gray-900">
+                          {userProfile.budget
+                            ? `$${userProfile.budget.toLocaleString()}`
+                            : "Any"}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between py-1.5 px-3 bg-purple-50 rounded-lg">
+                        <div className="flex items-center gap-1.5">
+                          <Home className="w-3.5 h-3.5 text-purple-600" />
+                          <span className="text-xs text-gray-700">
+                            Property
+                          </span>
+                        </div>
+                        <span className="text-xs font-medium text-gray-900">
+                          {userProfile.propertyType || "Any"}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between py-1.5 px-3 bg-amber-50 rounded-lg">
+                        <div className="flex items-center gap-1.5">
+                          <Sliders className="w-3.5 h-3.5 text-amber-600" />
+                          <span className="text-xs text-gray-700">
+                            Bedrooms
+                          </span>
+                        </div>
+                        <span className="text-xs font-medium text-gray-900">
+                          {userProfile.beds || "Any"}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Real Estate Specialists Section */}
+              {specializations && specializations.length > 0 && (
+                <div className="mb-3">
+                  <h3 className="text-xs font-medium text-gray-500 uppercase mb-2">
+                    Your Real Estate Specialists
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {specializations.map((spec) => (
+                      <div
+                        key={spec.id}
+                        className={`px-2.5 py-1.5 rounded-lg text-xs flex items-center gap-1.5 ${spec.color.replace("gradient-to-r", "gradient-to-br")} text-white`}
+                      >
+                        {React.createElement(spec.icon, {
+                          className: "w-3 h-3",
+                        })}
+                        <span className="font-medium">{spec.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Features section */}
+              {userProfile &&
+                userProfile.homeFeatures &&
+                userProfile.homeFeatures.length > 0 && (
+                  <div>
+                    <h3 className="text-xs font-medium text-gray-500 uppercase mb-2">
+                      Must-Have Features
+                    </h3>
+                    <div className="flex flex-wrap gap-1.5 mb-2">
+                      {userProfile.homeFeatures.map((feature) => (
+                        <div
+                          key={feature}
+                          className="px-2.5 py-1 bg-gray-50 border border-gray-200 rounded-full text-xs text-gray-700"
+                        >
+                          {feature}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Message Input and Send Button */}
@@ -209,9 +316,7 @@ const ChatInteraction: React.FC<ChatInteractionProps> = ({
               onChange={(e) => onInputChange(e.target.value)}
               onFocus={() => setIsInputFocused(true)}
               onBlur={() => setIsInputFocused(false)}
-              placeholder={`Ask something about ${
-                isHomeSearchMode ? "real estate" : "anything"
-              }...`}
+              placeholder={`Ask Jessica about real estate in San Francisco...`}
               className={`w-full px-4 py-3.5 bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
                 isInputFocused ? "shadow-md" : ""
               }`}

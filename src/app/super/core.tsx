@@ -31,6 +31,15 @@ import {
   Settings,
   Save,
   Sliders,
+  Users,
+  Briefcase,
+  Leaf,
+  Umbrella,
+  ArrowDown,
+  PlusCircle,
+  Clock,
+  Award,
+  Heart,
 } from "lucide-react";
 
 import ChatSection from "./ChatSection";
@@ -155,6 +164,66 @@ const questionCategories = [
   },
 ];
 
+// Define all available specializations
+const SPECIALIZATIONS = [
+  {
+    id: "firstTimeBuyer",
+    name: "First-Time Buyer Guide",
+    description: "Expert in guiding first-time homebuyers through the process",
+    icon: Home,
+    color: "bg-gradient-to-r from-blue-600 to-blue-500",
+  },
+  {
+    id: "familyFocused",
+    name: "Family-Focused Specialist",
+    description: "Focuses on family-friendly properties and communities",
+    icon: Users,
+    color: "bg-gradient-to-r from-teal-600 to-teal-500",
+  },
+  {
+    id: "luxuryMarket",
+    name: "Luxury Market Expert",
+    description: "Specialized in high-end properties and exclusive areas",
+    icon: Sparkles,
+    color: "bg-gradient-to-r from-amber-600 to-amber-500",
+  },
+  {
+    id: "investmentAnalyst",
+    name: "Investment Analyst",
+    description: "Focuses on ROI and investment opportunities",
+    icon: DollarSign,
+    color: "bg-gradient-to-r from-green-600 to-green-500",
+  },
+  {
+    id: "downsizingSpecialist",
+    name: "Downsizing Specialist",
+    description: "Expert in retirement and downsizing options",
+    icon: ArrowDown,
+    color: "bg-gradient-to-r from-indigo-600 to-indigo-500",
+  },
+  {
+    id: "vacationProperty",
+    name: "Vacation Property Advisor",
+    description: "Specialized in vacation homes and rental properties",
+    icon: Umbrella,
+    color: "bg-gradient-to-r from-red-600 to-red-500",
+  },
+  {
+    id: "sustainabilityExpert",
+    name: "Sustainability Expert",
+    description: "Focused on eco-friendly and sustainable properties",
+    icon: Leaf,
+    color: "bg-gradient-to-r from-emerald-600 to-emerald-500",
+  },
+  {
+    id: "professionalLiving",
+    name: "Professional Living Expert",
+    description: "Specializes in properties ideal for working professionals",
+    icon: Briefcase,
+    color: "bg-gradient-to-r from-purple-600 to-purple-500",
+  },
+];
+
 /**
  * UserProfile interface to explicitly type user profile objects.
  */
@@ -169,6 +238,7 @@ interface UserProfile {
   baths: string;
   squareFeet: string;
   homeFeatures: string[];
+  specializations: string[]; // Multiple specializations
   customTags: string[];
   favoritePlaces: any[];
   savedHomes: any[];
@@ -210,10 +280,12 @@ function getSuggestedQuestions(
           userProfile.propertyType,
         );
       }
+      // Replace any {NAME} with "Thomas"
+      personalized = personalized.replace(/\{NAME\}/g, "Thomas");
       return personalized;
     });
   }
-  return questions.map((q) => q.question);
+  return questions.map((q) => q.question.replace(/\{NAME\}/g, "Thomas"));
 }
 
 /**
@@ -234,7 +306,7 @@ function EnhancedArtifactRenderer({ type, data }: { type: string; data: any }) {
  */
 function useDemoMode(
   agents: any[],
-  selectedAgent: string,
+  selectedSpecializations: string[],
   onOpenArtifact: (artifactMsg: any) => void,
 ) {
   const [demoMessages, setDemoMessages] = useState<any[]>([]);
@@ -254,6 +326,10 @@ function useDemoMode(
     artifactData: q.artifactData,
   }));
 
+  // Use the first specialization as the agent for demo messages
+  const primarySpecialization =
+    (selectedSpecializations || [])[0] || "firstTimeBuyer";
+
   function startDemo() {
     setIsRunning(true);
     setIsTyping(false);
@@ -263,7 +339,7 @@ function useDemoMode(
     const introMsg = {
       id: Date.now().toString(),
       role: "agent",
-      agentId: selectedAgent,
+      agentId: primarySpecialization,
       content: `Welcome to the Interactive Demo! I have ${steps.length} artifact-based questions to show you.`,
       timestamp: new Date(),
     };
@@ -291,7 +367,7 @@ function useDemoMode(
         const agentMsg = {
           id: (Date.now() + 1).toString(),
           role: "agent",
-          agentId: selectedAgent,
+          agentId: primarySpecialization,
           content: step.answer,
           artifactType: step.artifactType,
           artifactData: step.artifactData,
@@ -309,7 +385,7 @@ function useDemoMode(
       }, 1500);
     }, 3000);
     return () => clearTimeout(timeout);
-  }, [isRunning, isTyping, currentStep, selectedAgent, steps]);
+  }, [isRunning, isTyping, currentStep, primarySpecialization, steps]);
 
   return {
     demoMessages,
@@ -329,7 +405,7 @@ export default function Core({
 }) {
   const [userProfile, setUserProfile] = useState<UserProfile>(
     initialUserProfile || {
-      name: "Guest",
+      name: "Thomas",
       experience: "first-time",
       purpose: "primary",
       budget: 850000,
@@ -339,6 +415,7 @@ export default function Core({
       baths: "1+",
       squareFeet: "750-1500 sq ft",
       homeFeatures: ["parking", "outdoor", "updated"],
+      specializations: ["firstTimeBuyer", "investmentAnalyst"], // Default with multiple specializations
       customTags: [],
       favoritePlaces: [],
       savedHomes: [],
@@ -348,98 +425,33 @@ export default function Core({
   const [isEditingPreferences, setIsEditingPreferences] = useState(false);
   const [showPreferenceDetails, setShowPreferenceDetails] = useState(false);
   const [tempUserProfile, setTempUserProfile] = useState({ ...userProfile });
+  const [showProfileCard, setShowProfileCard] = useState(true);
+  const [showProfileTooltip, setShowProfileTooltip] = useState(true);
 
-  const [selectedAgent, setSelectedAgent] = useState("firstTimeBuyer");
-  const agents = [
-    {
-      id: "firstTimeBuyer",
-      name: "First-Time Buyer Guide",
-      icon: Home,
-      description: "Helps new buyers navigate the market",
-      color: "bg-gradient-to-r from-blue-600 to-blue-500",
-    },
-    {
-      id: "neighborhoodExpert",
-      name: "Neighborhood Expert",
-      icon: Building,
-      description: "Deep knowledge of local districts",
-      color: "bg-gradient-to-r from-purple-600 to-purple-500",
-    },
-    {
-      id: "investmentAnalyst",
-      name: "Investment Analyst",
-      icon: DollarSign,
-      description: "Maximizes ROI and investment potential",
-      color: "bg-gradient-to-r from-green-600 to-green-500",
-    },
-    {
-      id: "luxurySpecialist",
-      name: "Luxury Specialist",
-      icon: Sparkles,
-      description: "Focuses on premium properties",
-      color: "bg-gradient-to-r from-amber-600 to-amber-500",
-    },
-  ];
-
-  const formatUserProfile = (profile: UserProfile | null) => {
-    if (!profile) {
-      return {
-        name: "Guest",
-        displayCity: "San Francisco",
-        displayBudget: "your budget",
-        displayPropertyType: "property",
-        displayBeds: "bedrooms",
-        displayFeatures: "features you need",
-      };
-    }
-    const displayCity =
-      CITY_NAMES[profile.city] || profile.city || "San Francisco";
-    const displayBudget = profile.budget
-      ? `$${profile.budget.toLocaleString()}`
-      : "your budget";
-    const propertyTypes: Record<UserProfile["propertyType"], string> = {
-      condo: "Condo",
-      house: "House",
-      townhouse: "Townhouse",
-      apartment: "Apartment",
-      "multi-family": "Multi-Family",
-    };
-    const displayPropertyType =
-      propertyTypes[profile.propertyType] || profile.propertyType || "property";
-    const displayBeds = profile.beds || "bedrooms";
-    const displayFeatures =
-      profile.homeFeatures && profile.homeFeatures.length > 0
-        ? profile.homeFeatures.join(", ")
-        : "features you need";
-    return {
-      name: profile.name || "Guest",
-      displayCity,
-      displayBudget,
-      displayPropertyType,
-      displayBeds,
-      displayFeatures,
-    };
-  };
-
-  const formattedProfile = formatUserProfile(userProfile);
-
-  // Added missing messages state. IDs are strings.
+  // The messages state. IDs are strings.
   const [messages, setMessages] = useState<any[]>(() => {
-    const agent = agents.find((a) => a.id === selectedAgent) || agents[0];
+    // Get specialization descriptions
+    const specializationInfo = (userProfile.specializations || [])
+      .map((id) => {
+        const spec = SPECIALIZATIONS.find((s) => s.id === id);
+        return spec ? spec.name : null;
+      })
+      .filter(Boolean);
+
+    // Create a more personalized and realistic welcome message
     return [
       {
         id: Date.now().toString(),
         role: "agent",
-        agentId: selectedAgent,
+        agentId: (userProfile.specializations || [])[0] || "firstTimeBuyer",
         content: `
-👋 Hello ${formattedProfile.name}! I'm your dedicated ${agent.name} for ${formattedProfile.displayCity}.
+👋 Hi Thomas! I'm Jessica, your dedicated real estate advisor with expertise in ${specializationInfo.join(" and ")}.
 
-📝 **Your Home Search Profile:**
-• Looking for: ${formattedProfile.displayPropertyType} with ${formattedProfile.displayBeds}
-• Budget: ${formattedProfile.displayBudget}
-• Must-have features: ${formattedProfile.displayFeatures}
+Based on your search profile, you're looking for a ${userProfile.propertyType} with ${userProfile.beds} in ${CITY_NAMES[userProfile.city]} with a budget of $${userProfile.budget.toLocaleString()}.
 
-I'm here to help you find the perfect home that matches these preferences. What would you like to explore first? You can ask about neighborhoods, get property recommendations, or learn about the buying process.
+I've been working in ${CITY_NAMES[userProfile.city]} real estate for 8 years now, so I know the market inside and out. Let's work together to find your perfect home!
+
+What specific neighborhoods are you interested in exploring? Or would you like to discuss current market conditions first?
         `,
         timestamp: new Date(),
         isWelcomeMessage: true,
@@ -469,11 +481,15 @@ I'm here to help you find the perfect home that matches these preferences. What 
     demoProgress,
     startDemo,
     stopDemo,
-  } = useDemoMode(agents, selectedAgent, (agentMsg: any) => {
-    setActiveArtifact(agentMsg);
-    setShowArtifactPanel(true);
-    setMinimizeChat(true);
-  });
+  } = useDemoMode(
+    SPECIALIZATIONS,
+    userProfile.specializations,
+    (agentMsg: any) => {
+      setActiveArtifact(agentMsg);
+      setShowArtifactPanel(true);
+      setMinimizeChat(true);
+    },
+  );
 
   const displayMessages = isDemoRunning ? demoMessages : messages;
 
@@ -481,6 +497,56 @@ I'm here to help you find the perfect home that matches these preferences. What 
     selectedQuestionCategory,
     userProfile,
   );
+
+  const formatUserProfile = (profile: UserProfile | null) => {
+    if (!profile) {
+      return {
+        name: "Thomas", // Use Thomas as the name
+        displayCity: "San Francisco",
+        displayBudget: "your budget",
+        displayPropertyType: "property",
+        displayBeds: "bedrooms",
+        displayFeatures: "features you need",
+        displaySpecializations: [],
+      };
+    }
+    const displayCity =
+      CITY_NAMES[profile.city] || profile.city || "San Francisco";
+    const displayBudget = profile.budget
+      ? `$${profile.budget.toLocaleString()}`
+      : "your budget";
+    const propertyTypes: Record<UserProfile["propertyType"], string> = {
+      condo: "Condo",
+      house: "House",
+      townhouse: "Townhouse",
+      apartment: "Apartment",
+      "multi-family": "Multi-Family",
+    };
+    const displayPropertyType =
+      propertyTypes[profile.propertyType] || profile.propertyType || "property";
+    const displayBeds = profile.beds || "bedrooms";
+    const displayFeatures =
+      profile.homeFeatures && profile.homeFeatures.length > 0
+        ? profile.homeFeatures.join(", ")
+        : "features you need";
+
+    // Get specialization info
+    const displaySpecializations = (profile.specializations || [])
+      .map((id) => SPECIALIZATIONS.find((s) => s.id === id))
+      .filter(Boolean) as typeof SPECIALIZATIONS;
+
+    return {
+      name: "Thomas", // Always use Thomas as the name
+      displayCity,
+      displayBudget,
+      displayPropertyType,
+      displayBeds,
+      displayFeatures,
+      displaySpecializations,
+    };
+  };
+
+  const formattedProfile = formatUserProfile(userProfile);
 
   const handleTempProfileChange = (field: string, value: any) => {
     setTempUserProfile((prev: any) => ({
@@ -506,29 +572,71 @@ I'm here to help you find the perfect home that matches these preferences. What 
     });
   };
 
+  const toggleSpecialization = (specializationId: string) => {
+    setTempUserProfile((prev: any) => {
+      const currentSpecializations = [...(prev.specializations || [])];
+      if (currentSpecializations.includes(specializationId)) {
+        // Don't remove if it's the last specialization
+        if (currentSpecializations.length <= 1) {
+          return prev;
+        }
+        return {
+          ...prev,
+          specializations: currentSpecializations.filter(
+            (id) => id !== specializationId,
+          ),
+        };
+      } else {
+        return {
+          ...prev,
+          specializations: [...currentSpecializations, specializationId],
+        };
+      }
+    });
+  };
+
   const saveProfileChanges = () => {
     setUserProfile(tempUserProfile);
-    const agent = agents.find((a) => a.id === selectedAgent) || agents[0];
     const newFormattedProfile = formatUserProfile(tempUserProfile);
+
+    // Get specialization descriptions
+    const specializationInfo = (tempUserProfile.specializations || [])
+      .map((id) => {
+        const spec = SPECIALIZATIONS.find((s) => s.id === id);
+        return spec ? spec.name : null;
+      })
+      .filter(Boolean);
+
     const systemMsg = {
       id: Date.now().toString(),
       role: "system",
       content: `Your preferences have been updated`,
       timestamp: new Date(),
     };
+
+    // Create a more personal and conversational response
     const agentMsg = {
       id: (Date.now() + 1).toString(),
       role: "agent",
-      agentId: selectedAgent,
+      agentId: (tempUserProfile.specializations || [])[0] || "firstTimeBuyer",
       content: `
-I've updated your home search preferences! 📝
+Great! I've updated your home search preferences, Thomas.
 
-**Your New Profile:**
-• Looking for: ${newFormattedProfile.displayPropertyType} with ${newFormattedProfile.displayBeds}
-• Budget: ${newFormattedProfile.displayBudget}
-• Must-have features: ${newFormattedProfile.displayFeatures}
+You're now looking for a ${newFormattedProfile.displayPropertyType} with ${newFormattedProfile.displayBeds} bedrooms in ${newFormattedProfile.displayCity}, with a budget of ${newFormattedProfile.displayBudget}.
 
-Let's continue finding homes that match these updated criteria. Is there anything specific about these new preferences you'd like to explore?
+${
+  tempUserProfile.homeFeatures.length > 0
+    ? `Your must-haves include ${newFormattedProfile.displayFeatures}. I'll make sure to prioritize properties with these features.`
+    : `You haven't specified any must-have features yet. Let me know if there are specific features you're looking for.`
+}
+
+${
+  specializationInfo.length > 1
+    ? `I see you're interested in expertise from ${specializationInfo.join(" and ")}. That's a smart combination!`
+    : `I'll be focusing on ${specializationInfo[0]} for your search.`
+}
+
+Would you like to see some properties that match these criteria now, or do you have questions about the ${newFormattedProfile.displayCity} market?
       `,
       timestamp: new Date(),
     };
@@ -557,39 +665,6 @@ Let's continue finding homes that match these updated criteria. Is there anythin
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const handleSelectAgent = (agentId: string) => {
-    if (agentId === selectedAgent) return;
-    setSelectedAgent(agentId);
-    const newAgent = agents.find((a) => a.id === agentId);
-    if (!newAgent) return;
-    const systemMsg = {
-      id: Date.now().toString(),
-      role: "system",
-      content: `You are now chatting with ${newAgent.name}`,
-      timestamp: new Date(),
-    };
-    const agentIntroMsg = {
-      id: (Date.now() + 1).toString(),
-      role: "agent",
-      agentId: agentId,
-      content: `
-✨ **Agent Switch: ${newAgent.name}** ✨
-
-Hi ${formattedProfile.name}! I'll be your ${newAgent.name} now.
-
-I've reviewed your profile:
-• ${formattedProfile.displayPropertyType} in ${formattedProfile.displayCity}
-• Budget of ${formattedProfile.displayBudget}
-• Essential features: ${formattedProfile.displayFeatures}
-
-My specialty is ${newAgent.description.toLowerCase()}. How can I help with your home search today?
-      `,
-      timestamp: new Date(),
-    };
-    setMessages((prev) => [...prev, systemMsg, agentIntroMsg]);
-    setNewestMessageId(agentIntroMsg.id);
-  };
-
   function findMatch(userMsg: string) {
     const normalized = userMsg.toLowerCase().trim();
     return questionsData.find((q) =>
@@ -599,18 +674,29 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
 
   function simulateResponse(userMessage: string) {
     setIsLoading(true);
-    const matched = findMatch(userMessage);
     setTimeout(() => {
       const newId = Date.now().toString();
+      const matched = findMatch(userMessage);
+
+      // Use the first specialization as the primary agent
+      const primarySpecializationId =
+        (userProfile.specializations || [])[0] || "firstTimeBuyer";
+      const primarySpecialization = SPECIALIZATIONS.find(
+        (s) => s.id === primarySpecializationId,
+      );
+
       const response: any = {
         id: newId,
         role: "agent",
-        agentId: selectedAgent,
+        agentId: primarySpecializationId,
         content: "",
         timestamp: new Date(),
       };
+
       if (matched) {
         let personalizedAnswer = matched.answer;
+
+        // Personalize the response
         if (userProfile) {
           if (userProfile.city && CITY_NAMES[userProfile.city]) {
             personalizedAnswer = personalizedAnswer.replace(
@@ -624,14 +710,40 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
               `$${userProfile.budget.toLocaleString()}`,
             );
           }
-          if (userProfile.name) {
-            personalizedAnswer = personalizedAnswer.replace(
-              /\{NAME\}/g,
-              userProfile.name,
-            );
-          }
         }
-        response.content = personalizedAnswer;
+
+        // Always use "Thomas" as the name placeholder
+        personalizedAnswer = personalizedAnswer.replace(/\{NAME\}/g, "Thomas");
+
+        // Make the response more conversational and realistic
+        const conversationalPrefixes = [
+          `That's a great question, Thomas! `,
+          `I'm glad you asked about that. `,
+          `Let me share some insights on this. `,
+          `This is something many buyers wonder about. `,
+          `Based on my experience in ${CITY_NAMES[userProfile.city]}, `,
+        ];
+
+        const conversationalSuffixes = [
+          ` Does that help with what you're looking for?`,
+          ` Would you like me to elaborate on any specific aspect?`,
+          ` Is there anything else you'd like to know about this?`,
+          ` How does that align with your priorities?`,
+          ` Let me know if you'd like more specific information.`,
+        ];
+
+        // Randomly select a prefix and suffix for variety
+        const prefix =
+          conversationalPrefixes[
+            Math.floor(Math.random() * conversationalPrefixes.length)
+          ];
+        const suffix =
+          conversationalSuffixes[
+            Math.floor(Math.random() * conversationalSuffixes.length)
+          ];
+
+        response.content = prefix + personalizedAnswer + suffix;
+
         if (matched.artifactType && matched.artifactData) {
           response.artifactType = matched.artifactType;
           response.artifactData = matched.artifactData;
@@ -642,8 +754,10 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
           }, 800);
         }
       } else {
-        response.content = `I don't have a specific answer for "${userMessage}". Would you like to know more about ${formattedProfile.displayCity} neighborhoods, mortgage options, or the buying process?`;
+        // Create a more personalized fallback response
+        response.content = `I understand you're asking about "${userMessage}". While I don't have specific data on that, I can help you explore ${CITY_NAMES[userProfile.city]}'s neighborhoods, current listings that match your ${userProfile.propertyType} search, or discuss financing options for your budget of $${userProfile.budget.toLocaleString()}. What would be most helpful for you right now, Thomas?`;
       }
+
       setMessages((prev) => [...prev, response]);
       setNewestMessageId(newId);
       setIsLoading(false);
@@ -705,6 +819,11 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
     else startDemo();
   };
 
+  // Handle showing/hiding the user profile
+  const toggleProfileCard = () => {
+    setShowProfileCard(!showProfileCard);
+  };
+
   const artifactPanelVariants = {
     hidden: { x: "100%" },
     visible: {
@@ -736,330 +855,205 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
     },
   };
 
-  const UserProfileCard = () => (
-    <motion.div
-      className="bg-white rounded-xl shadow-sm mb-4 border border-gray-100 overflow-hidden"
-      initial={{ height: "auto" }}
-      animate={{
-        height: showPreferenceDetails ? "auto" : "auto",
-        transition: { duration: 0.3 },
-      }}
-    >
-      <div className="p-4">
-        <div className="flex items-center justify-between gap-3 mb-2">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-              <User className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">
-                Your Search Profile
-              </h3>
-              <p className="text-xs text-gray-600">
-                Agent recommendations based on these criteria
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
+  // Preference editing modal
+  const PreferenceEditModal = () => {
+    if (!isEditingPreferences) return null;
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+        >
+          <div className="p-5 border-b border-gray-200 flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Edit Search Preferences
+            </h3>
             <button
-              onClick={() => {
-                if (isEditingPreferences) return;
-                setShowPreferenceDetails(!showPreferenceDetails);
-              }}
+              onClick={cancelEditing}
               className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
-              aria-label={
-                showPreferenceDetails ? "Collapse details" : "Expand details"
-              }
             >
-              {showPreferenceDetails ? (
-                <ChevronUp className="w-5 h-5 text-gray-600" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-gray-600" />
-              )}
+              <X className="w-5 h-5 text-gray-600" />
             </button>
-            {!isEditingPreferences ? (
-              <button
-                onClick={() => {
-                  setIsEditingPreferences(true);
-                  setShowPreferenceDetails(true);
-                  setTempUserProfile({ ...userProfile });
-                }}
-                className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
-                aria-label="Edit preferences"
-              >
-                <Edit2 className="w-5 h-5 text-gray-600" />
-              </button>
-            ) : (
-              <div className="flex gap-1">
-                <button
-                  onClick={saveProfileChanges}
-                  className="p-1.5 hover:bg-green-100 text-green-600 rounded-full transition-colors"
-                  aria-label="Save changes"
-                >
-                  <Check className="w-5 h-5" />
-                </button>
-                <button
-                  onClick={cancelEditing}
-                  className="p-1.5 hover:bg-red-100 text-red-600 rounded-full transition-colors"
-                  aria-label="Cancel editing"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+          </div>
+
+          <div className="p-5 space-y-5">
+            {/* Specializations selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Your Real Estate Specialists
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {SPECIALIZATIONS.map((spec) => (
+                  <button
+                    key={spec.id}
+                    type="button"
+                    onClick={() => toggleSpecialization(spec.id)}
+                    className={`px-3 py-1.5 rounded-full text-sm transition-colors flex items-center gap-1.5 ${
+                      (tempUserProfile.specializations || []).includes(spec.id)
+                        ? `${spec.color.replace("gradient-to-r", "gradient-to-br")} text-white`
+                        : "bg-gray-100 text-gray-700 border-gray-200 border"
+                    }`}
+                  >
+                    {React.createElement(spec.icon, {
+                      className: "w-3.5 h-3.5",
+                    })}
+                    <span>{spec.name}</span>
+                  </button>
+                ))}
               </div>
-            )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Property Type
+                </label>
+                <select
+                  value={tempUserProfile.propertyType || ""}
+                  onChange={(e) =>
+                    handleTempProfileChange("propertyType", e.target.value)
+                  }
+                  className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  {PROPERTY_TYPES.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Bedrooms
+                </label>
+                <select
+                  value={tempUserProfile.beds || ""}
+                  onChange={(e) =>
+                    handleTempProfileChange("beds", e.target.value)
+                  }
+                  className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  {BEDS_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Budget
+                </label>
+                <select
+                  value={tempUserProfile.budget || ""}
+                  onChange={(e) =>
+                    handleTempProfileChange("budget", parseInt(e.target.value))
+                  }
+                  className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  {BUDGET_RANGES.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  City
+                </label>
+                <select
+                  value={tempUserProfile.city || ""}
+                  onChange={(e) =>
+                    handleTempProfileChange("city", e.target.value)
+                  }
+                  className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                >
+                  {Object.entries(CITY_NAMES).map(([code, name]) => (
+                    <option key={code} value={code}>
+                      {name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Must-Have Features
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {HOME_FEATURES.map((feature) => (
+                  <button
+                    key={feature.value}
+                    type="button"
+                    onClick={() => toggleFeature(feature.value)}
+                    className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                      (tempUserProfile.homeFeatures || []).includes(
+                        feature.value,
+                      )
+                        ? "bg-blue-100 text-blue-700 border-blue-200 border"
+                        : "bg-gray-100 text-gray-700 border-gray-200 border"
+                    }`}
+                  >
+                    {(tempUserProfile.homeFeatures || []).includes(
+                      feature.value,
+                    ) && <Check className="w-3 h-3 inline-block mr-1" />}
+                    {feature.label}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3">
-          <div className="bg-blue-50 p-2 rounded-lg flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-blue-600" />
-            <span className="text-sm truncate font-medium">
-              {formattedProfile.displayCity}
-            </span>
-          </div>
-          <div className="bg-green-50 p-2 rounded-lg flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-green-600" />
-            <span className="text-sm truncate font-medium">
-              {formattedProfile.displayBudget}
-            </span>
-          </div>
-          <div className="bg-purple-50 p-2 rounded-lg flex items-center gap-2">
-            <Home className="w-4 h-4 text-purple-600" />
-            <span className="text-sm truncate font-medium">
-              {formattedProfile.displayPropertyType}
-            </span>
-          </div>
-          <div className="bg-amber-50 p-2 rounded-lg flex items-center gap-2">
-            <Sliders className="w-4 h-4 text-amber-600" />
-            <span className="text-sm truncate font-medium">
-              {formattedProfile.displayBeds}
-            </span>
-          </div>
-        </div>
-        <AnimatePresence>
-          {showPreferenceDetails && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="overflow-hidden"
+
+          <div className="p-5 border-t border-gray-200 flex justify-end gap-3">
+            <button
+              onClick={cancelEditing}
+              className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
             >
-              <div className="border-t mt-4 pt-4">
-                {isEditingPreferences ? (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Property Type
-                        </label>
-                        <select
-                          value={tempUserProfile.propertyType || ""}
-                          onChange={(e) =>
-                            handleTempProfileChange(
-                              "propertyType",
-                              e.target.value,
-                            )
-                          }
-                          className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                        >
-                          {PROPERTY_TYPES.map((type) => (
-                            <option key={type.value} value={type.value}>
-                              {type.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Bedrooms
-                        </label>
-                        <select
-                          value={tempUserProfile.beds || ""}
-                          onChange={(e) =>
-                            handleTempProfileChange("beds", e.target.value)
-                          }
-                          className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                        >
-                          {BEDS_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Budget
-                        </label>
-                        <select
-                          value={tempUserProfile.budget || ""}
-                          onChange={(e) =>
-                            handleTempProfileChange(
-                              "budget",
-                              parseInt(e.target.value),
-                            )
-                          }
-                          className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                        >
-                          {BUDGET_RANGES.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          City
-                        </label>
-                        <select
-                          value={tempUserProfile.city || ""}
-                          onChange={(e) =>
-                            handleTempProfileChange("city", e.target.value)
-                          }
-                          className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                        >
-                          {Object.entries(CITY_NAMES).map(([code, name]) => (
-                            <option key={code} value={code}>
-                              {name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Must-Have Features
-                      </label>
-                      <div className="flex flex-wrap gap-2">
-                        {HOME_FEATURES.map((feature) => (
-                          <button
-                            key={feature.value}
-                            type="button"
-                            onClick={() => toggleFeature(feature.value)}
-                            className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
-                              tempUserProfile.homeFeatures?.includes(
-                                feature.value,
-                              )
-                                ? "bg-blue-100 text-blue-700 border-blue-200 border"
-                                : "bg-gray-100 text-gray-700 border-gray-200 border"
-                            }`}
-                          >
-                            {tempUserProfile.homeFeatures?.includes(
-                              feature.value,
-                            ) && (
-                              <Check className="w-3 h-3 inline-block mr-1" />
-                            )}
-                            {feature.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="pt-3 flex justify-end gap-2">
-                      <button
-                        onClick={cancelEditing}
-                        className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={saveProfileChanges}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-                      >
-                        <Save className="w-4 h-4" />
-                        Update Preferences
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">
-                        Must-Have Features
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {userProfile.homeFeatures?.map((feature) => {
-                          const featureData = HOME_FEATURES.find(
-                            (f) => f.value === feature,
-                          );
-                          return (
-                            <div
-                              key={feature}
-                              className="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-full text-sm text-gray-700"
-                            >
-                              {featureData?.label || feature}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-700 mb-2">
-                        Additional Details
-                      </h4>
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        <div className="flex items-center gap-1 text-gray-600">
-                          <Calendar className="w-3.5 h-3.5" />
-                          <span>
-                            Experience:{" "}
-                            {userProfile.experience === "first-time"
-                              ? "First-time buyer"
-                              : "Experienced"}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1 text-gray-600">
-                          <Home className="w-3.5 h-3.5" />
-                          <span>
-                            Purpose:{" "}
-                            {userProfile.purpose === "primary"
-                              ? "Primary residence"
-                              : "Investment"}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="pt-2 flex justify-end">
-                      <button
-                        onClick={() => {
-                          setIsEditingPreferences(true);
-                          setTempUserProfile({ ...userProfile });
-                        }}
-                        className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-1 text-sm"
-                      >
-                        <Edit2 className="w-3.5 h-3.5" />
-                        Edit Preferences
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              Cancel
+            </button>
+            <button
+              onClick={saveProfileChanges}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+            >
+              <Save className="w-4 h-4" />
+              Save Changes
+            </button>
+          </div>
+        </motion.div>
       </div>
-    </motion.div>
-  );
+    );
+  };
 
   return (
-    <div className="h-screen w-full flex overflow-hidden bg-gray-50 relative">
+    <div className="h-screen w-full flex flex-col overflow-hidden bg-gray-50 relative">
       <CommandPalette
         isOpen={showCommandPalette}
         onClose={() => setShowCommandPalette(false)}
         onSelectItem={handleSuggestedQuestion}
-        // Casting agents to 'any' to bypass type mismatch (CommandPalette expects icon as string)
-        agents={agents as any}
-        selectedAgent={selectedAgent}
-        onSelectAgent={handleSelectAgent}
-        questions={questionsData.map((q) => q.question)}
+        agents={SPECIALIZATIONS as any}
+        selectedAgent={
+          (userProfile.specializations || [])[0] || "firstTimeBuyer"
+        }
+        onSelectAgent={() => {}}
+        questions={questionsData.map((q) =>
+          q.question.replace(/\{NAME\}/g, "Thomas"),
+        )}
         neighborhoods={sampleNeighborhoods}
       />
+
+      {/* Progress bar for demo */}
       <AnimatePresence>
         {isDemoRunning && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="fixed top-0 left-0 right-0 h-1 bg-gray-200 z-50"
+            className="absolute top-0 left-0 right-0 h-1 bg-gray-200 z-50"
           >
             <motion.div
               className="h-full"
@@ -1071,30 +1065,36 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
           </motion.div>
         )}
       </AnimatePresence>
-      <motion.button
-        onClick={toggleDemo}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="fixed bottom-24 left-21 z-10 px-4 py-2 rounded-lg text-sm font-medium shadow-md flex items-center gap-2 text-white"
-        style={{
-          background: isDemoRunning
-            ? BRAND_COLORS.blush
-            : `linear-gradient(to right, ${BRAND_COLORS.horizon}, ${BRAND_COLORS.charcoal})`,
-        }}
-      >
-        {isDemoRunning ? (
-          <>
-            <X className="w-4 h-4" />
-            Stop Demo
-          </>
-        ) : (
-          <>
-            <Sparkles className="w-4 h-4" />
-            Interactive Demo
-          </>
-        )}
-      </motion.button>
-      <div className="flex-1 flex h-full w-full overflow-hidden">
+
+      {/* Edit preferences modal */}
+      <AnimatePresence>
+        {isEditingPreferences && <PreferenceEditModal />}
+      </AnimatePresence>
+
+      {/* Header with app title and profile access */}
+      <header className="bg-white border-b border-gray-200 py-3 px-6 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+            <Home className="w-4 h-4 text-white" />
+          </div>
+          <h1 className="text-lg font-semibold text-gray-900">HomeAdvisor</h1>
+        </div>
+
+        <button
+          onClick={() => {
+            setIsEditingPreferences(true);
+            setTempUserProfile({ ...userProfile });
+          }}
+          className="flex items-center gap-2 py-1.5 px-3 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+        >
+          <User className="w-4 h-4 text-gray-600" />
+          <span>Thomas</span>
+          <ChevronDown className="w-3.5 h-3.5 text-gray-600" />
+        </button>
+      </header>
+
+      {/* Main content area */}
+      <div className="flex-1 flex overflow-hidden">
         <motion.div
           initial="normal"
           animate={
@@ -1109,13 +1109,12 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
           className="h-full flex flex-col relative overflow-hidden"
         >
           <div className="flex-1 overflow-hidden">
-            <div className="px-4 pt-4">
-              <UserProfileCard />
-            </div>
             <ChatSectionWrapper
               messages={isDemoRunning ? demoMessages : messages}
-              agents={agents}
-              selectedAgent={selectedAgent}
+              agents={SPECIALIZATIONS}
+              selectedAgent={
+                (userProfile.specializations || [])[0] || "firstTimeBuyer"
+              }
               newestMessageId={newestMessageId}
               isLoading={isLoading}
               isDemoTyping={isDemoTyping}
@@ -1130,6 +1129,7 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
               isDemoRunning={isDemoRunning}
             />
           </div>
+
           <ChatInteraction
             input={input}
             onInputChange={setInput}
@@ -1137,10 +1137,20 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
             isLoading={isLoading}
             isDemoRunning={isDemoRunning}
             isHomeSearchMode={true}
-            selectedAgent={selectedAgent}
-            agents={agents}
-            onSelectAgent={handleSelectAgent}
+            selectedAgent={
+              (userProfile.specializations || [])[0] || "firstTimeBuyer"
+            }
+            agents={[]} // Empty array to disable agent switching
+            onSelectAgent={() => {}} // Empty function to disable agent switching
             onOpenCommandPalette={() => setShowCommandPalette(true)}
+            userProfile={userProfile}
+            specializations={formattedProfile.displaySpecializations}
+            onEditProfile={() => {
+              setIsEditingPreferences(true);
+              setTempUserProfile({ ...userProfile });
+            }}
+            toggleDemo={toggleDemo}
+            isDemoRunning={isDemoRunning}
           />
           {showArtifactPanel && (
             <button
@@ -1272,7 +1282,7 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setShowArtifactPanel(true)}
-            className="fixed bottom-6 right-6 p-4 rounded-full shadow-lg hover:shadow-xl transition-all z-20 text-white"
+            className="fixed bottom-20 right-6 p-4 rounded-full shadow-lg hover:shadow-xl transition-all z-20 text-white"
             style={{
               background: `linear-gradient(to right, ${BRAND_COLORS.horizon}, ${BRAND_COLORS.charcoal})`,
             }}
@@ -1283,44 +1293,36 @@ My specialty is ${newAgent.description.toLowerCase()}. How can I help with your 
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {!isDemoRunning && messages.length <= 2 && !showCommandPalette && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0, transition: { delay: 1 } }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-24 right-50 transform -translate-x-1/2 bg-white rounded-xl shadow-lg p-3 flex items-center gap-3 z-20 max-w-md border border-gray-200"
-          >
-            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-              <Info className="w-4 h-4 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-800">
-                Customize Your Profile
-              </p>
-              <p className="text-xs text-gray-600 mt-0.5">
-                Click the edit button at the top to update your home search
-                preferences
-              </p>
-            </div>
-            <button
-              onClick={() => {
-                const elem = document.querySelector(
-                  'button[aria-label="Edit preferences"]',
-                );
-                if (elem) {
-                  elem.classList.add("animate-pulse");
-                  setTimeout(
-                    () => elem.classList.remove("animate-pulse"),
-                    2000,
-                  );
-                }
-              }}
-              className="absolute -top-2 -right-2 w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center"
+        {!isDemoRunning &&
+          messages.length <= 2 &&
+          !showCommandPalette &&
+          showProfileTooltip && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0, transition: { delay: 1 } }}
+              exit={{ opacity: 0, y: 20 }}
+              className="fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-white rounded-xl shadow-lg p-3 flex items-center gap-3 z-20 max-w-md border border-gray-200"
             >
-              <X className="w-3 h-3 text-gray-600" />
-            </button>
-          </motion.div>
-        )}
+              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                <Info className="w-4 h-4 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-800">
+                  Customize Your Profile
+                </p>
+                <p className="text-xs text-gray-600 mt-0.5">
+                  Click the edit button at the top to update your home search
+                  preferences
+                </p>
+              </div>
+              <button
+                onClick={() => setShowProfileTooltip(false)}
+                className="absolute -top-2 -right-2 w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center"
+              >
+                <X className="w-3 h-3 text-gray-600" />
+              </button>
+            </motion.div>
+          )}
       </AnimatePresence>
     </div>
   );
