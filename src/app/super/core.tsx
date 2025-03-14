@@ -382,7 +382,6 @@ function useDemoMode(
         setIsTyping(false);
         setCurrentStep((prev) => prev + 1);
         setDemoProgress(((currentStep + 1) / steps.length) * 100);
-        // Removed setShowSuggestions(true) as it's not defined in this scope.
       }, 1500);
     }, 3000);
     return () => clearTimeout(timeout);
@@ -1230,7 +1229,6 @@ Would you like to see some properties that match these criteria now, or do you h
               city: userProfile.city,
               budget: userProfile.budget,
               propertyType: userProfile.propertyType,
-              beds: userProfile.beds,
               homeFeatures: userProfile.homeFeatures,
               specializations: userProfile.specializations,
             }}
