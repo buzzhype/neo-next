@@ -382,8 +382,7 @@ function useDemoMode(
         setIsTyping(false);
         setCurrentStep((prev) => prev + 1);
         setDemoProgress(((currentStep + 1) / steps.length) * 100);
-        // Always show suggestions after each demo message
-        setShowSuggestions(true);
+        // Removed setShowSuggestions(true) as it's not defined in this scope.
       }, 1500);
     }, 3000);
     return () => clearTimeout(timeout);
@@ -419,7 +418,7 @@ export default function Core({
       baths: "1+",
       squareFeet: "750-1500 sq ft",
       homeFeatures: ["parking", "outdoor", "updated"],
-      specializations: ["firstTimeBuyer", "investmentAnalyst"], // Default with multiple specializations
+      specializations: ["firstTimeBuyer", "investmentAnalyst"],
       customTags: [],
       favoritePlaces: [],
       savedHomes: [],
@@ -434,7 +433,6 @@ export default function Core({
 
   // The messages state. IDs are strings.
   const [messages, setMessages] = useState<any[]>(() => {
-    // Get specialization descriptions
     const specializationInfo = (userProfile.specializations || [])
       .map((id) => {
         const spec = SPECIALIZATIONS.find((s) => s.id === id);
@@ -442,7 +440,6 @@ export default function Core({
       })
       .filter(Boolean);
 
-    // Create a more personalized and realistic welcome message
     return [
       {
         id: Date.now().toString(),
@@ -463,7 +460,6 @@ What specific neighborhoods are you interested in exploring? Or would you like t
     ];
   });
 
-  // Changed newestMessageId type to string | null.
   const [newestMessageId, setNewestMessageId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [input, setInput] = useState("");
@@ -505,7 +501,7 @@ What specific neighborhoods are you interested in exploring? Or would you like t
   const formatUserProfile = (profile: UserProfile | null) => {
     if (!profile) {
       return {
-        name: "Thomas", // Use Thomas as the name
+        name: "Thomas",
         displayCity: "San Francisco",
         displayBudget: "your budget",
         displayPropertyType: "property",
@@ -534,13 +530,12 @@ What specific neighborhoods are you interested in exploring? Or would you like t
         ? profile.homeFeatures.join(", ")
         : "features you need";
 
-    // Get specialization info
     const displaySpecializations = (profile.specializations || [])
       .map((id) => SPECIALIZATIONS.find((s) => s.id === id))
       .filter(Boolean) as typeof SPECIALIZATIONS;
 
     return {
-      name: "Thomas", // Always use Thomas as the name
+      name: "Thomas",
       displayCity,
       displayBudget,
       displayPropertyType,
@@ -580,7 +575,6 @@ What specific neighborhoods are you interested in exploring? Or would you like t
     setTempUserProfile((prev: any) => {
       const currentSpecializations = [...(prev.specializations || [])];
       if (currentSpecializations.includes(specializationId)) {
-        // Don't remove if it's the last specialization
         if (currentSpecializations.length <= 1) {
           return prev;
         }
@@ -603,7 +597,6 @@ What specific neighborhoods are you interested in exploring? Or would you like t
     setUserProfile(tempUserProfile);
     const newFormattedProfile = formatUserProfile(tempUserProfile);
 
-    // Get specialization descriptions
     const specializationInfo = (tempUserProfile.specializations || [])
       .map((id) => {
         const spec = SPECIALIZATIONS.find((s) => s.id === id);
@@ -618,7 +611,6 @@ What specific neighborhoods are you interested in exploring? Or would you like t
       timestamp: new Date(),
     };
 
-    // Create a more personal and conversational response
     const agentMsg = {
       id: (Date.now() + 1).toString(),
       role: "agent",
@@ -649,7 +641,6 @@ Would you like to see some properties that match these criteria now, or do you h
     setIsEditingPreferences(false);
   };
 
-  // Function to update specializations
   const updateSpecializations = (specializations: string[]) => {
     setUserProfile((prev) => ({
       ...prev,
@@ -662,7 +653,6 @@ Would you like to see some properties that match these criteria now, or do you h
     setIsEditingPreferences(false);
   };
 
-  // Handle keyboard shortcuts
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       const isMac = navigator.platform.toUpperCase().includes("MAC");
@@ -678,9 +668,7 @@ Would you like to see some properties that match these criteria now, or do you h
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Ensure suggestions appear after new agent messages
   useEffect(() => {
-    // If the newest message is from the agent and not a system message, show suggestions
     if (newestMessageId) {
       const newestMessage = displayMessages.find(
         (m) => m.id === newestMessageId,
@@ -691,14 +679,12 @@ Would you like to see some properties that match these criteria now, or do you h
     }
   }, [newestMessageId, displayMessages]);
 
-  // Save user profile to localStorage whenever it changes
   useEffect(() => {
     if (userProfile) {
       localStorage.setItem("userProfile", JSON.stringify(userProfile));
     }
   }, [userProfile]);
 
-  // Load user profile from localStorage on initial load
   useEffect(() => {
     const savedProfile = localStorage.getItem("userProfile");
     if (savedProfile) {
@@ -711,7 +697,6 @@ Would you like to see some properties that match these criteria now, or do you h
     }
   }, []);
 
-  // Auto-scroll to bottom and show suggestions when new messages appear
   useEffect(() => {
     if (messages.length > 0 && !isLoading) {
       setTimeout(() => {
@@ -733,7 +718,6 @@ Would you like to see some properties that match these criteria now, or do you h
       const newId = Date.now().toString();
       const matched = findMatch(userMessage);
 
-      // Use the first specialization as the primary agent
       const primarySpecializationId =
         (userProfile.specializations || [])[0] || "firstTimeBuyer";
       const primarySpecialization = SPECIALIZATIONS.find(
@@ -751,7 +735,6 @@ Would you like to see some properties that match these criteria now, or do you h
       if (matched) {
         let personalizedAnswer = matched.answer;
 
-        // Personalize the response
         if (userProfile) {
           if (userProfile.city && CITY_NAMES[userProfile.city]) {
             personalizedAnswer = personalizedAnswer.replace(
@@ -767,10 +750,8 @@ Would you like to see some properties that match these criteria now, or do you h
           }
         }
 
-        // Always use "Thomas" as the name placeholder
         personalizedAnswer = personalizedAnswer.replace(/\{NAME\}/g, "Thomas");
 
-        // Make the response more conversational and realistic
         const conversationalPrefixes = [
           `That's a great question, Thomas! `,
           `I'm glad you asked about that. `,
@@ -787,7 +768,6 @@ Would you like to see some properties that match these criteria now, or do you h
           ` Let me know if you'd like more specific information.`,
         ];
 
-        // Randomly select a prefix and suffix for variety
         const prefix =
           conversationalPrefixes[
             Math.floor(Math.random() * conversationalPrefixes.length)
@@ -809,7 +789,6 @@ Would you like to see some properties that match these criteria now, or do you h
           }, 800);
         }
       } else {
-        // Create a more personalized fallback response
         response.content = `I understand you're asking about "${userMessage}". While I don't have specific data on that, I can help you explore ${CITY_NAMES[userProfile.city]}'s neighborhoods, current listings that match your ${userProfile.propertyType} search, or discuss financing options for your budget of $${userProfile.budget.toLocaleString()}. What would be most helpful for you right now, Thomas?`;
       }
 
@@ -817,11 +796,8 @@ Would you like to see some properties that match these criteria now, or do you h
       setNewestMessageId(newId);
       setIsLoading(false);
 
-      // Explicitly ensure suggestions are shown after response
-      // Use a small timeout to ensure DOM updates first
       setTimeout(() => {
         setShowSuggestions(true);
-        // Scroll to bottom to ensure suggestions are visible
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }, 1500);
@@ -851,9 +827,7 @@ Would you like to see some properties that match these criteria now, or do you h
       timestamp: new Date(),
     };
     setMessages((prev) => [...prev, userMsg]);
-    // Hide suggestions during loading but will show after response
     setShowSuggestions(false);
-    // Scroll to the bottom immediately after adding the message
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 100);
@@ -886,7 +860,6 @@ Would you like to see some properties that match these criteria now, or do you h
     else startDemo();
   };
 
-  // Handle showing/hiding the user profile
   const toggleProfileCard = () => {
     setShowProfileCard(!showProfileCard);
   };
@@ -922,8 +895,6 @@ Would you like to see some properties that match these criteria now, or do you h
     },
   };
 
-  // Preference editing modal
-  // PreferenceEditModal Component for core.tsx
   const PreferenceEditModal = () => {
     if (!isEditingPreferences) return null;
 
@@ -948,7 +919,6 @@ Would you like to see some properties that match these criteria now, or do you h
           </div>
 
           <div className="p-5 space-y-5">
-            {/* Specializations selection - Updated to match ChatInteraction.tsx */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Real Estate Expertise Selection
@@ -1160,7 +1130,6 @@ Would you like to see some properties that match these criteria now, or do you h
         neighborhoods={sampleNeighborhoods}
       />
 
-      {/* Progress bar for demo */}
       <AnimatePresence>
         {isDemoRunning && (
           <motion.div
@@ -1180,12 +1149,10 @@ Would you like to see some properties that match these criteria now, or do you h
         )}
       </AnimatePresence>
 
-      {/* Edit preferences modal */}
       <AnimatePresence>
         {isEditingPreferences && <PreferenceEditModal />}
       </AnimatePresence>
 
-      {/* Header with app title and profile access */}
       <header className="bg-white border-b border-gray-200 py-3 px-6 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
@@ -1207,7 +1174,6 @@ Would you like to see some properties that match these criteria now, or do you h
         </button>
       </header>
 
-      {/* Main content area */}
       <div className="flex-1 flex overflow-hidden">
         <motion.div
           initial="normal"
@@ -1257,8 +1223,8 @@ Would you like to see some properties that match these criteria now, or do you h
             selectedAgent={
               (userProfile.specializations || [])[0] || "firstTimeBuyer"
             }
-            agents={[]} // Empty array to disable agent switching
-            onSelectAgent={() => {}} // Empty function to disable agent switching
+            agents={[]}
+            onSelectAgent={() => {}}
             onOpenCommandPalette={() => setShowCommandPalette(true)}
             userProfile={{
               city: userProfile.city,
