@@ -1199,7 +1199,7 @@ Would you like to see some properties that match these criteria now, or do you h
               isLoading={isLoading}
               isDemoTyping={isDemoTyping}
               onArtifactView={handleArtifactView}
-              messagesEndRef={messagesEndRef}
+              messagesEndRef={messagesEndRef as React.RefObject<HTMLDivElement>}
               showSuggestions={isLoading ? false : showSuggestions}
               selectedQuestionCategory={selectedQuestionCategory}
               onCategorySelect={setSelectedQuestionCategory}
