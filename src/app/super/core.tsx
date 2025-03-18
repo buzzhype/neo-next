@@ -50,6 +50,17 @@ import ArtifactRenderer, { getArtifactIcon } from "./ArtifactRenderer";
 import SFMarketTrends from "./SFMarketTrends";
 import { questionsData } from "./questionsData";
 
+// Brand colors
+const BRAND_COLORS = {
+  neutralBlack: "#232226",
+  charcoal: "#3c4659",
+  manatee: "#8a8ba6",
+  horizon: "#5988a6",
+  blush: "#d9848b",
+  horizonLight: "#daeaf3",
+  horizonDark: "#4a7a97",
+};
+
 // Example neighborhoods for the Command Palette
 const sampleNeighborhoods = [
   { name: "Pacific Heights", description: "Upscale area with panoramic views" },
