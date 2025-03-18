@@ -27,6 +27,11 @@ interface ChatInteractionProps {
   onSubmit: (e: React.FormEvent) => void;
   isLoading: boolean;
   isDemoRunning: boolean;
+  isHomeSearchMode?: boolean; // Added this prop to match usage in core.tsx
+  selectedAgent?: string; // Added this prop to match usage in core.tsx
+  agents?: any[]; // Added this prop to match usage in core.tsx
+  onSelectAgent?: (agentId: string) => void; // Added this prop to match usage in core.tsx
+  toggleDemo?: () => void; // Added this prop to match usage in core.tsx
 
   // User profile
   userProfile?: {
@@ -46,7 +51,7 @@ interface ChatInteractionProps {
 
   // Command Palette
   onOpenCommandPalette: () => void;
-  onAddSpecialist: () => void;
+  onAddSpecialist?: () => void;
 }
 
 // Define all available specializations with professional descriptions
@@ -100,6 +105,11 @@ const ChatInteraction: React.FC<ChatInteractionProps> = ({
   onOpenCommandPalette,
   onEditProfile,
   onAddSpecialist,
+  isHomeSearchMode,
+  selectedAgent,
+  agents,
+  onSelectAgent,
+  toggleDemo,
 }) => {
   // State for the options dropdown
   const [optionsOpen, setOptionsOpen] = useState(false);
