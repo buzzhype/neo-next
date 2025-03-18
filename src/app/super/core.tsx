@@ -50,17 +50,6 @@ import ArtifactRenderer, { getArtifactIcon } from "./ArtifactRenderer";
 import SFMarketTrends from "./SFMarketTrends";
 import { questionsData } from "./questionsData";
 
-// Brand colors
-const BRAND_COLORS = {
-  neutralBlack: "#232226",
-  charcoal: "#3c4659",
-  manatee: "#8a8ba6",
-  horizon: "#5988a6",
-  blush: "#d9848b",
-  horizonLight: "#daeaf3",
-  horizonDark: "#4a7a97",
-};
-
 // Example neighborhoods for the Command Palette
 const sampleNeighborhoods = [
   { name: "Pacific Heights", description: "Upscale area with panoramic views" },
@@ -224,9 +213,6 @@ const SPECIALIZATIONS = [
   },
 ];
 
-/**
- * UserProfile interface to explicitly type user profile objects.
- */
 interface UserProfile {
   name: string;
   experience: string;
@@ -396,7 +382,7 @@ function useDemoMode(
   };
 }
 
-// Main Core component with enhanced user profile integration and editing
+// Main Core component
 export default function Core({
   userProfile: initialUserProfile,
 }: {
@@ -443,9 +429,13 @@ export default function Core({
         content: `
 👋 Hi Thomas! I'm Jessica, your dedicated real estate advisor with expertise in ${specializationInfo.join(" and ")}.
 
-Based on your search profile, you're looking for a ${userProfile.propertyType} with ${userProfile.beds} in ${CITY_NAMES[userProfile.city]} with a budget of $${userProfile.budget.toLocaleString()}.
+Based on your search profile, you're looking for a ${userProfile.propertyType} with ${userProfile.beds} in ${
+          CITY_NAMES[userProfile.city]
+        } with a budget of $${userProfile.budget.toLocaleString()}.
 
-I've been working in ${CITY_NAMES[userProfile.city]} real estate for 8 years now, so I know the market inside and out. Let's work together to find your perfect home!
+I've been working in ${
+          CITY_NAMES[userProfile.city]
+        } real estate for 8 years now, so I know the market inside and out. Let's work together to find your perfect home!
 
 What specific neighborhoods are you interested in exploring? Or would you like to discuss current market conditions first?
         `,
@@ -593,7 +583,7 @@ What specific neighborhoods are you interested in exploring? Or would you like t
     const newFormattedProfile = formatUserProfile(tempUserProfile);
 
     const specializationInfo = (tempUserProfile.specializations || [])
-      .map((id) => {
+      .map((id: string) => {
         const spec = SPECIALIZATIONS.find((s) => s.id === id);
         return spec ? spec.name : null;
       })
@@ -623,7 +613,9 @@ ${
 
 ${
   specializationInfo.length > 1
-    ? `I see you're interested in expertise from ${specializationInfo.join(" and ")}. That's a smart combination!`
+    ? `I see you're interested in expertise from ${specializationInfo.join(
+        " and ",
+      )}. That's a smart combination!`
     : `I'll be focusing on ${specializationInfo[0]} for your search.`
 }
 
@@ -784,7 +776,11 @@ Would you like to see some properties that match these criteria now, or do you h
           }, 800);
         }
       } else {
-        response.content = `I understand you're asking about "${userMessage}". While I don't have specific data on that, I can help you explore ${CITY_NAMES[userProfile.city]}'s neighborhoods, current listings that match your ${userProfile.propertyType} search, or discuss financing options for your budget of $${userProfile.budget.toLocaleString()}. What would be most helpful for you right now, Thomas?`;
+        response.content = `I understand you're asking about "${userMessage}". While I don't have specific data on that, I can help you explore ${
+          CITY_NAMES[userProfile.city]
+        }'s neighborhoods, current listings that match your ${
+          userProfile.propertyType
+        } search, or discuss financing options for your budget of $${userProfile.budget.toLocaleString()}. What would be most helpful for you right now, Thomas?`;
       }
 
       setMessages((prev) => [...prev, response]);
@@ -1214,12 +1210,6 @@ Would you like to see some properties that match these criteria now, or do you h
             onSubmit={handleSubmit}
             isLoading={isLoading}
             isDemoRunning={isDemoRunning}
-            isHomeSearchMode={true}
-            selectedAgent={
-              (userProfile.specializations || [])[0] || "firstTimeBuyer"
-            }
-            agents={[]}
-            onSelectAgent={() => {}}
             onOpenCommandPalette={() => setShowCommandPalette(true)}
             userProfile={{
               city: userProfile.city,
@@ -1227,13 +1217,16 @@ Would you like to see some properties that match these criteria now, or do you h
               propertyType: userProfile.propertyType,
               specializations: userProfile.specializations,
             }}
-            specializations={formattedProfile.displaySpecializations}
+            updateSpecializations={updateSpecializations}
             onEditProfile={() => {
               setIsEditingPreferences(true);
               setTempUserProfile({ ...userProfile });
             }}
-            updateSpecializations={updateSpecializations}
-            toggleDemo={toggleDemo}
+            // This is the key piece: "Add Specialist" will open the same Edit Preferences modal
+            onAddSpecialist={() => {
+              setIsEditingPreferences(true);
+              setTempUserProfile({ ...userProfile });
+            }}
           />
           {showArtifactPanel && (
             <button
@@ -1249,6 +1242,7 @@ Would you like to see some properties that match these criteria now, or do you h
             </button>
           )}
         </motion.div>
+
         <AnimatePresence>
           {showArtifactPanel && activeArtifact && (
             <motion.div
@@ -1356,6 +1350,7 @@ Would you like to see some properties that match these criteria now, or do you h
           )}
         </AnimatePresence>
       </div>
+
       <AnimatePresence>
         {activeArtifact && !showArtifactPanel && (
           <motion.button
